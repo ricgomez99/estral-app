@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 
-export default function WorkshopScreen() {
+export default function AnimalsScreen() {
   return (
     <View>
-      <Text>Workshop Screen</Text>
+      <Text>Animals</Text>
     </View>
   );
 }
