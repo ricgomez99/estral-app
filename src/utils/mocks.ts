@@ -1,6 +1,7 @@
-import { Animal } from "@/types/mock-types";
+import { IAnimal, IDateRange } from "@/types/mock-types";
 
-const ANIMALS: Animal[] = [
+const DATE = new Date().toISOString();
+const ANIMALS: IAnimal[] = [
   {
     id: 1,
     name: "Princesa",
@@ -36,4 +37,34 @@ const ANIMALS: Animal[] = [
   },
 ];
 
-export { ANIMALS };
+const DATE_RANGES: IDateRange[] = [
+  {
+    id: 1,
+    subject: {
+      name: "Malvina",
+      image: require("../../assets/default-horse.jpg"),
+    },
+    min_date: DATE,
+    max_date: DATE,
+  },
+  {
+    id: 2,
+    subject: {
+      name: "Babieca",
+      image: require("../../assets/default-horse.jpg"),
+    },
+    min_date: DATE,
+    max_date: DATE,
+  },
+  {
+    id: 3,
+    subject: {
+      name: "Princesa",
+      image: require("../../assets/default-horse.jpg"),
+    },
+    min_date: DATE,
+    max_date: DATE,
+  },
+];
+
+export { ANIMALS, DATE_RANGES };

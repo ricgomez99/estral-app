@@ -1,18 +1,21 @@
-import { Animal } from "@/types/mock-types";
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 
-type CardProps = Partial<Animal>;
+type CardProps = {
+  cardImage: string;
+  cardTitle: string;
+  cardSubTitle: string;
+};
 
 export default function Card(props: CardProps) {
   return (
     <>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Image style={styles.cardImage} source={props.image} />
+          <Image style={styles.cardImage} source={props.cardImage} />
           <View style={styles.headerText}>
-            <Text>{props.name}</Text>
-            <Text>Type: {props.type}</Text>
+            <Text>{props.cardTitle}</Text>
+            <Text>{props.cardSubTitle}</Text>
           </View>
         </View>
       </View>
