@@ -1,9 +1,5 @@
-import { Text, View } from "react-native";
+import Animals from "@/screens/Animals";
 
 export default function AnimalsScreen() {
-  return (
-    <View>
-      <Text>Animals</Text>
-    </View>
-  );
+  return <Animals />;
 }

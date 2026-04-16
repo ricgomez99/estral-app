@@ -1,9 +1,5 @@
-import { View, Text } from "react-native";
+import Ranges from "@/screens/Ranges";
 
 export default function RangesScreen() {
-  return (
-    <View>
-      <Text>Ranges</Text>
-    </View>
-  );
+  return <Ranges />;
 }
