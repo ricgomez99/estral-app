@@ -2,21 +2,46 @@ import ListContainer from "@/components/shared/ListContainer";
 import { FlatList } from "react-native";
 import { DATE_RANGES } from "@/utils/mocks";
 import Card from "@/components/shared/Card";
+import { useState, useDeferredValue, useMemo } from "react";
+import SearchBar from "@/components/shared/SearchBar";
+import { IDateRange } from "@/types/mock-types";
+import filter from "lodash/filter";
 
 export default function Ranges() {
+  const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
+
+  const filteredData = useMemo(() => {
+    if (!deferredQuery) return DATE_RANGES;
+
+    return filter(DATE_RANGES, (range: IDateRange) => {
+      return range.subject.name
+        .toLowerCase()
+        .includes(deferredQuery.toLowerCase());
+    });
+  }, [deferredQuery]);
+
+  const handleChange = (newText: string) => {
+    setQuery(newText);
+  };
+
   return (
-    <ListContainer>
-      <FlatList
-        data={DATE_RANGES}
-        renderItem={({ item }) => (
-          <Card
-            cardTitle={item.subject.name}
-            cardImage={item.subject.image}
-            cardSubTitle="range"
-          />
-        )}
-        keyExtractor={(item) => String(item.id)}
-      />
-    </ListContainer>
+    <>
+      <SearchBar value={query} handleChange={handleChange} />
+      <ListContainer>
+        <FlatList
+          data={filteredData}
+          renderItem={({ item }) => (
+            <Card
+              cardTitle={item.subject.name}
+              cardImage={item.subject.image}
+              cardSubTitle="range"
+            />
+          )}
+          keyExtractor={(item) => String(item.id)}
+          removeClippedSubviews={true}
+        />
+      </ListContainer>
+    </>
   );
 }
