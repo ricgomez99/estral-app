@@ -25,6 +25,13 @@ export default function WorkshopLayout() {
           drawerLabel: "Ranges",
         }}
       />
+
+      <Drawer.Screen
+        name="calculations"
+        options={{
+          drawerLabel: "Calculations",
+        }}
+      />
     </Drawer>
   );
 }

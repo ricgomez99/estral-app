@@ -1,29 +1,47 @@
-import { FlatList, StyleSheet, StatusBar } from "react-native";
+import { FlatList } from "react-native";
 import { ANIMALS } from "@/utils/mocks";
 import Card from "@/components/shared/Card";
-import ListContainer from "../../components/shared/ListContainer";
+import ListContainer from "@/components/shared/ListContainer";
+import SearchBar from "@/components/shared/SearchBar";
+import { useState, useMemo, useDeferredValue } from "react";
+import filter from "lodash/filter";
+import { IAnimal } from "@/types/mock-types";
 
 export default function Animals() {
+  const [query, setQuery] = useState("");
+  const deferredValue = useDeferredValue(query);
+
+  const filteredData = useMemo(() => {
+    if (!deferredValue) return ANIMALS;
+
+    return filter(
+      ANIMALS,
+      (animal: IAnimal) =>
+        animal.name.toLowerCase().includes(deferredValue.toLowerCase()) ||
+        animal.type.toLowerCase().includes(deferredValue.toLowerCase()),
+    );
+  }, [deferredValue]);
+
+  const handleChange = (newText: string) => {
+    setQuery(newText);
+  };
+
   return (
-    <ListContainer>
-      <FlatList
-        data={ANIMALS}
-        renderItem={({ item }) => (
-          <Card
-            cardTitle={item.name}
-            cardImage={item.image}
-            cardSubTitle={item.type}
-          />
-        )}
-        keyExtractor={(item) => String(item.id)}
-      />
-    </ListContainer>
+    <>
+      <SearchBar value={query} handleChange={handleChange} />
+      <ListContainer>
+        <FlatList
+          data={filteredData}
+          renderItem={({ item }) => (
+            <Card
+              cardTitle={item.name}
+              cardImage={item.image}
+              cardSubTitle={item.type}
+            />
+          )}
+          keyExtractor={(item) => String(item.id)}
+        />
+      </ListContainer>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-  },
-});
