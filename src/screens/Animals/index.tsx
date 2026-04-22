@@ -6,6 +6,7 @@ import SearchBar from "@/components/shared/SearchBar";
 import { useState, useMemo, useDeferredValue } from "react";
 import filter from "lodash/filter";
 import { IAnimal } from "@/types/mock-types";
+import LinkPressable from "@/components/shared/LinkPressable";
 
 export default function Animals() {
   const [query, setQuery] = useState("");
@@ -33,11 +34,13 @@ export default function Animals() {
         <FlatList
           data={filteredData}
           renderItem={({ item }) => (
-            <Card
-              cardTitle={item.name}
-              cardImage={item.image}
-              cardSubTitle={item.type}
-            />
+            <LinkPressable href={`/workshop/animals/${item.id}`}>
+              <Card
+                cardTitle={item.name}
+                cardImage={item.image}
+                cardSubTitle={item.type}
+              />
+            </LinkPressable>
           )}
           keyExtractor={(item) => String(item.id)}
         />
