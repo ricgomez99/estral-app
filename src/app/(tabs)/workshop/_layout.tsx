@@ -4,6 +4,7 @@ import { Drawer } from "expo-router/drawer";
 export default function WorkshopLayout() {
   return (
     <Drawer
+      initialRouteName="animals/index"
       screenOptions={{
         headerShadowVisible: false,
         headerTitle: "Workshop",
@@ -14,22 +15,41 @@ export default function WorkshopLayout() {
         swipeEnabled: true,
       }}>
       <Drawer.Screen
-        name="index"
+        name="animals/index"
         options={{
           drawerLabel: "Animals",
         }}
       />
       <Drawer.Screen
-        name="ranges"
+        name="ranges/index"
         options={{
           drawerLabel: "Ranges",
         }}
       />
 
       <Drawer.Screen
-        name="calculations"
+        name="calculations/index"
         options={{
           drawerLabel: "Calculations",
+        }}
+      />
+      <Drawer.Screen
+        name="animals/[id]"
+        options={{
+          drawerItemStyle: { display: "none" },
+        }}
+      />
+      <Drawer.Screen
+        name="ranges/[id]"
+        options={{
+          drawerItemStyle: { display: "none" },
+        }}
+      />
+
+      <Drawer.Screen
+        name="calculations/[id]"
+        options={{
+          drawerItemStyle: { display: "none" },
         }}
       />
     </Drawer>

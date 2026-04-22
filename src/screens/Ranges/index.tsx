@@ -6,6 +6,7 @@ import { useState, useDeferredValue, useMemo } from "react";
 import SearchBar from "@/components/shared/SearchBar";
 import { IDateRange } from "@/types/mock-types";
 import filter from "lodash/filter";
+import LinkPressable from "@/components/shared/LinkPressable";
 
 export default function Ranges() {
   const [query, setQuery] = useState("");
@@ -32,11 +33,13 @@ export default function Ranges() {
         <FlatList
           data={filteredData}
           renderItem={({ item }) => (
-            <Card
-              cardTitle={item.subject.name}
-              cardImage={item.subject.image}
-              cardSubTitle="range"
-            />
+            <LinkPressable href={`/workshop/ranges/${item.id}`}>
+              <Card
+                cardTitle={item.subject.name}
+                cardImage={item.subject.image}
+                cardSubTitle="range"
+              />
+            </LinkPressable>
           )}
           keyExtractor={(item) => String(item.id)}
           removeClippedSubviews={true}
