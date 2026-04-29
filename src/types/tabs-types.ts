@@ -1,3 +1,5 @@
+import { DrawerNavigationOptions } from "@react-navigation/drawer";
+
 interface TabProps {
   tabName: string;
   tabTitle: string;
@@ -5,4 +7,9 @@ interface TabProps {
   iconName: "home" | "pencil" | "user" | "cog";
 }
 
-export { TabProps };
+interface DrawerScreenProps {
+  screenName: string;
+  options: DrawerNavigationOptions;
+}
+
+export { TabProps, DrawerScreenProps };
