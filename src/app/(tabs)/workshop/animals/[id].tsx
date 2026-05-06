@@ -3,6 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { ANIMALS } from "@/utils/mocks";
 import Chip from "@/components/shared/Chip";
+import { Header, GridItem } from "@/components/Details";
+import { PrimaryButton } from "@/components/shared/Buttons";
 
 export default function AnimalDetails() {
   const { id } = useLocalSearchParams();
@@ -14,26 +16,24 @@ export default function AnimalDetails() {
     <View style={styles.detailsContainer}>
       <Image style={styles.image} source={subject?.image} />
       <View style={styles.infoContainer}>
-        <View style={styles.header}>
-          <Text style={styles.name}>{subject?.name}</Text>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{subject?.type.toUpperCase()}</Text>
-          </View>
-        </View>
+        <Header title={subject?.name} badgeText={subject?.type} />
         <View style={styles.grid}>
-          <View style={styles.gridItem}>
-            <Text style={styles.gridItem}>{subject?.age}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.gridItem}>{subject?.sex}</Text>
-          </View>
-          <View style={styles.gridItem}>
+          <GridItem label={true} labelText="Age">
+            <Text style={styles.gridItemText}>{subject?.age}</Text>
+          </GridItem>
+          <GridItem label={true} labelText="Sex">
+            <Text style={styles.gridItemText}>{subject?.sex}</Text>
+          </GridItem>
+          <GridItem label={false}>
             <Chip chipText={chipText} active={subject?.isDonor} />
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.gridItem}>{subject?.microchipId}</Text>
-          </View>
+          </GridItem>
+          <GridItem label={true} labelText="Chip ID">
+            <Text style={styles.gridItemText}>{subject?.microchipId}</Text>
+          </GridItem>
         </View>
+      </View>
+      <View style={styles.buttonsContainer}>
+        <PrimaryButton title="Update" handleClick={() => {}} type="normal" />
       </View>
     </View>
   );
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   detailsContainer: {
     margin: 16,
     overflow: "scroll",
+    flex: 1,
   },
   image: {
     width: "100%",
@@ -52,42 +53,25 @@ const styles = StyleSheet.create({
   },
 
   infoContainer: {
-    padding: 20,
-  },
-
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-
-  name: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1A1A1A",
-  },
-
-  badge: {
-    backgroundColor: "#F9F9F9",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-
-  badgeText: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#777",
+    paddingVertical: 16,
+    paddingHorizontal: 5,
   },
 
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 
-  gridItem: {
-    width: "50%",
-    marginBottom: 16,
+  gridItemText: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
 });

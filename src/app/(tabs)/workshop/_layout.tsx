@@ -14,6 +14,7 @@ export default function WorkshopLayout() {
         headerLeft: () => null,
         drawerType: "front",
         swipeEnabled: true,
+        headerBackButtonDisplayMode: "default",
       }}>
       {DRAWER_SCREENS &&
         DRAWER_SCREENS.map((screen) => (
