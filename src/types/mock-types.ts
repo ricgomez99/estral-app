@@ -1,5 +1,5 @@
 interface IAnimal {
-  id: number;
+  id: string | number;
   name: string;
   age: number;
   type: Species;
@@ -11,7 +11,7 @@ interface IAnimal {
 }
 
 interface IDateRange {
-  id: number;
+  id: string | number;
   subject: Pick<IAnimal, "name" | "image">;
   min_date: string;
   max_date: string;
@@ -20,4 +20,4 @@ interface IDateRange {
 type Species = "horse" | "donkey" | "zebra";
 type Sex = "Male" | "Female";
 
-export type { IAnimal, IDateRange };
+export type { IAnimal, IDateRange, Species, Sex };

@@ -1,4 +1,4 @@
-import { TabProps } from "@/types/tabs-types";
+import { TabProps, DrawerScreenProps } from "@/types/tabs-types";
 
 const VIEW_TABS: TabProps[] = [
   {
@@ -24,4 +24,43 @@ const VIEW_TABS: TabProps[] = [
   },
 ];
 
-export { VIEW_TABS };
+const DRAWER_SCREENS: DrawerScreenProps[] = [
+  {
+    screenName: "animals/index",
+    options: {
+      drawerLabel: "Animals",
+    },
+  },
+  {
+    screenName: "ranges/index",
+    options: {
+      drawerLabel: "Ranges",
+    },
+  },
+  {
+    screenName: "calculations/index",
+    options: {
+      drawerLabel: "Calculations",
+    },
+  },
+  {
+    screenName: "animals/[id]",
+    options: {
+      drawerItemStyle: { display: "none" },
+    },
+  },
+  {
+    screenName: "ranges/[id]",
+    options: {
+      drawerItemStyle: { display: "none" },
+    },
+  },
+  {
+    screenName: "calculations/[id]",
+    options: {
+      drawerItemStyle: { display: "none" },
+    },
+  },
+];
+
+export { VIEW_TABS, DRAWER_SCREENS };

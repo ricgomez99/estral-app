@@ -1,5 +1,6 @@
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { Drawer } from "expo-router/drawer";
+import { DRAWER_SCREENS } from "@/utils/consts";
 
 export default function WorkshopLayout() {
   return (
@@ -13,45 +14,12 @@ export default function WorkshopLayout() {
         headerLeft: () => null,
         drawerType: "front",
         swipeEnabled: true,
+        headerBackButtonDisplayMode: "default",
       }}>
-      <Drawer.Screen
-        name="animals/index"
-        options={{
-          drawerLabel: "Animals",
-        }}
-      />
-      <Drawer.Screen
-        name="ranges/index"
-        options={{
-          drawerLabel: "Ranges",
-        }}
-      />
-
-      <Drawer.Screen
-        name="calculations/index"
-        options={{
-          drawerLabel: "Calculations",
-        }}
-      />
-      <Drawer.Screen
-        name="animals/[id]"
-        options={{
-          drawerItemStyle: { display: "none" },
-        }}
-      />
-      <Drawer.Screen
-        name="ranges/[id]"
-        options={{
-          drawerItemStyle: { display: "none" },
-        }}
-      />
-
-      <Drawer.Screen
-        name="calculations/[id]"
-        options={{
-          drawerItemStyle: { display: "none" },
-        }}
-      />
+      {DRAWER_SCREENS &&
+        DRAWER_SCREENS.map((screen) => (
+          <Drawer.Screen name={screen.screenName} options={screen.options} />
+        ))}
     </Drawer>
   );
 }
