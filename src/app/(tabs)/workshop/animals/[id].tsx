@@ -1,16 +1,30 @@
 import { useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { ANIMALS } from "@/utils/mocks";
 import Chip from "@/components/shared/Chip";
 import { Header, GridItem } from "@/components/Details";
 import { PrimaryButton } from "@/components/shared/Buttons";
+import Dialog from "@/components/shared/Dialog";
+import { UpdateAnimalForm } from "@/components/Details/Forms";
+import { useQuery } from "@tanstack/react-query";
+import { getAnimalById } from "@/utils/mock-functions";
 
 export default function AnimalDetails() {
+  const [openDialog, setOpenDialog] = useState(false);
   const { id } = useLocalSearchParams();
+  const {} = useQuery({
+    queryKey: ["animal", Number(id)],
+    queryFn: () => getAnimalById(Number(id)),
+  });
   const subject = ANIMALS.find((animal) => animal.id === Number(id));
   const chipText =
     subject?.isDonor && !subject.isRecipient ? "Donor" : "Recipient";
+
+  const handleDialogVisivility = () => {
+    setOpenDialog(!openDialog);
+  };
 
   return (
     <View style={styles.detailsContainer}>
@@ -33,8 +47,23 @@ export default function AnimalDetails() {
         </View>
       </View>
       <View style={styles.buttonsContainer}>
-        <PrimaryButton title="Update" handleClick={() => {}} type="normal" />
+        <PrimaryButton
+          title="Update"
+          handleClick={handleDialogVisivility}
+          type="normal"
+        />
       </View>
+      {openDialog && (
+        <Dialog
+          visible={openDialog}
+          onClose={handleDialogVisivility}
+          style="formSheet">
+          <UpdateAnimalForm
+            defaultData={subject}
+            onSuccessClose={handleDialogVisivility}
+          />
+        </Dialog>
+      )}
     </View>
   );
 }
@@ -73,5 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    paddingHorizontal: 5,
+    marginVertical: 12,
   },
 });

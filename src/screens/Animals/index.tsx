@@ -1,5 +1,4 @@
 import { FlatList } from "react-native";
-import { ANIMALS } from "@/utils/mocks";
 import Card from "@/components/shared/Card";
 import ListContainer from "@/components/shared/ListContainer";
 import SearchBar from "@/components/shared/SearchBar";
@@ -7,29 +6,49 @@ import { useState, useMemo, useDeferredValue } from "react";
 import filter from "lodash/filter";
 import { IAnimal } from "@/types/mock-types";
 import LinkPressable from "@/components/shared/LinkPressable";
+import useTabQuery from "@/hooks/useTabQuery";
+import { getAnimalsMock } from "@/utils/mock-functions";
+import EmptyList from "@/components/shared/EmptyList";
+import SpinLoader from "@/components/shared/SpinLoader";
 
 export default function Animals() {
   const [query, setQuery] = useState("");
   const deferredValue = useDeferredValue(query);
+  const {
+    data: animals,
+    isLoading,
+    error,
+    isRefetching,
+    refetch,
+  } = useTabQuery<IAnimal[]>({
+    queryKey: ["animals"],
+    queryFn: getAnimalsMock,
+  });
 
   const filteredData = useMemo(() => {
-    if (!deferredValue) return ANIMALS;
+    if (!animals) return [];
+    if (!deferredValue) return animals;
 
     return filter(
-      ANIMALS,
+      animals,
       (animal: IAnimal) =>
         animal.name.toLowerCase().includes(deferredValue.toLowerCase()) ||
         animal.type.toLowerCase().includes(deferredValue.toLowerCase()),
     );
-  }, [deferredValue]);
+  }, [deferredValue, animals]);
 
   const handleChange = (newText: string) => {
     setQuery(newText);
   };
 
+  if (isLoading) {
+    return <SpinLoader />;
+  }
+
   return (
     <>
       <SearchBar value={query} handleChange={handleChange} />
+
       <ListContainer>
         <FlatList
           data={filteredData}
@@ -43,6 +62,11 @@ export default function Animals() {
             </LinkPressable>
           )}
           keyExtractor={(item) => String(item.id)}
+          refreshing={isRefetching}
+          onRefresh={refetch}
+          contentContainerStyle={{ flexGrow: 1 }}
+          ListEmptyComponent={<EmptyList notFoundItems="Animals" />}
+          removeClippedSubviews={true}
         />
       </ListContainer>
     </>

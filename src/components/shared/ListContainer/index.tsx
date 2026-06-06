@@ -1,4 +1,4 @@
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, StatusBar } from "react-native";
 
 interface ListProps {
@@ -6,11 +6,7 @@ interface ListProps {
 }
 
 export default function ListContainer({ children }: ListProps) {
-  return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>{children}</SafeAreaView>
-    </SafeAreaProvider>
-  );
+  return <SafeAreaView style={styles.container}>{children}</SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
