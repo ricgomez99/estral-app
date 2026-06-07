@@ -5,7 +5,7 @@ import { DRAWER_SCREENS } from "@/utils/consts";
 export default function WorkshopLayout() {
   return (
     <Drawer
-      initialRouteName="animals/index"
+      initialRouteName="animals"
       screenOptions={{
         headerShadowVisible: false,
         headerTitle: "Workshop",

@@ -6,7 +6,7 @@ interface IHeaderProps {
   badgeText: string | undefined;
 }
 
-export default function Header({ title, badgeText }: IHeaderProps) {
+export default function CardHeader({ title, badgeText }: IHeaderProps) {
   return (
     <View style={styles.header}>
       <Text style={styles.title}>{title}</Text>

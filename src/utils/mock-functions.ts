@@ -21,6 +21,19 @@ const getRanges = async (): Promise<IDateRange[]> => {
 
   return DATE_RANGES;
 };
+
+const getRangeById = async (id: string | number) => {
+  await new Promise((resolve) => setTimeout(resolve, 800));
+
+  return DATE_RANGES.find((range) => range.id === id);
+};
 const addRange = (range: IDateRange) => DATE_RANGES.push(range);
 
-export { addAnimalMock, getAnimalsMock, getAnimalById, getRanges, addRange };
+export {
+  addAnimalMock,
+  getAnimalsMock,
+  getAnimalById,
+  getRanges,
+  getRangeById,
+  addRange,
+};

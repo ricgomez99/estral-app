@@ -1,4 +1,5 @@
-import Header from "./Header";
+import CardHeader from "./CardHeader";
 import GridItem from "./GridItem";
+import CustomHeader from "./CustomHeader";
 
-export { Header, GridItem };
+export { CustomHeader, CardHeader, GridItem };
