@@ -6,24 +6,15 @@ import { useState, useMemo, useDeferredValue } from "react";
 import filter from "lodash/filter";
 import { IAnimal } from "@/types/mock-types";
 import LinkPressable from "@/components/shared/LinkPressable";
-import useTabQuery from "@/hooks/useTabQuery";
-import { getAnimalsMock } from "@/utils/mock-functions";
+import useRawAnimalsData from "@/hooks/useRawAnimalsData";
 import EmptyList from "@/components/shared/EmptyList";
 import SpinLoader from "@/components/shared/SpinLoader";
 
 export default function Animals() {
   const [query, setQuery] = useState("");
   const deferredValue = useDeferredValue(query);
-  const {
-    data: animals,
-    isLoading,
-    error,
-    isRefetching,
-    refetch,
-  } = useTabQuery<IAnimal[]>({
-    queryKey: ["animals"],
-    queryFn: getAnimalsMock,
-  });
+  const { animals, isLoading, error, isRefetching, refetch } =
+    useRawAnimalsData();
 
   const filteredData = useMemo(() => {
     if (!animals) return [];

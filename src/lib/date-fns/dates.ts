@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import { DATE_EN_FORMAT, DATE_ES_FORMAT } from "@/utils/consts";
 
-type IsoString = string | Date;
+type IsoString = string | undefined;
 type Languages = "es" | "en";
 
 export class DateService {
@@ -17,7 +17,13 @@ export class DateService {
   };
 
   public static formatToLongDate(isoString: IsoString, language: Languages) {
+    if (!isoString || isoString === "undefined") return;
     const date = new Date(isoString);
+
+    if (isNaN(date.getTime())) {
+      console.warn(`DateService: Invalid date format ${isoString}`);
+      return undefined;
+    }
 
     return format(date, this.formats[language], {
       locale: this.locales[language],

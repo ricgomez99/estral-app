@@ -23,9 +23,12 @@ export default function PrimaryButton({
 
 const styles = StyleSheet.create({
   button: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderRadius: 8,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   buttonTitle: {
