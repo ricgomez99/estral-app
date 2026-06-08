@@ -8,16 +8,18 @@ interface IAnimal {
   isRecipient?: boolean;
   isDonor?: boolean;
   image: string;
+  fertility_ranges: IFertilityRange[];
 }
 
-interface IDateRange {
+interface IFertilityRange {
   id: string | number;
-  subject: Pick<IAnimal, "name" | "image">;
+  subject?: string;
   min_date: string;
   max_date: string;
+  creation_date: string;
 }
 
 type Species = "horse" | "donkey" | "zebra";
 type Sex = "Male" | "Female";
 
-export type { IAnimal, IDateRange, Species, Sex };
+export type { IAnimal, IFertilityRange, Species, Sex };

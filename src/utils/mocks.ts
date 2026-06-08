@@ -1,4 +1,4 @@
-import { IAnimal, IDateRange } from "@/types/mock-types";
+import { IAnimal } from "@/types/mock-types";
 
 const ANIMALS: IAnimal[] = [
   {
@@ -11,6 +11,15 @@ const ANIMALS: IAnimal[] = [
     isRecipient: true,
     isDonor: false,
     image: require("../../assets/default-horse.jpg"),
+    fertility_ranges: [
+      {
+        id: 1,
+        subject: "Princesa",
+        min_date: "2026-06-01",
+        max_date: "2026-06-06",
+        creation_date: "2026-06-01",
+      },
+    ],
   },
   {
     id: 2,
@@ -22,6 +31,15 @@ const ANIMALS: IAnimal[] = [
     isRecipient: true,
     isDonor: false,
     image: require("../../assets/default-horse.jpg"),
+    fertility_ranges: [
+      {
+        id: 1,
+        subject: "Babieca",
+        min_date: "2026-06-01",
+        max_date: "2026-06-06",
+        creation_date: "2026-06-01",
+      },
+    ],
   },
   {
     id: 3,
@@ -33,37 +51,16 @@ const ANIMALS: IAnimal[] = [
     isRecipient: false,
     isDonor: true,
     image: require("../../assets/default-horse.jpg"),
+    fertility_ranges: [
+      {
+        id: 1,
+        subject: "Malvina",
+        min_date: "2026-06-01",
+        max_date: "2026-06-06",
+        creation_date: "2026-06-01",
+      },
+    ],
   },
 ];
 
-const DATE_RANGES: IDateRange[] = [
-  {
-    id: 1,
-    subject: {
-      name: "Malvina",
-      image: require("../../assets/default-horse.jpg"),
-    },
-    min_date: "2026-06-01",
-    max_date: "2026-06-06",
-  },
-  {
-    id: 2,
-    subject: {
-      name: "Babieca",
-      image: require("../../assets/default-horse.jpg"),
-    },
-    min_date: "2026-06-01",
-    max_date: "2026-06-06",
-  },
-  {
-    id: 3,
-    subject: {
-      name: "Princesa",
-      image: require("../../assets/default-horse.jpg"),
-    },
-    min_date: "2026-06-01",
-    max_date: "2026-06-06",
-  },
-];
-
-export { ANIMALS, DATE_RANGES };
+export { ANIMALS };
