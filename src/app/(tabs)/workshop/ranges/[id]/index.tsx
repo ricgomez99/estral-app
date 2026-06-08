@@ -12,18 +12,19 @@ export default function RangeDetails() {
   const { data: range, isLoading } = useQuery({
     queryKey: ["range", Number(id)],
     queryFn: () => getRangeById(Number(id)),
+    enabled: !!id,
   });
 
   const handleUpdatePress = () => {
     router.push(`/workshop/ranges/${id}/update`);
   };
 
-  const formattedMinDate = DateService.formatToLongDate(range?.min_date!, "en");
-  const formattedMaxDate = DateService.formatToLongDate(range?.max_date!, "en");
-
   if (isLoading) {
     return <SpinLoader />;
   }
+
+  const formattedMinDate = DateService.formatToLongDate(range?.min_date, "en");
+  const formattedMaxDate = DateService.formatToLongDate(range?.max_date, "en");
 
   return (
     <DetailsLayout handlePressUpdate={handleUpdatePress}>

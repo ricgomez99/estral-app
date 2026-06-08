@@ -1,13 +1,12 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import { TextInput, StyleSheet } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import Select from "../Select";
 import { OptionType } from "@/types/picker-types";
 
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
-  inputPlaceHolder: string;
+  inputPlaceHolder: string | undefined;
   inputType: "input" | "picker";
   pickerOptions?: OptionType[];
 }

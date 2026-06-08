@@ -1,6 +1,5 @@
 import { IAnimal, IDateRange } from "@/types/mock-types";
 
-const DATE = new Date().toISOString();
 const ANIMALS: IAnimal[] = [
   {
     id: 1,
@@ -44,8 +43,8 @@ const DATE_RANGES: IDateRange[] = [
       name: "Malvina",
       image: require("../../assets/default-horse.jpg"),
     },
-    min_date: DATE,
-    max_date: DATE,
+    min_date: "2026-06-01",
+    max_date: "2026-06-06",
   },
   {
     id: 2,
@@ -53,8 +52,8 @@ const DATE_RANGES: IDateRange[] = [
       name: "Babieca",
       image: require("../../assets/default-horse.jpg"),
     },
-    min_date: DATE,
-    max_date: DATE,
+    min_date: "2026-06-01",
+    max_date: "2026-06-06",
   },
   {
     id: 3,
@@ -62,8 +61,8 @@ const DATE_RANGES: IDateRange[] = [
       name: "Princesa",
       image: require("../../assets/default-horse.jpg"),
     },
-    min_date: DATE,
-    max_date: DATE,
+    min_date: "2026-06-01",
+    max_date: "2026-06-06",
   },
 ];
 
