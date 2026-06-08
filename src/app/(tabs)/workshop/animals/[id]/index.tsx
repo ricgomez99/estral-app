@@ -1,0 +1,80 @@
+import { useLocalSearchParams } from "expo-router";
+import { View, Text, StyleSheet } from "react-native";
+import { Image } from "expo-image";
+import Chip from "@/components/shared/Chip";
+import { CardHeader, GridItem } from "@/components/Details";
+import { useQuery } from "@tanstack/react-query";
+import { getAnimalById } from "@/utils/mock-functions";
+import SpinLoader from "@/components/shared/SpinLoader";
+import { useRouter } from "expo-router";
+import { DetailsLayout } from "@/layouts";
+
+export default function AnimalDetails() {
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const { data: subject, isLoading } = useQuery({
+    queryKey: ["animal", Number(id)],
+    queryFn: () => getAnimalById(Number(id)),
+    enabled: !!id,
+  });
+
+  const chipText =
+    subject?.isDonor && !subject.isRecipient ? "Donor" : "Recipient";
+
+  const handlePressUpdate = () => {
+    router.push(`/workshop/animals/${id}/update`);
+  };
+
+  if (isLoading) {
+    return <SpinLoader />;
+  }
+
+  return (
+    <DetailsLayout handlePressUpdate={handlePressUpdate}>
+      <Image style={styles.image} source={subject?.image} />
+      <View style={styles.infoContainer}>
+        <CardHeader title={subject?.name} badgeText={subject?.type} />
+        <View style={styles.grid}>
+          <GridItem label={true} labelText="Age">
+            <Text style={styles.gridItemText}>{subject?.age}</Text>
+          </GridItem>
+          <GridItem label={true} labelText="Sex">
+            <Text style={styles.gridItemText}>{subject?.sex}</Text>
+          </GridItem>
+          <GridItem label={false}>
+            <Chip chipText={chipText} active={subject?.isDonor} />
+          </GridItem>
+          <GridItem label={true} labelText="Chip ID">
+            <Text style={styles.gridItemText}>{subject?.microchipId}</Text>
+          </GridItem>
+        </View>
+      </View>
+    </DetailsLayout>
+  );
+}
+
+const styles = StyleSheet.create({
+  image: {
+    width: "100%",
+    height: 200,
+    borderTopStartRadius: 8,
+    borderTopEndRadius: 8,
+  },
+
+  infoContainer: {
+    paddingVertical: 16,
+    paddingHorizontal: 5,
+  },
+
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  gridItemText: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+});

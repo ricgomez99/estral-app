@@ -19,7 +19,7 @@ export default function useGenericUpdate<
     mutationFn: mutateFn,
     onMutate: async (updatedItem) => {
       await queryClient.cancelQueries({ queryKey });
-      const prevoisData = queryClient.getQueryData<TItem[]>(queryKey);
+      const previousData = queryClient.getQueryData<TItem[]>(queryKey);
       queryClient.setQueryData<TItem[]>(queryKey, (oldData) => {
         if (!oldData) return [];
 
@@ -28,12 +28,12 @@ export default function useGenericUpdate<
         );
       });
 
-      return { prevoisData };
+      return { previousData };
     },
 
-    onError: (err, updatedIten, contex) => {
-      if (contex?.prevoisData) {
-        queryClient.setQueryData(queryKey, contex.prevoisData);
+    onError: (err, updatedItem, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKey, context.previousData);
       }
     },
 

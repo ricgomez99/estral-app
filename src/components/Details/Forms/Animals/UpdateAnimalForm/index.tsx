@@ -6,21 +6,22 @@ import { OptionType } from "@/types/picker-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
 import { Alert } from "react-native";
+import { useRouter } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
-  onSuccessClose: () => void;
 }
 
-export default function UpdateAnimalForm({
-  defaultData,
-  onSuccessClose,
-}: IUpdateFormProps) {
+export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<IAnimal>({ defaultValues: defaultData });
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { mutate: updateAnimal } = useGenericUpdate<IAnimal>({
     queryKey: ["animals"],
@@ -57,11 +58,15 @@ export default function UpdateAnimalForm({
         id: defaultData?.id,
       },
       {
-        onSuccess: () => {
-          onSuccessClose();
+        onSuccess: (updatedAnimal) => {
+          if (updatedAnimal) {
+            queryClient.setQueryData(["animal", defaultData.id], updatedAnimal);
+          }
+
           Alert.alert(
             "Animal Updated!",
             `${data.name} has been saved successfully`,
+            [{ text: "OK", onPress: () => router.back() }],
           );
         },
 

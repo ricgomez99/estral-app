@@ -26,41 +26,26 @@ const VIEW_TABS: TabProps[] = [
 
 const DRAWER_SCREENS: DrawerScreenProps[] = [
   {
-    screenName: "animals/index",
+    screenName: "animals",
     options: {
       drawerLabel: "Animals",
     },
   },
   {
-    screenName: "ranges/index",
+    screenName: "ranges",
     options: {
       drawerLabel: "Ranges",
     },
   },
   {
-    screenName: "calculations/index",
+    screenName: "calculations",
     options: {
       drawerLabel: "Calculations",
     },
   },
-  {
-    screenName: "animals/[id]",
-    options: {
-      drawerItemStyle: { display: "none" },
-    },
-  },
-  {
-    screenName: "ranges/[id]",
-    options: {
-      drawerItemStyle: { display: "none" },
-    },
-  },
-  {
-    screenName: "calculations/[id]",
-    options: {
-      drawerItemStyle: { display: "none" },
-    },
-  },
 ];
 
-export { VIEW_TABS, DRAWER_SCREENS };
+const DATE_ES_FORMAT = "d 'de' MMMM 'de' yyyy";
+const DATE_EN_FORMAT = "MMMM do, yyyy";
+
+export { VIEW_TABS, DRAWER_SCREENS, DATE_EN_FORMAT, DATE_ES_FORMAT };
