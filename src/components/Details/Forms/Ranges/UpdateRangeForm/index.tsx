@@ -1,36 +1,30 @@
 import Form from "@/components/shared/Form";
 import FormController from "@/components/shared/FormController";
 import { useForm } from "react-hook-form";
-import useRawAnimalsData from "@/hooks/useRawAnimalsData";
-import useGenericUpdate from "@/hooks/useGenericUpdate";
-import { OptionType } from "@/types/picker-types";
+import { IFertilityRange } from "@/types/mock-types";
 
 interface IFormProps {
-  defaultAnimal: string | undefined;
+  defaultData: IFertilityRange | undefined;
 }
 
-export default function UpdateRangeForm({ defaultAnimal }: IFormProps) {
+export default function UpdateRangeForm({ defaultData }: IFormProps) {
   const { handleSubmit, control } = useForm();
-  const { animals } = useRawAnimalsData();
-
-  const animalNames: OptionType[] | undefined =
-    animals &&
-    animals.map((animal) => {
-      return {
-        label: animal.name,
-        value: animal.name.toLowerCase(),
-      } as OptionType;
-    });
 
   const submit = () => {};
+
   return (
     <Form onSubmit={handleSubmit(submit)} headerTitle="Update Range">
       <FormController
         control={control}
-        controllerName="Related Animal"
-        inputType="picker"
-        inputPlaceHolder={defaultAnimal}
-        pickerOptions={animalNames}
+        controllerName="min_date"
+        inputType="input"
+        inputPlaceHolder={defaultData?.min_date}
+      />
+      <FormController
+        control={control}
+        controllerName="max_date"
+        inputType="input"
+        inputPlaceHolder={defaultData?.max_date}
       />
     </Form>
   );

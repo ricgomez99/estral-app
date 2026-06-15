@@ -11,7 +11,7 @@ export default function RangesLayout() {
         }}
       />
       <Stack.Screen
-        name="[id]/update"
+        name="[id]/[rangeId]"
         options={{
           headerShadowVisible: false,
           presentation: "modal",

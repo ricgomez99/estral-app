@@ -51,7 +51,7 @@ export default function Ranges() {
               />
             </LinkPressable>
           )}
-          keyExtractor={(item) => String(item.id)}
+          keyExtractor={(item) => item.id as string}
           refreshing={isRefetching}
           onRefresh={refetch}
           contentContainerStyle={{ flexGrow: 1 }}

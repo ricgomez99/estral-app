@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { View, Text, StyleSheet } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getAnimalById } from "@/utils/mock-functions";
@@ -7,19 +7,15 @@ import { DetailsLayout } from "@/layouts";
 import { DateService } from "@/lib";
 import { FlatList } from "react-native";
 import ListContainer from "@/components/shared/ListContainer";
+import { RangeCard } from "@/components/Details";
 
 export default function RangeDetails() {
   const { id } = useLocalSearchParams();
-  const router = useRouter();
   const { data: animal, isLoading } = useQuery({
-    queryKey: ["animal-range", Number(id)],
-    queryFn: () => getAnimalById(Number(id)),
+    queryKey: ["animal-ranges", id],
+    queryFn: () => getAnimalById(id as string),
     enabled: !!id,
   });
-
-  const handleUpdatePress = () => {
-    router.push(`/workshop/ranges/${id}/update`);
-  };
 
   if (isLoading) {
     return <SpinLoader />;
@@ -42,11 +38,13 @@ export default function RangeDetails() {
         <FlatList
           data={ranges}
           renderItem={({ item }) => (
-            <View>
-              <Text>{item.min_date}</Text>
-              <Text>{item.max_date}</Text>
-              <Text>{item.creation_date}</Text>
-            </View>
+            <RangeCard
+              max_date={item.max_date}
+              min_date={item.min_date}
+              creation_date={item.creation_date}
+              rangeId={item.id}
+              id={Number(id)}
+            />
           )}
           keyExtractor={(item) => String(item.id)}
           contentContainerStyle={{ flexGrow: 1 }}
