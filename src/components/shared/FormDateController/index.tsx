@@ -1,19 +1,21 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
-import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
+import { Platform } from "react-native";
 import { useState } from "react";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import { DateService } from "@/lib";
+import DateInput from "../DateInput";
 
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
-  placeHolderText: string | undefined;
+  labelText: string | undefined;
 }
 
 export default function FormDateController<
   T extends FieldValues = FieldValues,
->({ control, controllerName, placeHolderText }: IControllerProps<T>) {
+>({ control, controllerName, labelText }: IControllerProps<T>) {
   const [showDate, setShowDate] = useState(false);
   const handleShowDate = () => {
     setShowDate(true);
@@ -24,9 +26,12 @@ export default function FormDateController<
       control={control}
       render={({ field: { onChange, value } }) => {
         const defaultDate =
-          (value as unknown) instanceof Date ? (value as Date) : new Date();
+          typeof value === "string"
+            ? (DateService.parseToDate(value) ?? new Date())
+            : value || new Date();
 
         const defaultDisplay = Platform.OS === "ios" ? "spinner" : "calendar";
+        const formattedValue = DateService.formatToStoredDate(defaultDate);
 
         const handleDateChange = (
           event: DateTimePickerEvent,
@@ -37,49 +42,23 @@ export default function FormDateController<
         };
 
         return (
-          <View style={styles.container}>
-            <Pressable style={styles.fakeInput} onPress={handleShowDate}>
-              // Crear metodo para formatear fechas con DateService
-              <Text style={styles.inputText}>Seleccione la fecha</Text>
-            </Pressable>
+          <DateInput
+            handlePress={handleShowDate}
+            inputText={formattedValue}
+            addLabel={true}
+            labelText={labelText}>
             {showDate && (
               <DateTimePicker
                 value={defaultDate}
                 mode="date"
                 display={defaultDisplay}
                 onChange={handleDateChange}
-                placeholderText={placeHolderText}
               />
             )}
-          </View>
+          </DateInput>
         );
       }}
       name={controllerName}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 6,
-  },
-  fakeInput: {
-    height: 48,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    justifyContent: "center",
-    backgroundColor: "#fff",
-  },
-  inputText: {
-    fontSize: 16,
-    color: "#333",
-  },
-});

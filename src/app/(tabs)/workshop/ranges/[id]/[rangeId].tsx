@@ -29,5 +29,5 @@ export default function UpdateRangeScreen() {
     return <SpinLoader />;
   }
 
-  return <UpdateRangeForm defaultData={range} />;
+  return <UpdateRangeForm defaultData={range} animalId={id as string} />;
 }

@@ -19,14 +19,19 @@ export default function useGenericUpdate<
     mutationFn: mutateFn,
     onMutate: async (updatedItem) => {
       await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData<TItem[]>(queryKey);
-      queryClient.setQueryData<TItem[]>(queryKey, (oldData) => {
-        if (!oldData) return [];
+      const previousData = queryClient.getQueryData<
+        TItem[] | Record<string, unknown>
+      >(queryKey);
+      queryClient.setQueryData<TItem[] | Record<string, unknown>>(
+        queryKey,
+        (oldData) => {
+          if (!oldData || !Array.isArray(oldData)) return oldData;
 
-        return oldData.map((item) =>
-          item.id === updatedItem.id ? { ...item, ...updatedItem } : item,
-        );
-      });
+          return oldData.map((item) =>
+            item.id === updatedItem.id ? { ...item, ...updatedItem } : item,
+          );
+        },
+      );
 
       return { previousData };
     },

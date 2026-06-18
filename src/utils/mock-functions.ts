@@ -1,4 +1,4 @@
-import { IAnimal } from "@/types/mock-types";
+import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { ANIMALS } from "./mocks";
 
 const addAnimalMock = (newAnimal: IAnimal) => ANIMALS.push(newAnimal);
@@ -14,12 +14,6 @@ const getAnimalById = async (id: string): Promise<IAnimal | undefined> => {
   return ANIMALS.find((animal) => animal.id === id);
 };
 
-// const getRanges = async (): Promise<IDateRange[]> => {
-//   await new Promise((resolve) => setTimeout(resolve, 800));
-
-//   return DATE_RANGES;
-// };
-
 const getRangeById = async (animalId: string, rangeId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -29,4 +23,42 @@ const getRangeById = async (animalId: string, rangeId: string) => {
   return range;
 };
 
-export { addAnimalMock, getAnimalsMock, getAnimalById, getRangeById };
+const updateAnimalRange = async (range: IFertilityRange, animalId: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const animalIndex = ANIMALS.findIndex((a) => a.id === animalId);
+
+  if (animalIndex === -1) {
+    throw new Error(`Not found animal with id: ${animalId}`);
+  }
+
+  const animal = ANIMALS[animalIndex];
+  const rangeIndex = animal.fertility_ranges.findIndex(
+    (r) => r.id === range?.id,
+  );
+
+  if (rangeIndex !== -1) {
+    const updatedRanges = [...animal.fertility_ranges];
+    updatedRanges[rangeIndex] = {
+      ...updatedRanges[rangeIndex],
+      ...range,
+    };
+
+    ANIMALS[animalIndex] = {
+      ...animal,
+      fertility_ranges: updatedRanges,
+    };
+
+    return ANIMALS[animalIndex].fertility_ranges[rangeIndex];
+  }
+
+  return undefined;
+};
+
+export {
+  addAnimalMock,
+  getAnimalsMock,
+  getAnimalById,
+  getRangeById,
+  updateAnimalRange,
+};

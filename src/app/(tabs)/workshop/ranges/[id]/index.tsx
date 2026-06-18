@@ -8,6 +8,7 @@ import { DateService } from "@/lib";
 import { FlatList } from "react-native";
 import ListContainer from "@/components/shared/ListContainer";
 import { RangeCard } from "@/components/Details";
+import { useMemo } from "react";
 
 export default function RangeDetails() {
   const { id } = useLocalSearchParams();
@@ -17,18 +18,19 @@ export default function RangeDetails() {
     enabled: !!id,
   });
 
-  if (isLoading) {
-    return <SpinLoader />;
-  }
+  const ranges = useMemo(() => {
+    if (!animal) return [];
 
-  const ranges =
-    animal &&
-    animal.fertility_ranges.map((range) => ({
+    return animal.fertility_ranges.map((range) => ({
       ...range,
       min_date: DateService.formatToLongDate(range.min_date, "en"),
       max_date: DateService.formatToLongDate(range.max_date, "en"),
     }));
+  }, [animal]);
 
+  if (isLoading) {
+    return <SpinLoader />;
+  }
   return (
     <DetailsLayout imageSource={animal?.image} showUpdateButton={false}>
       <View style={styles.container}>
@@ -37,6 +39,7 @@ export default function RangeDetails() {
       <ListContainer>
         <FlatList
           data={ranges}
+          extraData={ranges}
           renderItem={({ item }) => (
             <RangeCard
               max_date={item.max_date}
