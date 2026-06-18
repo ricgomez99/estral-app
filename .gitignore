@@ -42,3 +42,6 @@ yarn-error.*
 
 # local scripts
 scripts/
+
+# local ESLint output
+eslint-results.txt

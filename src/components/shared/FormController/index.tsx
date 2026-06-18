@@ -27,7 +27,7 @@ export default function FormController<T extends FieldValues = FieldValues>({
             placeholder={inputPlaceHolder}
             onBlur={onBlur}
             onChangeText={onChange}
-            value={value.toString()}
+            value={value?.toString()}
             style={styles.input}
           />
         ) : (

@@ -1,37 +1,98 @@
 import Form from "@/components/shared/Form";
-import FormController from "@/components/shared/FormController";
+import FormDateController from "@/components/shared/FormDateController";
 import { useForm } from "react-hook-form";
-import useRawAnimalsData from "@/hooks/useRawAnimalsData";
+import { IAnimal, IFertilityRange } from "@/types/mock-types";
+import { View, StyleSheet, Alert } from "react-native";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
-import { OptionType } from "@/types/picker-types";
-
+import { updateAnimalRange } from "@/utils/mock-functions";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 interface IFormProps {
-  defaultAnimal: string | undefined;
+  defaultData: IFertilityRange | undefined;
+  animalId: string;
 }
 
-export default function UpdateRangeForm({ defaultAnimal }: IFormProps) {
-  const { handleSubmit, control } = useForm();
-  const { animals } = useRawAnimalsData();
+export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const animalNames: OptionType[] | undefined =
-    animals &&
-    animals.map((animal) => {
-      return {
-        label: animal.name,
-        value: animal.name.toLowerCase(),
-      } as OptionType;
-    });
+  const { handleSubmit, control } = useForm<IFertilityRange>({
+    defaultValues: defaultData,
+  });
 
-  const submit = () => {};
+  const { mutate: updateRange } = useGenericUpdate<IFertilityRange>({
+    queryKey: ["animal-ranges", animalId],
+    mutateFn: (range: IFertilityRange) => updateAnimalRange(range, animalId),
+  });
+
+  const submit = (data: IFertilityRange) => {
+    updateRange(
+      { ...data, id: defaultData?.id as string },
+      {
+        onSuccess: (updatedRange) => {
+          if (updatedRange) {
+            queryClient.setQueryData<IAnimal>(
+              ["animal-ranges", animalId],
+              (oldData) => {
+                if (!oldData) return oldData;
+                const nextRanges = oldData?.fertility_ranges.map((r) =>
+                  r.id === updatedRange.id ? updatedRange : r,
+                );
+
+                return {
+                  ...oldData,
+                  fertility_ranges: nextRanges,
+                };
+              },
+            );
+
+            queryClient.setQueryData(
+              ["range", animalId, updatedRange.id],
+              updatedRange,
+            );
+          }
+          queryClient.invalidateQueries({
+            queryKey: ["animal-ranges", animalId],
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ["range", animalId, updatedRange.id],
+          });
+
+          Alert.alert(
+            "Animal Updated!",
+            `${data.subject} range has been saved successfully`,
+            [{ text: "OK", onPress: () => router.back() }],
+          );
+        },
+        onError: (error) => {
+          Alert.alert("Error", `Unable to process changes, error: ${error}`);
+        },
+      },
+    );
+  };
+
   return (
     <Form onSubmit={handleSubmit(submit)} headerTitle="Update Range">
-      <FormController
-        control={control}
-        controllerName="Related Animal"
-        inputType="picker"
-        inputPlaceHolder={defaultAnimal}
-        pickerOptions={animalNames}
-      />
+      <View style={styles.wrapper}>
+        <FormDateController
+          control={control}
+          controllerName="min_date"
+          labelText="Min Date Range"
+        />
+        <FormDateController
+          control={control}
+          controllerName="max_date"
+          labelText="Max Date Range"
+        />
+      </View>
     </Form>
   );
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+});

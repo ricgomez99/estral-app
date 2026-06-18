@@ -19,6 +19,9 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router",
+      "@react-native-community/datetimepicker"
+    ]
   }
 }

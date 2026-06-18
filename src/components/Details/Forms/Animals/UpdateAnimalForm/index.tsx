@@ -5,7 +5,7 @@ import { IAnimal } from "@/types/mock-types";
 import { OptionType } from "@/types/picker-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
-import { Alert } from "react-native";
+import { Alert, Text } from "react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -18,7 +18,9 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IAnimal>({ defaultValues: defaultData });
+  } = useForm<IAnimal>({
+    defaultValues: defaultData,
+  });
 
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -85,6 +87,7 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
         inputPlaceHolder="Name"
         inputType="input"
       />
+      {errors.name && <Text>{errors.name.message}</Text>}
       <FormController
         control={control}
         controllerName="age"

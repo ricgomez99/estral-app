@@ -13,8 +13,7 @@ import SpinLoader from "@/components/shared/SpinLoader";
 export default function Animals() {
   const [query, setQuery] = useState("");
   const deferredValue = useDeferredValue(query);
-  const { animals, isLoading, error, isRefetching, refetch } =
-    useRawAnimalsData();
+  const { animals, isLoading, isRefetching, refetch } = useRawAnimalsData();
 
   const filteredData = useMemo(() => {
     if (!animals) return [];
@@ -52,7 +51,7 @@ export default function Animals() {
               />
             </LinkPressable>
           )}
-          keyExtractor={(item) => String(item.id)}
+          keyExtractor={(item) => item.id as string}
           refreshing={isRefetching}
           onRefresh={refetch}
           contentContainerStyle={{ flexGrow: 1 }}

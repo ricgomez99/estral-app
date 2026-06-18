@@ -2,29 +2,42 @@ import { View, StyleSheet } from "react-native";
 import { PrimaryButton } from "@/components/shared/Buttons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CustomHeader } from "@/components/Details";
+import { Image } from "expo-image";
+import { useRouter, HrefObject } from "expo-router";
 
 interface ILayoutProps {
   children: React.ReactNode;
-  handlePressUpdate: () => void;
+  updateRoute?: string | HrefObject;
+  imageSource: string | undefined;
+  showUpdateButton?: boolean;
 }
 
 export default function DetailsLayout({
   children,
-  handlePressUpdate,
+  updateRoute = "",
+  imageSource,
+  showUpdateButton = true,
 }: ILayoutProps) {
   const { top } = useSafeAreaInsets();
+  const router = useRouter();
+  const handlePressUpdate = () => {
+    router.push(updateRoute);
+  };
 
   return (
     <View style={[styles.detailsContainer, { marginTop: top > 0 ? top : 10 }]}>
       <CustomHeader />
+      <Image style={styles.image} source={imageSource} />
       {children}
-      <View style={styles.buttonsContainer}>
-        <PrimaryButton
-          title="Update"
-          handleClick={handlePressUpdate}
-          type="normal"
-        />
-      </View>
+      {showUpdateButton && (
+        <View style={styles.buttonsContainer}>
+          <PrimaryButton
+            title="Update"
+            handleClick={handlePressUpdate}
+            type="normal"
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -42,5 +55,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 5,
     marginVertical: 12,
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    borderTopStartRadius: 8,
+    borderTopEndRadius: 8,
   },
 });

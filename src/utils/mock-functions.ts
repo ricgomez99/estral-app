@@ -1,5 +1,5 @@
-import { IAnimal, IDateRange } from "@/types/mock-types";
-import { ANIMALS, DATE_RANGES } from "./mocks";
+import { IAnimal, IFertilityRange } from "@/types/mock-types";
+import { ANIMALS } from "./mocks";
 
 const addAnimalMock = (newAnimal: IAnimal) => ANIMALS.push(newAnimal);
 const getAnimalsMock = async (): Promise<IAnimal[]> => {
@@ -8,32 +8,57 @@ const getAnimalsMock = async (): Promise<IAnimal[]> => {
   return ANIMALS;
 };
 
-const getAnimalById = async (
-  id: string | number,
-): Promise<IAnimal | undefined> => {
+const getAnimalById = async (id: string): Promise<IAnimal | undefined> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 
   return ANIMALS.find((animal) => animal.id === id);
 };
 
-const getRanges = async (): Promise<IDateRange[]> => {
+const getRangeById = async (animalId: string, rangeId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 
-  return DATE_RANGES;
+  const animal = ANIMALS.find((animal) => animal.id === animalId);
+  const range = animal?.fertility_ranges.find((range) => range.id === rangeId);
+
+  return range;
 };
 
-const getRangeById = async (id: string | number) => {
-  await new Promise((resolve) => setTimeout(resolve, 800));
+const updateAnimalRange = async (range: IFertilityRange, animalId: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
-  return DATE_RANGES.find((range) => range.id === id);
+  const animalIndex = ANIMALS.findIndex((a) => a.id === animalId);
+
+  if (animalIndex === -1) {
+    throw new Error(`Not found animal with id: ${animalId}`);
+  }
+
+  const animal = ANIMALS[animalIndex];
+  const rangeIndex = animal.fertility_ranges.findIndex(
+    (r) => r.id === range?.id,
+  );
+
+  if (rangeIndex !== -1) {
+    const updatedRanges = [...animal.fertility_ranges];
+    updatedRanges[rangeIndex] = {
+      ...updatedRanges[rangeIndex],
+      ...range,
+    };
+
+    ANIMALS[animalIndex] = {
+      ...animal,
+      fertility_ranges: updatedRanges,
+    };
+
+    return ANIMALS[animalIndex].fertility_ranges[rangeIndex];
+  }
+
+  return undefined;
 };
-const addRange = (range: IDateRange) => DATE_RANGES.push(range);
 
 export {
   addAnimalMock,
   getAnimalsMock,
   getAnimalById,
-  getRanges,
   getRangeById,
-  addRange,
+  updateAnimalRange,
 };

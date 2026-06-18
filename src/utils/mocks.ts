@@ -1,8 +1,8 @@
-import { IAnimal, IDateRange } from "@/types/mock-types";
+import { IAnimal } from "@/types/mock-types";
 
 const ANIMALS: IAnimal[] = [
   {
-    id: 1,
+    id: "1",
     name: "Princesa",
     age: 5,
     type: "horse",
@@ -11,9 +11,18 @@ const ANIMALS: IAnimal[] = [
     isRecipient: true,
     isDonor: false,
     image: require("../../assets/default-horse.jpg"),
+    fertility_ranges: [
+      {
+        id: "101",
+        subject: "Princesa",
+        min_date: "2026-06-01",
+        max_date: "2026-06-06",
+        creation_date: "2026-06-01",
+      },
+    ],
   },
   {
-    id: 2,
+    id: "2",
     name: "Babieca",
     age: 7,
     type: "horse",
@@ -22,9 +31,18 @@ const ANIMALS: IAnimal[] = [
     isRecipient: true,
     isDonor: false,
     image: require("../../assets/default-horse.jpg"),
+    fertility_ranges: [
+      {
+        id: "101",
+        subject: "Babieca",
+        min_date: "2026-06-01",
+        max_date: "2026-06-06",
+        creation_date: "2026-06-01",
+      },
+    ],
   },
   {
-    id: 3,
+    id: "3",
     name: "Malvina",
     age: 4,
     type: "donkey",
@@ -33,37 +51,16 @@ const ANIMALS: IAnimal[] = [
     isRecipient: false,
     isDonor: true,
     image: require("../../assets/default-horse.jpg"),
+    fertility_ranges: [
+      {
+        id: "101",
+        subject: "Malvina",
+        min_date: "2026-06-01",
+        max_date: "2026-06-06",
+        creation_date: "2026-06-01",
+      },
+    ],
   },
 ];
 
-const DATE_RANGES: IDateRange[] = [
-  {
-    id: 1,
-    subject: {
-      name: "Malvina",
-      image: require("../../assets/default-horse.jpg"),
-    },
-    min_date: "2026-06-01",
-    max_date: "2026-06-06",
-  },
-  {
-    id: 2,
-    subject: {
-      name: "Babieca",
-      image: require("../../assets/default-horse.jpg"),
-    },
-    min_date: "2026-06-01",
-    max_date: "2026-06-06",
-  },
-  {
-    id: 3,
-    subject: {
-      name: "Princesa",
-      image: require("../../assets/default-horse.jpg"),
-    },
-    min_date: "2026-06-01",
-    max_date: "2026-06-06",
-  },
-];
-
-export { ANIMALS, DATE_RANGES };
+export { ANIMALS };
