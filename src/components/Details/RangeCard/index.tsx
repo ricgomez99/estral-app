@@ -45,7 +45,7 @@ export default function RangeCard({
         <Pressable style={styles.button} onPress={handlePressUpdate}>
           <Feather size={24} name="edit-2" color="#e1e1e1" />
         </Pressable>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.button} onPress={handlePressDelete}>
           <Feather size={24} name="x-circle" color="#e1e1e1" />
         </Pressable>
       </View>

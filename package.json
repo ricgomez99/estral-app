@@ -37,6 +37,10 @@
     "@tanstack/eslint-plugin-query": "^5.101.0",
     "@types/lodash": "^4.17.24",
     "@types/react": "~19.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "@typescript-eslint/parser": "^8.61.1",
+    "eslint": "^10.5.0",
+    "eslint-plugin-unused-imports": "^4.4.1",
     "typescript": "~5.9.2"
   },
   "private": true

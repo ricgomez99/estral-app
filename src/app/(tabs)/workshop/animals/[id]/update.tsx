@@ -5,7 +5,7 @@ import { UpdateAnimalForm } from "@/components/Details/Forms";
 
 export default function UpdateAnimalScreen() {
   const { id } = useLocalSearchParams();
-  const { data: subject, isLoading } = useQuery({
+  const { data: subject } = useQuery({
     queryKey: ["animal", id],
     queryFn: () => getAnimalById(id as string),
     enabled: !!id,

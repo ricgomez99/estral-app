@@ -13,8 +13,7 @@ import SpinLoader from "@/components/shared/SpinLoader";
 export default function Animals() {
   const [query, setQuery] = useState("");
   const deferredValue = useDeferredValue(query);
-  const { animals, isLoading, error, isRefetching, refetch } =
-    useRawAnimalsData();
+  const { animals, isLoading, isRefetching, refetch } = useRawAnimalsData();
 
   const filteredData = useMemo(() => {
     if (!animals) return [];

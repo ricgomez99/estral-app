@@ -13,8 +13,7 @@ import useRawAnimalsData from "@/hooks/useRawAnimalsData";
 export default function Ranges() {
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
-  const { animals, isLoading, isRefetching, refetch, error } =
-    useRawAnimalsData();
+  const { animals, isLoading, isRefetching, refetch } = useRawAnimalsData();
 
   const filteredData = useMemo(() => {
     if (!animals) return [];
