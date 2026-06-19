@@ -2,12 +2,12 @@ import Form from "@/components/shared/Form";
 import FormController from "@/components/shared/FormController";
 import { useForm } from "react-hook-form";
 import { IAnimal } from "@/types/mock-types";
-import { OptionType } from "@/types/picker-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
 import { Alert, Text } from "react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { sexOptions, typeOptions } from "@/utils/consts";
 
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
@@ -38,17 +38,6 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
       return ANIMALS[index];
     },
   });
-
-  const sexOptions: OptionType[] = [
-    { label: "Male", value: "Male" },
-    { label: "Female", value: "Female" },
-  ];
-
-  const typeOptions: OptionType[] = [
-    { label: "Donkey", value: "donkey" },
-    { label: "Horse", value: "horse" },
-    { label: "Zebra", value: "zebra" },
-  ];
 
   const submit = (data: IAnimal) => {
     // Provitional Update Process

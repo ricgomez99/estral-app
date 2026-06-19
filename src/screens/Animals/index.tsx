@@ -1,4 +1,4 @@
-import { FlatList } from "react-native";
+import { FlatList, Pressable, View, Text, StyleSheet } from "react-native";
 import Card from "@/components/shared/Card";
 import ListContainer from "@/components/shared/ListContainer";
 import SearchBar from "@/components/shared/SearchBar";
@@ -9,10 +9,12 @@ import LinkPressable from "@/components/shared/LinkPressable";
 import useRawAnimalsData from "@/hooks/useRawAnimalsData";
 import EmptyList from "@/components/shared/EmptyList";
 import SpinLoader from "@/components/shared/SpinLoader";
+import { useRouter } from "expo-router";
 
 export default function Animals() {
   const [query, setQuery] = useState("");
   const deferredValue = useDeferredValue(query);
+  const router = useRouter();
   const { animals, isLoading, isRefetching, refetch } = useRawAnimalsData();
 
   const filteredData = useMemo(() => {
@@ -31,6 +33,12 @@ export default function Animals() {
     setQuery(newText);
   };
 
+  const handleCreatePress = () => {
+    router.push({
+      pathname: "/workshop/animals/create",
+    });
+  };
+
   if (isLoading) {
     return <SpinLoader />;
   }
@@ -38,7 +46,11 @@ export default function Animals() {
   return (
     <>
       <SearchBar value={query} handleChange={handleChange} />
-
+      <View>
+        <Pressable style={styles.createButton} onPress={handleCreatePress}>
+          <Text style={styles.createButtonText}>Add new range</Text>
+        </Pressable>
+      </View>
       <ListContainer>
         <FlatList
           data={filteredData}
@@ -62,3 +74,19 @@ export default function Animals() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  createButton: {
+    backgroundColor: "#111",
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 10,
+    borderRadius: 10,
+  },
+
+  createButtonText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#f9f9f9",
+  },
+});

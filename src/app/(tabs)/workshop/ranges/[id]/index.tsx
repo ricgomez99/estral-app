@@ -1,5 +1,5 @@
-import { useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getAnimalById } from "@/utils/mock-functions";
 import SpinLoader from "@/components/shared/SpinLoader";
@@ -12,6 +12,7 @@ import { useMemo } from "react";
 
 export default function RangeDetails() {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
   const { data: animal, isLoading } = useQuery({
     queryKey: ["animal-ranges", id],
     queryFn: () => getAnimalById(id as string),
@@ -28,6 +29,13 @@ export default function RangeDetails() {
     }));
   }, [animal]);
 
+  const handleCreatePress = () => {
+    router.push({
+      pathname: "/workshop/ranges/create",
+      params: { animalId: id },
+    });
+  };
+
   if (isLoading) {
     return <SpinLoader />;
   }
@@ -35,6 +43,11 @@ export default function RangeDetails() {
     <DetailsLayout imageSource={animal?.image} showUpdateButton={false}>
       <View style={styles.container}>
         <Text>{animal?.name}</Text>
+      </View>
+      <View>
+        <Pressable style={styles.createButton} onPress={handleCreatePress}>
+          <Text style={styles.createButtonText}>Add new range</Text>
+        </Pressable>
       </View>
       <ListContainer>
         <FlatList
@@ -52,6 +65,7 @@ export default function RangeDetails() {
           keyExtractor={(item) => String(item.id)}
           contentContainerStyle={{ flexGrow: 1 }}
           removeClippedSubviews={true}
+          ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
         />
       </ListContainer>
     </DetailsLayout>
@@ -61,5 +75,23 @@ export default function RangeDetails() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+  },
+
+  listSeparator: {
+    height: 16,
+  },
+
+  createButton: {
+    backgroundColor: "#111",
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 10,
+    borderRadius: 10,
+  },
+
+  createButtonText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#f9f9f9",
   },
 });

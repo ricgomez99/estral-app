@@ -1,3 +1,4 @@
+import { OptionType } from "@/types/picker-types";
 import { TabProps, DrawerScreenProps } from "@/types/tabs-types";
 
 const VIEW_TABS: TabProps[] = [
@@ -48,4 +49,22 @@ const DRAWER_SCREENS: DrawerScreenProps[] = [
 const DATE_ES_FORMAT = "d 'de' MMMM 'de' yyyy";
 const DATE_EN_FORMAT = "MMMM do, yyyy";
 
-export { VIEW_TABS, DRAWER_SCREENS, DATE_EN_FORMAT, DATE_ES_FORMAT };
+const sexOptions: OptionType[] = [
+  { label: "Male", value: "Male" },
+  { label: "Female", value: "Female" },
+];
+
+const typeOptions: OptionType[] = [
+  { label: "Donkey", value: "donkey" },
+  { label: "Horse", value: "horse" },
+  { label: "Zebra", value: "zebra" },
+];
+
+export {
+  VIEW_TABS,
+  DRAWER_SCREENS,
+  DATE_EN_FORMAT,
+  DATE_ES_FORMAT,
+  sexOptions,
+  typeOptions,
+};

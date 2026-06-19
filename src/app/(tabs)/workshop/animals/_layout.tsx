@@ -18,6 +18,14 @@ export default function AnimalsLayout() {
           title: "Edit Form",
         }}
       />
+      <Stack.Screen
+        name="create"
+        options={{
+          headerShadowVisible: false,
+          presentation: "modal",
+          title: "Add Animal Form",
+        }}
+      />
     </Stack>
   );
 }
