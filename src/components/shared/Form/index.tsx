@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { PrimaryButton } from "../Buttons";
 
 interface IFormProps {
@@ -10,40 +10,35 @@ interface IFormProps {
 export default function Form({ children, onSubmit, headerTitle }: IFormProps) {
   return (
     <View style={styles.form}>
-      <View style={styles.formHeader}>
-        <Text style={styles.formHeaderTitle}>{headerTitle}</Text>
+      <View style={styles.formContent}>
+        {/* <View style={styles.formHeader}>
+            <Text style={styles.formHeaderTitle}>{headerTitle}</Text>
+          </View> */}
+        <View style={styles.formContent}>{children}</View>
+        <PrimaryButton title="Submit" handleClick={onSubmit} type="normal" />
       </View>
-      <View style={styles.formContent}>{children}</View>
-      <PrimaryButton title="Submit" handleClick={onSubmit} type="normal" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   form: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    padding: 10,
-    gap: 16,
+    width: "100%",
     flex: 1,
+    backgroundColor: "#f9f9f9",
   },
   formHeader: {
     alignSelf: "flex-start",
     paddingVertical: 5,
-    justifyContent: "space-between",
   },
   formHeaderTitle: {
-    fontFamily: "inherit",
     fontWeight: "bold",
     fontSize: 24,
     color: "#2C3947",
   },
   formContent: {
     width: "100%",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 12,
+    marginBottom: 24,
+    gap: 16,
   },
 });

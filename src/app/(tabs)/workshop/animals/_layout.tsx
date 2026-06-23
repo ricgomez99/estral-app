@@ -11,7 +11,7 @@ export default function AnimalsLayout() {
         }}
       />
       <Stack.Screen
-        name="[id]/update"
+        name="[id]/update-animal"
         options={{
           headerShadowVisible: false,
           presentation: "modal",

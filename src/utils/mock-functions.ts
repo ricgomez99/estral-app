@@ -3,7 +3,23 @@ import { ANIMALS } from "./mocks";
 import { DateService } from "@/lib";
 import * as crypto from "expo-crypto";
 
-const addAnimalMock = (newAnimal: IAnimal) => ANIMALS.push(newAnimal);
+const addAnimalMock = async (
+  newAnimal: Omit<IAnimal, "id" | "fertility_ranges">,
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  let animals = ANIMALS;
+  if (!newAnimal) return;
+
+  const fullNewAnimal = {
+    ...newAnimal,
+    id: crypto.randomUUID(),
+    fertility_ranges: [],
+  };
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  animals = [...ANIMALS, fullNewAnimal];
+
+  return fullNewAnimal;
+};
 const getAnimalsMock = async (): Promise<IAnimal[]> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 

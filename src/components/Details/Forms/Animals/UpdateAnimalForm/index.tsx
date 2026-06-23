@@ -4,10 +4,11 @@ import { useForm } from "react-hook-form";
 import { IAnimal } from "@/types/mock-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
-import { Alert, Text } from "react-native";
+import { Text } from "react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { sexOptions, typeOptions } from "@/utils/consts";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
@@ -54,15 +55,21 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
             queryClient.setQueryData(["animal", defaultData.id], updatedAnimal);
           }
 
-          Alert.alert(
-            "Animal Updated!",
-            `${data.name} has been saved successfully`,
-            [{ text: "OK", onPress: () => router.back() }],
-          );
+          if (router.canGoBack()) router.back();
+
+          Toast.show({
+            type: "success",
+            text1: `${data.name} has been updated successfully`,
+            position: "top",
+          });
         },
 
-        onError: () => {
-          Alert.alert("Error", "Unable to process changes");
+        onError: (error) => {
+          Toast.show({
+            type: "error",
+            text1: `Unable to update animal, error: ${error}`,
+            position: "top",
+          });
         },
       },
     );

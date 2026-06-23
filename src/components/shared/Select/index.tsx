@@ -1,35 +1,118 @@
-import { Picker } from "@react-native-picker/picker";
-import { StyleSheet } from "react-native";
 import { OptionType } from "@/types/picker-types";
+import {
+  View,
+  Text,
+  Modal,
+  Pressable,
+  StyleSheet,
+  FlatList,
+} from "react-native";
+import { useState } from "react";
 
 interface ISelectProps {
   options: OptionType[] | undefined;
   value: string | number;
-  onChange: () => void;
+  onChange: (value: string | number) => void;
+  placeholder?: string;
 }
 
-export default function Select({ options, value, onChange }: ISelectProps) {
+export default function Select({
+  options,
+  value,
+  onChange,
+  placeholder,
+}: ISelectProps) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const selectOption = options?.find((option) => option.value === value);
+  const handleSelect = (itemValue: string | number) => {
+    onChange(itemValue);
+    setModalVisible(false);
+  };
+
   return (
-    <Picker
-      style={styles.picker}
-      selectedValue={value}
-      onValueChange={onChange}
-      mode="dropdown">
-      {options &&
-        options.map((option) => (
-          <Picker.Item label={option.label} value={option.value} />
-        ))}
-    </Picker>
+    <View style={styles.container}>
+      <Pressable
+        style={styles.selectButton}
+        onPress={() => setModalVisible(true)}>
+        <Text style={selectOption ? styles.textValue : styles.textPlaceholder}>
+          {selectOption ? selectOption.label : placeholder || "Select..."}
+        </Text>
+      </Pressable>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{placeholder || "Options"}</Text>
+            <FlatList
+              data={options}
+              keyExtractor={(item) => item.value.toString()}
+              renderItem={({ item }) => (
+                <Pressable
+                  style={[
+                    styles.optionItem,
+                    item.value === value && styles.optionItemSelected,
+                  ]}
+                  onPress={() => handleSelect(item.value)}>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      item.value === value && styles.optionTextSelected,
+                    ]}>
+                    {item.label}
+                  </Text>
+                </Pressable>
+              )}
+            />
+          </View>
+        </Pressable>
+      </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  picker: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: "#BBBB",
-    borderRadius: 8,
+  container: {
     width: "100%",
   },
+  selectButton: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+  },
+  textValue: { color: "#000", fontSize: 16 },
+  textPlaceholder: { color: "#999", fontSize: 16 },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "flex-end", // Hace que salga desde abajo tipo BottomSheet
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 20,
+    maxHeight: "50%",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  optionItem: {
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  optionItemSelected: { backgroundColor: "#f0f0f0" },
+  optionText: { fontSize: 16, color: "#333" },
+  optionTextSelected: { fontWeight: "bold", color: "#007AFF" },
 });

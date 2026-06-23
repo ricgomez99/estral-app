@@ -2,11 +2,12 @@ import Form from "@/components/shared/Form";
 import FormDateController from "@/components/shared/FormDateController";
 import { useForm } from "react-hook-form";
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet } from "react-native";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { updateAnimalRange } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 interface IFormProps {
   defaultData: IFertilityRange | undefined;
   animalId: string;
@@ -59,14 +60,20 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
             queryKey: ["range", animalId, updatedRange.id],
           });
 
-          Alert.alert(
-            "Animal Updated!",
-            `${data.subject} range has been saved successfully`,
-            [{ text: "OK", onPress: () => router.back() }],
-          );
+          if (router.canGoBack()) router.back();
+
+          Toast.show({
+            type: "success",
+            text1: `${data.subject} range has been saved successfully`,
+            position: "top",
+          });
         },
         onError: (error) => {
-          Alert.alert("Error", `Unable to process changes, error: ${error}`);
+          Toast.show({
+            type: "error",
+            text1: `Unable to process changes, error: ${error}`,
+            position: "top",
+          });
         },
       },
     );

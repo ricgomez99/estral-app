@@ -1,17 +1,26 @@
 import { AppState, AppStateStatus, Platform } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { focusManager } from "@tanstack/react-query";
 
 export default function useAppStateFocus() {
+  const isAppReady = useRef(false);
+
   useEffect(() => {
+    const timer = setTimeout(() => {
+      isAppReady.current = true;
+    }, 800);
+
     const subscription = AppState.addEventListener(
       "change",
       (status: AppStateStatus) => {
         if (Platform.OS !== "web") {
-          focusManager.setFocused(status === "active");
+          isAppReady.current && focusManager.setFocused(status === "active");
         }
       },
     );
-    return () => subscription.remove();
+    return () => {
+      clearTimeout(timer);
+      subscription.remove();
+    };
   }, []);
 }

@@ -3,10 +3,11 @@ import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
 import FormDateController from "@/components/shared/FormDateController";
 import { createAnimalRange } from "@/utils/mock-functions";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet } from "react-native";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 interface IFormProps {
   animalId: string;
@@ -46,12 +47,20 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
             queryKey: ["animal-ranges", animalId],
           });
 
-          Alert.alert("Range Saved!", `New range created successfully`, [
-            { text: "OK", onPress: () => router.back() },
-          ]);
+          if (router.canGoBack()) router.back();
+
+          Toast.show({
+            type: "success",
+            text1: `New range created successfully`,
+            position: "top",
+          });
         },
         onError: (error) => {
-          Alert.alert("Error", `Unable to create range, error: ${error}`);
+          Toast.show({
+            type: "error",
+            text1: `Unable to create range, error: ${error}`,
+            position: "top",
+          });
         },
       },
     );
