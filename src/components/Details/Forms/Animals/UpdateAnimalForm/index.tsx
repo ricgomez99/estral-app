@@ -1,14 +1,15 @@
-import Form from "@/components/shared/Form";
+import FormContainer from "@/components/shared/FormContainer";
 import FormController from "@/components/shared/FormController";
 import { useForm } from "react-hook-form";
 import { IAnimal } from "@/types/mock-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
-import { Text } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { sexOptions, typeOptions } from "@/utils/consts";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
@@ -76,34 +77,42 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
   };
 
   return (
-    <Form onSubmit={handleSubmit(submit)} headerTitle="Update">
-      <FormController
-        control={control}
-        controllerName="name"
-        inputPlaceHolder="Name"
-        inputType="input"
-      />
-      {errors.name && <Text>{errors.name.message}</Text>}
-      <FormController
-        control={control}
-        controllerName="age"
-        inputPlaceHolder="Age"
-        inputType="input"
-      />
-      <FormController
-        control={control}
-        controllerName="type"
-        inputPlaceHolder="Type"
-        inputType="picker"
-        pickerOptions={typeOptions}
-      />
-      <FormController
-        control={control}
-        controllerName="sex"
-        inputPlaceHolder="Sex"
-        inputType="picker"
-        pickerOptions={sexOptions}
-      />
-    </Form>
+    <SafeAreaView style={styles.formWrapper}>
+      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+        <FormController
+          control={control}
+          controllerName="name"
+          inputPlaceHolder="Name"
+          inputType="input"
+        />
+        {errors.name && <Text>{errors.name.message}</Text>}
+        <FormController
+          control={control}
+          controllerName="age"
+          inputPlaceHolder="Age"
+          inputType="input"
+        />
+        <FormController
+          control={control}
+          controllerName="type"
+          inputPlaceHolder="Type"
+          inputType="picker"
+          pickerOptions={typeOptions}
+        />
+        <FormController
+          control={control}
+          controllerName="sex"
+          inputPlaceHolder="Sex"
+          inputType="picker"
+          pickerOptions={sexOptions}
+        />
+      </FormContainer>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  formWrapper: {
+    flex: 1,
+  },
+});

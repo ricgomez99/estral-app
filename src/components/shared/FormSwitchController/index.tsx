@@ -6,10 +6,16 @@ interface IControlllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
   labelText: string | undefined;
+  onCustomChange?: (value: boolean) => void;
 }
 export default function FormSwitchController<
   T extends FieldValues = FieldValues,
->({ control, controllerName, labelText }: IControlllerProps<T>) {
+>({
+  control,
+  controllerName,
+  labelText,
+  onCustomChange,
+}: IControlllerProps<T>) {
   return (
     <View style={styles.switchWrapper}>
       <Text style={styles.labelText}>{labelText}</Text>
@@ -20,7 +26,12 @@ export default function FormSwitchController<
           <Switch
             trackColor={{ false: "#767577", true: "#81b0ff" }}
             thumbColor={value ? "#f5dd4b" : "#f4f3f4"}
-            onValueChange={onChange}
+            onValueChange={(newValue) => {
+              onChange(newValue);
+              if (onCustomChange) {
+                onCustomChange(newValue);
+              }
+            }}
             value={value}
           />
         )}

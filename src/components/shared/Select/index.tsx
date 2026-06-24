@@ -8,6 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { useState } from "react";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 interface ISelectProps {
   options: OptionType[] | undefined;
@@ -37,6 +38,7 @@ export default function Select({
         <Text style={selectOption ? styles.textValue : styles.textPlaceholder}>
           {selectOption ? selectOption.label : placeholder || "Select..."}
         </Text>
+        <MaterialIcons name="unfold-more" size={24} color="#999" />
       </Pressable>
       <Modal
         visible={modalVisible}
@@ -77,7 +79,7 @@ export default function Select({
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    flex: 1,
   },
   selectButton: {
     padding: 12,
@@ -85,20 +87,24 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     backgroundColor: "#fff",
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   textValue: { color: "#000", fontSize: 16 },
   textPlaceholder: { color: "#999", fontSize: 16 },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "flex-end", // Hace que salga desde abajo tipo BottomSheet
+    justifyContent: "flex-end",
+    opacity: 1,
   },
   modalContent: {
     backgroundColor: "#fff",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     padding: 20,
+    marginBottom: 25,
     maxHeight: "50%",
   },
   modalTitle: {
@@ -109,6 +115,9 @@ const styles = StyleSheet.create({
   },
   optionItem: {
     paddingVertical: 15,
+    paddingHorizontal: 3,
+    flexDirection: "column",
+    justifyContent: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },

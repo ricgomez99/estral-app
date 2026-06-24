@@ -4,7 +4,7 @@ const ANIMALS: IAnimal[] = [
   {
     id: "1",
     name: "Princesa",
-    age: 5,
+    age: "5",
     type: "horse",
     sex: "Female",
     microchipId: "chip123",
@@ -24,7 +24,7 @@ const ANIMALS: IAnimal[] = [
   {
     id: "2",
     name: "Babieca",
-    age: 7,
+    age: "7",
     type: "horse",
     sex: "Female",
     microchipId: "chip234",
@@ -44,7 +44,7 @@ const ANIMALS: IAnimal[] = [
   {
     id: "3",
     name: "Malvina",
-    age: 4,
+    age: "4",
     type: "donkey",
     sex: "Female",
     microchipId: "chip887",

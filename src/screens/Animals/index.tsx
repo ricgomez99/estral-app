@@ -10,6 +10,7 @@ import useRawAnimalsData from "@/hooks/useRawAnimalsData";
 import EmptyList from "@/components/shared/EmptyList";
 import SpinLoader from "@/components/shared/SpinLoader";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Animals() {
   const [query, setQuery] = useState("");
@@ -44,11 +45,11 @@ export default function Animals() {
   }
 
   return (
-    <>
+    <SafeAreaView style={styles.container}>
       <SearchBar value={query} handleChange={handleChange} />
       <View>
         <Pressable style={styles.createButton} onPress={handleCreatePress}>
-          <Text style={styles.createButtonText}>Add new range</Text>
+          <Text style={styles.createButtonText}>Register Animal</Text>
         </Pressable>
       </View>
       <ListContainer>
@@ -63,19 +64,23 @@ export default function Animals() {
               />
             </LinkPressable>
           )}
-          keyExtractor={(item) => item.id as string}
+          keyExtractor={(item) => item.id.toString()}
           refreshing={isRefetching}
           onRefresh={refetch}
-          contentContainerStyle={{ flexGrow: 1 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
           ListEmptyComponent={<EmptyList notFoundItems="Animals" />}
           removeClippedSubviews={true}
         />
       </ListContainer>
-    </>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 6,
+  },
   createButton: {
     backgroundColor: "#111",
     flexDirection: "row",

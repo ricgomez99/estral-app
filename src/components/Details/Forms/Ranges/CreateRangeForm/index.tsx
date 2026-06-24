@@ -1,4 +1,4 @@
-import Form from "@/components/shared/Form";
+import FormContainer from "@/components/shared/FormContainer";
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
 import FormDateController from "@/components/shared/FormDateController";
@@ -8,13 +8,19 @@ import useOptimisticCreate from "@/hooks/useOptimisticCreate";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface IFormProps {
   animalId: string;
 }
 
 export default function CreateRangeForm({ animalId }: IFormProps) {
-  const { control, handleSubmit } = useForm<IFertilityRange>();
+  const { control, handleSubmit } = useForm<IFertilityRange>({
+    defaultValues: {
+      min_date: "",
+      max_date: "",
+    },
+  });
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -39,7 +45,7 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
     createAnimal(
       {
         ...data,
-        id: animalId,
+        id: `temp-${Date.now()}`,
       },
       {
         onSuccess: () => {
@@ -67,24 +73,29 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
   };
 
   return (
-    <Form onSubmit={handleSubmit(submit)} headerTitle="Create Form">
-      <View style={styles.inputWrapper}>
-        <FormDateController
-          control={control}
-          controllerName="min_date"
-          labelText="Min Range Date"
-        />
-        <FormDateController
-          control={control}
-          controllerName="max_date"
-          labelText="Max Range Date"
-        />
-      </View>
-    </Form>
+    <SafeAreaView style={styles.formWrapper}>
+      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+        <View style={styles.inputWrapper}>
+          <FormDateController
+            control={control}
+            controllerName="min_date"
+            labelText="Min Range Date"
+          />
+          <FormDateController
+            control={control}
+            controllerName="max_date"
+            labelText="Max Range Date"
+          />
+        </View>
+      </FormContainer>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  formWrapper: {
+    flex: 1,
+  },
   inputWrapper: {
     flexDirection: "row",
     marginBottom: 20,

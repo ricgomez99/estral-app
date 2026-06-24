@@ -7,16 +7,15 @@ const addAnimalMock = async (
   newAnimal: Omit<IAnimal, "id" | "fertility_ranges">,
 ) => {
   await new Promise((resolve) => setTimeout(resolve, 500));
-  let animals = ANIMALS;
   if (!newAnimal) return;
 
   const fullNewAnimal = {
     ...newAnimal,
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID().toString(),
     fertility_ranges: [],
   };
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  animals = [...ANIMALS, fullNewAnimal];
+
+  ANIMALS.push(fullNewAnimal);
 
   return fullNewAnimal;
 };
@@ -75,7 +74,7 @@ const updateAnimalRange = async (range: IFertilityRange, animalId: string) => {
 
 const createAnimalRange = async (
   animalId: string,
-  newRange: Omit<IFertilityRange, "id" | "creation_date">,
+  newRange: Omit<IFertilityRange, "id" | "creation_date" | "subject">,
 ) => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 

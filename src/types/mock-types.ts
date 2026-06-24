@@ -1,7 +1,7 @@
 interface IAnimal {
   id: string | number;
   name: string;
-  age: number;
+  age: string;
   type: Species;
   sex: Sex;
   microchipId?: string;

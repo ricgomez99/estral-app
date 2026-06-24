@@ -22,10 +22,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.estralapp"
     },
-    "plugins": [
-      "expo-router",
-      "@react-native-community/datetimepicker"
-    ],
+    "plugins": ["expo-router", "@react-native-community/datetimepicker"],
     "extra": {
       "router": {},
       "eas": {
