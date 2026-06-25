@@ -31,7 +31,12 @@ export default function FormController<T extends FieldValues = FieldValues>({
             style={styles.input}
           />
         ) : (
-          <Select options={pickerOptions} onChange={onChange} value={value} />
+          <Select
+            options={pickerOptions}
+            onChange={onChange}
+            value={value}
+            placeholder={inputPlaceHolder}
+          />
         )
       }
       name={controllerName}

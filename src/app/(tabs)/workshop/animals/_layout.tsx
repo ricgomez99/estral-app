@@ -11,11 +11,19 @@ export default function AnimalsLayout() {
         }}
       />
       <Stack.Screen
-        name="[id]/update"
+        name="[id]/update-animal"
         options={{
           headerShadowVisible: false,
           presentation: "modal",
           title: "Edit Form",
+        }}
+      />
+      <Stack.Screen
+        name="create"
+        options={{
+          headerShadowVisible: false,
+          presentation: "modal",
+          title: "Add Animal Form",
         }}
       />
     </Stack>

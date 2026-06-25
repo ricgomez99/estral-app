@@ -37,8 +37,12 @@ export default function FormDateController<
           event: DateTimePickerEvent,
           selectedDate?: Date,
         ) => {
-          if (Platform.OS === "android") setShowDate(false);
-          if (selectedDate) onChange(selectedDate);
+          if (Platform.OS === "android") {
+            setShowDate(false);
+          }
+          if (event.type === "set" && selectedDate) {
+            onChange(selectedDate);
+          }
         };
 
         return (

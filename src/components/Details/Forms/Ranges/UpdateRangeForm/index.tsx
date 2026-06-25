@@ -1,12 +1,14 @@
-import Form from "@/components/shared/Form";
+import FormContainer from "@/components/shared/FormContainer";
 import FormDateController from "@/components/shared/FormDateController";
 import { useForm } from "react-hook-form";
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet } from "react-native";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { updateAnimalRange } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { SafeAreaView } from "react-native-safe-area-context";
 interface IFormProps {
   defaultData: IFertilityRange | undefined;
   animalId: string;
@@ -27,7 +29,7 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
 
   const submit = (data: IFertilityRange) => {
     updateRange(
-      { ...data, id: defaultData?.id as string },
+      { ...data },
       {
         onSuccess: (updatedRange) => {
           if (updatedRange) {
@@ -53,44 +55,57 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
           }
           queryClient.invalidateQueries({
             queryKey: ["animal-ranges", animalId],
+            refetchType: "none",
           });
 
           queryClient.invalidateQueries({
             queryKey: ["range", animalId, updatedRange.id],
+            refetchType: "none",
           });
 
-          Alert.alert(
-            "Animal Updated!",
-            `${data.subject} range has been saved successfully`,
-            [{ text: "OK", onPress: () => router.back() }],
-          );
+          if (router.canGoBack()) router.back();
+
+          Toast.show({
+            type: "success",
+            text1: `${data.subject || "The animal"} range has been saved successfully`,
+            position: "top",
+          });
         },
         onError: (error) => {
-          Alert.alert("Error", `Unable to process changes, error: ${error}`);
+          Toast.show({
+            type: "error",
+            text1: `Unable to process changes, error: ${error}`,
+            position: "top",
+          });
         },
       },
     );
   };
 
   return (
-    <Form onSubmit={handleSubmit(submit)} headerTitle="Update Range">
-      <View style={styles.wrapper}>
-        <FormDateController
-          control={control}
-          controllerName="min_date"
-          labelText="Min Date Range"
-        />
-        <FormDateController
-          control={control}
-          controllerName="max_date"
-          labelText="Max Date Range"
-        />
-      </View>
-    </Form>
+    <SafeAreaView style={styles.formContainer}>
+      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+        <View style={styles.wrapper}>
+          <FormDateController
+            control={control}
+            controllerName="min_date"
+            labelText="Min Date Range"
+          />
+          <FormDateController
+            control={control}
+            controllerName="max_date"
+            labelText="Max Date Range"
+          />
+        </View>
+      </FormContainer>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  formContainer: {
+    flex: 1,
+  },
   wrapper: {
     flexDirection: "row",
     marginBottom: 20,

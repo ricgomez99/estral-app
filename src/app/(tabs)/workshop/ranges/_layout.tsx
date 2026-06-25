@@ -18,6 +18,14 @@ export default function RangesLayout() {
           title: "Edit Form",
         }}
       />
+      <Stack.Screen
+        name="create"
+        options={{
+          headerShadowVisible: false,
+          presentation: "modal",
+          title: "Add New Range",
+        }}
+      />
     </Stack>
   );
 }

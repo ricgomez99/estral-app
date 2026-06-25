@@ -18,7 +18,7 @@ export default function AnimalDetails() {
   const chipText =
     subject?.isDonor && !subject.isRecipient ? "Donor" : "Recipient";
 
-  const updateButtonRoute = `/workshop/animals/${id}/update`;
+  const updateButtonRoute = `/workshop/animals/${id}/update-animal`;
 
   if (isLoading) {
     return <SpinLoader />;

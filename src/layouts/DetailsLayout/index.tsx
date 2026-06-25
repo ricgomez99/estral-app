@@ -1,6 +1,5 @@
 import { View, StyleSheet } from "react-native";
 import { PrimaryButton } from "@/components/shared/Buttons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CustomHeader } from "@/components/Details";
 import { Image } from "expo-image";
 import { useRouter, HrefObject } from "expo-router";
@@ -18,14 +17,13 @@ export default function DetailsLayout({
   imageSource,
   showUpdateButton = true,
 }: ILayoutProps) {
-  const { top } = useSafeAreaInsets();
   const router = useRouter();
   const handlePressUpdate = () => {
     router.push(updateRoute);
   };
 
   return (
-    <View style={[styles.detailsContainer, { marginTop: top > 0 ? top : 10 }]}>
+    <View style={styles.detailsContainer}>
       <CustomHeader />
       <Image style={styles.image} source={imageSource} />
       {children}

@@ -9,7 +9,7 @@ export default function CalculationsLayout() {
         options={{ title: "Calculation Details" }}
       />
       <Stack.Screen
-        name="[id]/update"
+        name="[id]/update-calculation"
         options={{
           headerShadowVisible: false,
           presentation: "modal",

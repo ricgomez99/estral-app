@@ -1,13 +1,15 @@
-import Form from "@/components/shared/Form";
+import FormContainer from "@/components/shared/FormContainer";
 import FormController from "@/components/shared/FormController";
 import { useForm } from "react-hook-form";
 import { IAnimal } from "@/types/mock-types";
-import { OptionType } from "@/types/picker-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
-import { Alert, Text } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { sexOptions, typeOptions } from "@/utils/consts";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
@@ -39,17 +41,6 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
     },
   });
 
-  const sexOptions: OptionType[] = [
-    { label: "Male", value: "Male" },
-    { label: "Female", value: "Female" },
-  ];
-
-  const typeOptions: OptionType[] = [
-    { label: "Donkey", value: "donkey" },
-    { label: "Horse", value: "horse" },
-    { label: "Zebra", value: "zebra" },
-  ];
-
   const submit = (data: IAnimal) => {
     // Provitional Update Process
     if (!defaultData?.id) return;
@@ -65,49 +56,63 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
             queryClient.setQueryData(["animal", defaultData.id], updatedAnimal);
           }
 
-          Alert.alert(
-            "Animal Updated!",
-            `${data.name} has been saved successfully`,
-            [{ text: "OK", onPress: () => router.back() }],
-          );
+          if (router.canGoBack()) router.back();
+
+          Toast.show({
+            type: "success",
+            text1: `${data.name} has been updated successfully`,
+            position: "top",
+          });
         },
 
-        onError: () => {
-          Alert.alert("Error", "Unable to process changes");
+        onError: (error) => {
+          Toast.show({
+            type: "error",
+            text1: `Unable to update animal, error: ${error}`,
+            position: "top",
+          });
         },
       },
     );
   };
 
   return (
-    <Form onSubmit={handleSubmit(submit)} headerTitle="Update">
-      <FormController
-        control={control}
-        controllerName="name"
-        inputPlaceHolder="Name"
-        inputType="input"
-      />
-      {errors.name && <Text>{errors.name.message}</Text>}
-      <FormController
-        control={control}
-        controllerName="age"
-        inputPlaceHolder="Age"
-        inputType="input"
-      />
-      <FormController
-        control={control}
-        controllerName="type"
-        inputPlaceHolder="Type"
-        inputType="picker"
-        pickerOptions={typeOptions}
-      />
-      <FormController
-        control={control}
-        controllerName="sex"
-        inputPlaceHolder="Sex"
-        inputType="picker"
-        pickerOptions={sexOptions}
-      />
-    </Form>
+    <SafeAreaView style={styles.formWrapper}>
+      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+        <FormController
+          control={control}
+          controllerName="name"
+          inputPlaceHolder="Name"
+          inputType="input"
+        />
+        {errors.name && <Text>{errors.name.message}</Text>}
+        <FormController
+          control={control}
+          controllerName="age"
+          inputPlaceHolder="Age"
+          inputType="input"
+        />
+        <FormController
+          control={control}
+          controllerName="type"
+          inputPlaceHolder="Type"
+          inputType="picker"
+          pickerOptions={typeOptions}
+        />
+        <FormController
+          control={control}
+          controllerName="sex"
+          inputPlaceHolder="Sex"
+          inputType="picker"
+          pickerOptions={sexOptions}
+        />
+      </FormContainer>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  formWrapper: {
+    flex: 1,
+  },
+});

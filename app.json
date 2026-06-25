@@ -9,19 +9,26 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.estralapp"
     },
     "android": {
+      "theme": "light-nav-theme",
       "adaptiveIcon": {
         "foregroundImage": "",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.estralapp"
     },
-    "plugins": [
-      "expo-router",
-      "@react-native-community/datetimepicker"
-    ]
+    "plugins": ["expo-router", "@react-native-community/datetimepicker"],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "dd05d2f9-4ae1-4b9f-9cb2-6a5bf9b17b05"
+      }
+    },
+    "owner": "ricgomez99"
   }
 }

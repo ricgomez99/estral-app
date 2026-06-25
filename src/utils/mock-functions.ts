@@ -1,7 +1,24 @@
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { ANIMALS } from "./mocks";
+import { DateService } from "@/lib";
+import * as crypto from "expo-crypto";
 
-const addAnimalMock = (newAnimal: IAnimal) => ANIMALS.push(newAnimal);
+const addAnimalMock = async (
+  newAnimal: Omit<IAnimal, "id" | "fertility_ranges">,
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  if (!newAnimal) return;
+
+  const fullNewAnimal = {
+    ...newAnimal,
+    id: crypto.randomUUID().toString(),
+    fertility_ranges: [],
+  };
+
+  ANIMALS.push(fullNewAnimal);
+
+  return fullNewAnimal;
+};
 const getAnimalsMock = async (): Promise<IAnimal[]> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -55,10 +72,35 @@ const updateAnimalRange = async (range: IFertilityRange, animalId: string) => {
   return undefined;
 };
 
+const createAnimalRange = async (
+  animalId: string,
+  newRange: Omit<IFertilityRange, "id" | "creation_date" | "subject">,
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const animal = ANIMALS.find((a) => a.id === animalId);
+
+  if (!animal) {
+    throw new Error("No range available to process");
+  }
+
+  const fullRangeData = {
+    ...newRange,
+    id: crypto.randomUUID(),
+    creation_date: DateService.formatToStoredDate(new Date()) as string,
+    subject: animal.name as string,
+  };
+
+  animal.fertility_ranges = [...animal.fertility_ranges, fullRangeData];
+
+  return fullRangeData;
+};
+
 export {
   addAnimalMock,
   getAnimalsMock,
   getAnimalById,
   getRangeById,
   updateAnimalRange,
+  createAnimalRange,
 };

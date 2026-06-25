@@ -5,7 +5,9 @@ import { useRouter } from "expo-router";
 export default function BackButton() {
   const router = useRouter();
   const handlePress = () => {
-    router.back();
+    if (router.canGoBack()) {
+      router.back();
+    }
   };
   return (
     <Pressable style={styles.backButton} onPress={handlePress}>
