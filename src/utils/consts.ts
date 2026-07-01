@@ -60,6 +60,11 @@ const typeOptions: OptionType[] = [
   { label: "Zebra", value: "zebra" },
 ];
 
+const medicationOptions: OptionType[] = [
+  { label: "Gnrh", value: "gnrh" },
+  { label: "Progesterone", value: "progesterone" },
+];
+
 export {
   VIEW_TABS,
   DRAWER_SCREENS,
@@ -67,4 +72,5 @@ export {
   DATE_ES_FORMAT,
   sexOptions,
   typeOptions,
+  medicationOptions,
 };

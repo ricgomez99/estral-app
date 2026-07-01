@@ -11,6 +11,7 @@ const ANIMALS: IAnimal[] = [
     isRecipient: true,
     isDonor: false,
     image: require("../../assets/default-horse.jpg"),
+    last_oestrus: "2025-12-31",
     fertility_ranges: [
       {
         id: "101",
@@ -31,6 +32,7 @@ const ANIMALS: IAnimal[] = [
     isRecipient: true,
     isDonor: false,
     image: require("../../assets/default-horse.jpg"),
+    last_oestrus: "2025-12-31",
     fertility_ranges: [
       {
         id: "101",
@@ -51,6 +53,7 @@ const ANIMALS: IAnimal[] = [
     isRecipient: false,
     isDonor: true,
     image: require("../../assets/default-horse.jpg"),
+    last_oestrus: "2025-12-31",
     fertility_ranges: [
       {
         id: "101",

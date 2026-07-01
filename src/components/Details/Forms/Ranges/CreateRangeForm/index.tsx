@@ -1,14 +1,18 @@
 import FormContainer from "@/components/shared/FormContainer";
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
-import FormDateController from "@/components/shared/FormDateController";
-import { createAnimalRange } from "@/utils/mock-functions";
-import { View, StyleSheet } from "react-native";
+import { createAnimalRange, getAnimalById } from "@/utils/mock-functions";
+import { StyleSheet } from "react-native";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { DateService } from "@/lib";
+import FormSwitchController from "@/components/shared/FormSwitchController";
+import MedicatedFields from "../MedicatedFields";
+import NaturalRange from "../NaturalRange";
+import { getRangeDates } from "@/services";
 
 interface IFormProps {
   animalId: string;
@@ -17,34 +21,49 @@ interface IFormProps {
 export default function CreateRangeForm({ animalId }: IFormProps) {
   const { control, handleSubmit } = useForm<IFertilityRange>({
     defaultValues: {
-      min_date: "",
-      max_date: "",
+      application_date: "",
+      medicated: false,
+      medication: null,
     },
   });
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { mutate: createAnimal } = useOptimisticCreate<
-    IFertilityRange,
-    IAnimal
-  >({
-    queryKey: ["animal-ranges", animalId],
-    mutateFn: (newRange: IFertilityRange) =>
-      createAnimalRange(animalId, newRange),
-    updateFn: (oldAnimal, newRange) => {
-      if (!oldAnimal) return {} as IAnimal;
-      return {
-        ...oldAnimal,
-        fertility_ranges: [...oldAnimal.fertility_ranges, newRange],
-      };
-    },
+  const { data: last_oestrus } = useQuery({
+    queryKey: ["animal", animalId, "last_oestrus"],
+    queryFn: () => getAnimalById(animalId!),
+    select: (data: IAnimal | undefined) => data?.last_oestrus,
+    enabled: !!animalId,
   });
+
+  const { mutate: createRange } = useOptimisticCreate<IFertilityRange, IAnimal>(
+    {
+      queryKey: ["animal-ranges", animalId],
+      mutateFn: (newRange: IFertilityRange) =>
+        createAnimalRange(animalId, newRange),
+      updateFn: (oldAnimal, newRange) => {
+        if (!oldAnimal) return {} as IAnimal;
+        return {
+          ...oldAnimal,
+          fertility_ranges: [...oldAnimal.fertility_ranges, newRange],
+        };
+      },
+    },
+  );
 
   const submit = (data: IFertilityRange) => {
     if (!data) return;
-    createAnimal(
+    const ranges = getRangeDates(data, last_oestrus);
+
+    if (!ranges) return;
+    const { minDate, maxDate } = ranges;
+    createRange(
       {
         ...data,
+        medication: data.medicated ? data.medication : null,
+        application_date: data.application_date ? data.application_date : "",
+        min_date: DateService.formatToStoredDate(minDate) as string,
+        max_date: DateService.formatToStoredDate(maxDate) as string,
         id: `temp-${Date.now()}`,
       },
       {
@@ -75,18 +94,13 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
   return (
     <SafeAreaView style={styles.formWrapper}>
       <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
-        <View style={styles.inputWrapper}>
-          <FormDateController
-            control={control}
-            controllerName="min_date"
-            labelText="Min Range Date"
-          />
-          <FormDateController
-            control={control}
-            controllerName="max_date"
-            labelText="Max Range Date"
-          />
-        </View>
+        <NaturalRange control={control} lastOestrus={last_oestrus!} />
+        <FormSwitchController
+          control={control}
+          controllerName="medicated"
+          labelText="Medication Applied"
+        />
+        <MedicatedFields control={control} />
       </FormContainer>
     </SafeAreaView>
   );
@@ -95,9 +109,5 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
 const styles = StyleSheet.create({
   formWrapper: {
     flex: 1,
-  },
-  inputWrapper: {
-    flexDirection: "row",
-    marginBottom: 20,
   },
 });

@@ -1,4 +1,16 @@
 import { UpdateAnimalForm, CreateAnimalForm } from "./Animals";
-import { UpdateRangeForm, CreateRangeForm } from "./Ranges";
+import {
+  UpdateRangeForm,
+  CreateRangeForm,
+  MedicatedFields,
+  NaturalRange,
+} from "./Ranges";
 
-export { UpdateAnimalForm, UpdateRangeForm, CreateRangeForm, CreateAnimalForm };
+export {
+  UpdateAnimalForm,
+  UpdateRangeForm,
+  CreateRangeForm,
+  CreateAnimalForm,
+  MedicatedFields,
+  NaturalRange,
+};
