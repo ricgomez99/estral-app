@@ -30,7 +30,7 @@ export default function FormDateController<
             ? (DateService.parseToDate(value) ?? new Date())
             : value || new Date();
 
-        const defaultDisplay = Platform.OS === "ios" ? "spinner" : "calendar";
+        const defaultDisplay = Platform.OS === "ios" ? "default" : "calendar";
         const formattedValue = DateService.formatToStoredDate(defaultDate);
 
         const handleDateChange = (

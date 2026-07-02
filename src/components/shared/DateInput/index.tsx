@@ -17,11 +17,13 @@ export default function DateInput({
 }: IDateInputProps) {
   return (
     <View style={styles.container}>
-      {addLabel && <Text style={styles.label}>{labelText}</Text>}
-      <Pressable onPress={handlePress} style={styles.fakeInput}>
-        <Fontisto name="date" size={24} color="black" />
-        <Text style={styles.inputText}>{inputText}</Text>
-      </Pressable>
+      <View>
+        {addLabel && <Text style={styles.label}>{labelText}</Text>}
+        <Pressable onPress={handlePress} style={styles.fakeInput}>
+          <Fontisto name="date" size={24} color="black" />
+          <Text style={styles.inputText}>{inputText}</Text>
+        </Pressable>
+      </View>
       {children}
     </View>
   );
@@ -30,10 +32,12 @@ export default function DateInput({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "flex-start",
     flex: 1,
     width: "100%",
+    height: "100%",
+    gap: 8,
   },
   label: {
     fontSize: 14,
