@@ -1,14 +1,9 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "baseUrl": ".",
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "strict": true
+      "@/*": ["./src/*"]
+    }
   }
 }

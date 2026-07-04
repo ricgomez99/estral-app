@@ -1,4 +1,9 @@
-import { DrawerNavigationOptions } from "@react-navigation/drawer";
+import { ComponentProps } from "react";
+import { Drawer } from "expo-router/drawer";
+
+export type DrawerScreenOptions = ComponentProps<
+  typeof Drawer.Screen
+>["options"];
 
 interface TabProps {
   tabName: string;
@@ -9,7 +14,7 @@ interface TabProps {
 
 interface DrawerScreenProps {
   screenName: string;
-  options: DrawerNavigationOptions;
+  options: DrawerScreenOptions;
 }
 
 export { TabProps, DrawerScreenProps };
