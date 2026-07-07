@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "predictiveBackGestureEnabled": false,
@@ -31,7 +31,6 @@
       "expo-status-bar"
     ],
     "extra": {
-      "router": {},
       "eas": {
         "projectId": "dd05d2f9-4ae1-4b9f-9cb2-6a5bf9b17b05"
       }

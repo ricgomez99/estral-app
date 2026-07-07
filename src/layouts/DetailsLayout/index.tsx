@@ -3,6 +3,7 @@ import { PrimaryButton } from "@/components/shared/Buttons";
 import { CustomHeader } from "@/components/Details";
 import { Image } from "expo-image";
 import { useRouter, HrefObject } from "expo-router";
+import { Host } from "@expo/ui";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -28,13 +29,9 @@ export default function DetailsLayout({
       <Image style={styles.image} source={imageSource} />
       {children}
       {showUpdateButton && (
-        <View style={styles.buttonsContainer}>
-          <PrimaryButton
-            title="Update"
-            handleClick={handlePressUpdate}
-            type="normal"
-          />
-        </View>
+        <Host style={{ flex: 1 }} matchContents>
+          <PrimaryButton title="Update" handleClick={handlePressUpdate} />
+        </Host>
       )}
     </View>
   );

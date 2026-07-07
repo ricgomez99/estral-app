@@ -5,13 +5,12 @@ import FormImageController from "@/components/shared/FormImageController";
 import { IAnimal } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
 import { sexOptions, typeOptions } from "@/utils/consts";
-import { View, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
 import { addAnimalMock } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
+import { FieldGroup } from "@expo/ui";
 
 export default function CreateAnimalForm() {
   const queryClient = useQueryClient();
@@ -75,8 +74,8 @@ export default function CreateAnimalForm() {
   };
 
   return (
-    <SafeAreaView style={styles.formContainer}>
-      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+      <FieldGroup.Section>
         <FormController
           control={control}
           controllerName="name"
@@ -89,76 +88,55 @@ export default function CreateAnimalForm() {
           inputType="input"
           inputPlaceHolder="Age"
         />
-        <View style={styles.slectContainer}>
-          <FormController
-            control={control}
-            controllerName="sex"
-            inputType="picker"
-            inputPlaceHolder="Animal Sex"
-            pickerOptions={sexOptions}
-          />
-          <FormController
-            control={control}
-            controllerName="type"
-            inputType="picker"
-            inputPlaceHolder="Animal Specie"
-            pickerOptions={typeOptions}
-          />
-        </View>
+      </FieldGroup.Section>
+      <FieldGroup.Section>
+        <FormController
+          control={control}
+          controllerName="sex"
+          inputType="picker"
+          inputPlaceHolder="Sex"
+          pickerOptions={sexOptions}
+        />
+        <FormController
+          control={control}
+          controllerName="type"
+          inputType="picker"
+          inputPlaceHolder="Specie"
+          pickerOptions={typeOptions}
+        />
+      </FieldGroup.Section>
+      <FieldGroup.Section>
         <FormController
           control={control}
           controllerName="microchipId"
           inputType="input"
           inputPlaceHolder="Chip Number"
         />
+
         <FormImageController
           control={control}
           controllerName="image"
           labelText="Animal Photo"
         />
-        <View style={styles.switches}>
-          <FormSwitchController
-            control={control}
-            controllerName="isRecipient"
-            labelText="Mark as recipient"
-            onCustomChange={(newValue) => {
-              if (newValue) setValue("isDonor", false);
-            }}
-          />
-          <FormSwitchController
-            control={control}
-            controllerName="isDonor"
-            labelText="Mark as Donor"
-            onCustomChange={(newValue) => {
-              if (newValue) setValue("isRecipient", false);
-            }}
-          />
-        </View>
-      </FormContainer>
-    </SafeAreaView>
+      </FieldGroup.Section>
+      <FieldGroup.Section>
+        <FormSwitchController
+          control={control}
+          controllerName="isRecipient"
+          labelText="Mark as recipient"
+          onCustomChange={(newValue) => {
+            if (newValue) setValue("isDonor", false);
+          }}
+        />
+        <FormSwitchController
+          control={control}
+          controllerName="isDonor"
+          labelText="Mark as Donor"
+          onCustomChange={(newValue) => {
+            if (newValue) setValue("isRecipient", false);
+          }}
+        />
+      </FieldGroup.Section>
+    </FormContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  formContainer: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  scrollConten: {
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-
-  switches: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    width: "100%",
-    gap: 20,
-  },
-
-  slectContainer: {
-    flexDirection: "row",
-    width: "100%",
-    gap: 10,
-  },
-});

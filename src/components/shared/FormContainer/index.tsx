@@ -1,16 +1,11 @@
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-  View,
-} from "react-native";
-import { PrimaryButton } from "../Buttons";
+import { StyleSheet } from "react-native";
 import {
   FieldValues,
   SubmitErrorHandler,
   UseFormHandleSubmit,
 } from "react-hook-form";
+import { Host, FieldGroup } from "@expo/ui";
+import { PrimaryButton } from "../Buttons";
 
 interface IFormProps<T extends FieldValues = FieldValues> {
   onSubmit: (data: any) => void;
@@ -26,22 +21,17 @@ export default function FormContainer<T extends FieldValues = FieldValues>({
   onError,
 }: IFormProps<T>) {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.formContent}>
-          {children}
+    <Host style={styles.container}>
+      <FieldGroup>
+        {children}
+        <FieldGroup.Section>
           <PrimaryButton
             title="Submit"
             handleClick={handleSubmit(onSubmit, onError)}
-            type="normal"
           />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </FieldGroup.Section>
+      </FieldGroup>
+    </Host>
   );
 }
 
@@ -49,10 +39,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContainer: {
-    padding: 20,
-  },
-  formContent: {
-    gap: 16,
+  fieldGroup: {
+    flex: 1,
   },
 });
