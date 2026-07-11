@@ -2,6 +2,7 @@ import FormContainer from "@/components/shared/FormContainer";
 import FormController from "@/components/shared/FormController";
 import FormSwitchController from "@/components/shared/FormSwitchController";
 import FormImageController from "@/components/shared/FormImageController";
+import FormBreedController from "@/components/shared/FormBreedController";
 import { IAnimal } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
 import { sexOptions, typeOptions } from "@/utils/consts";
@@ -10,7 +11,7 @@ import { addAnimalMock } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
-import { FieldGroup } from "@expo/ui";
+import { FieldGroup, RNHostView } from "@expo/ui";
 
 export default function CreateAnimalForm() {
   const queryClient = useQueryClient();
@@ -20,6 +21,7 @@ export default function CreateAnimalForm() {
       name: "",
       age: "",
       microchipId: "",
+      breed: undefined,
       isDonor: false,
       isRecipient: false,
     },
@@ -104,6 +106,7 @@ export default function CreateAnimalForm() {
           inputPlaceHolder="Specie"
           pickerOptions={typeOptions}
         />
+        <FormBreedController control={control} controllerName="breed" />
       </FieldGroup.Section>
       <FieldGroup.Section>
         <FormController
@@ -112,13 +115,16 @@ export default function CreateAnimalForm() {
           inputType="input"
           inputPlaceHolder="Chip Number"
         />
+      </FieldGroup.Section>
 
+      <RNHostView style={{ width: "100%" }} matchContents>
         <FormImageController
           control={control}
           controllerName="image"
           labelText="Animal Photo"
         />
-      </FieldGroup.Section>
+      </RNHostView>
+
       <FieldGroup.Section>
         <FormSwitchController
           control={control}

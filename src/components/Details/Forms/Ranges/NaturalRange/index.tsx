@@ -1,9 +1,10 @@
 import { IFertilityRange } from "@/types/mock-types";
 import { Control, useWatch } from "react-hook-form";
-import { Text, StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { calculateFertilityRange } from "@/services";
 import { DateService } from "@/lib";
 import InfoCard from "@/components/shared/InfoCard";
+import { Row, Text } from "@expo/ui";
 
 interface IProps {
   control: Control<IFertilityRange>;
@@ -24,23 +25,21 @@ export default function NaturalRange({ control, lastOestrus }: IProps) {
   const formattedMaxDate = DateService.formatToStoredDate(maxDate);
 
   return (
-    <InfoCard cardTitle="Info">
-      <Text style={styles.mainMessage}>
-        {`Range calculated based on the natural cycle using the last oestrus date: `}
-
-        <Text style={styles.date}>{lastOestrus}</Text>
+    <InfoCard>
+      <Text textStyle={styles.mainMessage}>
+        {`Range calculated based on the natural cycle using the last oestrus date: ${lastOestrus}`}
       </Text>
 
-      <View style={styles.rangeDates}>
-        <View style={styles.rangeWrapper}>
-          <Text style={styles.dateLabel}>Min Date:</Text>
-          <Text style={styles.date}>{formattedMinDate}</Text>
-        </View>
-        <View style={styles.rangeWrapper}>
-          <Text style={styles.dateLabel}>Max Date:</Text>
-          <Text style={styles.date}>{formattedMaxDate}</Text>
-        </View>
-      </View>
+      <Row spacing={10}>
+        <Row spacing={5}>
+          <Text textStyle={styles.dateLabel}>Min Date:</Text>
+          <Text textStyle={styles.date}>{formattedMinDate}</Text>
+        </Row>
+        <Row spacing={5}>
+          <Text textStyle={styles.dateLabel}>Max Date:</Text>
+          <Text textStyle={styles.date}>{formattedMaxDate}</Text>
+        </Row>
+      </Row>
     </InfoCard>
   );
 }

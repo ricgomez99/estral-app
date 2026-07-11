@@ -2,17 +2,16 @@ import FormContainer from "@/components/shared/FormContainer";
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
 import { createAnimalRange, getAnimalById } from "@/utils/mock-functions";
-import { StyleSheet } from "react-native";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { DateService } from "@/lib";
 import FormSwitchController from "@/components/shared/FormSwitchController";
 import MedicatedFields from "../MedicatedFields";
 import NaturalRange from "../NaturalRange";
 import { getRangeDates } from "@/services";
+import { FieldGroup } from "@expo/ui";
 
 interface IFormProps {
   animalId: string;
@@ -92,22 +91,18 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
   };
 
   return (
-    <SafeAreaView style={styles.formWrapper}>
-      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+      <FieldGroup.SectionHeader>
         <NaturalRange control={control} lastOestrus={last_oestrus!} />
+      </FieldGroup.SectionHeader>
+      <FieldGroup.Section>
         <FormSwitchController
           control={control}
           controllerName="medicated"
           labelText="Medication Applied"
         />
         <MedicatedFields control={control} />
-      </FormContainer>
-    </SafeAreaView>
+      </FieldGroup.Section>
+    </FormContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  formWrapper: {
-    flex: 1,
-  },
-});

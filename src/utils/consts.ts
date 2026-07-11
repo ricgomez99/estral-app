@@ -65,12 +65,42 @@ const medicationOptions: OptionType[] = [
   { label: "Progesterone", value: "progesterone" },
 ];
 
+const images = {
+  defaultHorse: require("../../assets/default-horse.jpg"),
+};
+
+const BREEDS = [
+  "Colombian Criollo Horse (CCC)",
+  "Purebred Spanish Horse (PRE)",
+  "Purebred Lusitano",
+  "Gypsy",
+  "Arabian horse",
+  "American Quarter Horse",
+  "Friesian horse",
+  "Apaloosa",
+  "Shire",
+  "Percheron",
+  "Dutch Warmblood (KWPN)",
+  "Thoroughbred horse",
+  "Hanoverian",
+  "Azteca",
+  "Argentine Sport Horse",
+  "Chilean Criollo",
+  "Peruvian Paso Horse",
+  "Mangalarga Marchador",
+] as const;
+
+const MIXES = ["Mix 1", "Mix 2", "Mix 3", "Mix 4"] as const;
+
 export {
   VIEW_TABS,
   DRAWER_SCREENS,
   DATE_EN_FORMAT,
   DATE_ES_FORMAT,
+  BREEDS,
+  MIXES,
   sexOptions,
   typeOptions,
   medicationOptions,
+  images,
 };

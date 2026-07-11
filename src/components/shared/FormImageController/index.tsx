@@ -1,8 +1,10 @@
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
+import { images } from "@/utils/consts";
+import { useState, useEffect } from "react";
 
 interface IControllerProps<T extends FieldValues = FieldValues> {
   control: Control<T>;
@@ -14,11 +16,16 @@ export default function FormImageController<T extends FieldValues>({
   control,
   controllerName,
 }: IControllerProps<T>) {
-  const pickImage = async (formOnChange: (uri: string) => void) => {
-    const permissionsResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const [hasPermissions, setPermissions] = useState<boolean | null>(null);
+  useEffect(() => {
+    (async () => {
+      const res = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      setPermissions(res.granted);
+    })();
+  }, []);
 
-    if (permissionsResult.granted === false) {
+  const pickImage = async (formOnChange: (uri: string) => void) => {
+    if (!hasPermissions) {
       Toast.show({
         type: "info",
         text1: "Permissions are required to access gallery",
@@ -34,63 +41,58 @@ export default function FormImageController<T extends FieldValues>({
       quality: 0.7,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets?.length) {
       formOnChange(result.assets[0].uri);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.labelText}></Text>
-      <Controller
-        control={control}
-        name={controllerName}
-        render={({ field: { onChange, value } }) => (
-          <View style={styles.pickerWrapper}>
-            {value ? (
-              <Image
-                source={{ uri: value }}
-                style={styles.previewImage}
-                contentFit="cover"
-              />
-            ) : (
-              <View style={[styles.previewImage, styles.placeholder]}>
-                <Text style={styles.placeholderText}>No Photo</Text>
-              </View>
-            )}
-            <Pressable
-              onPress={() => pickImage(onChange)}
-              style={styles.button}>
-              <Text style={styles.buttonText}>
-                {value ? "Change Photo" : "Select Photo"}
-              </Text>
-            </Pressable>
-          </View>
-        )}
-      />
-    </View>
+    <Controller
+      control={control}
+      name={controllerName}
+      render={({ field: { onChange, value } }) => (
+        <View style={styles.container}>
+          <Image
+            source={value ? { uri: value } : images.defaultHorse}
+            style={styles.previewImage}
+            contentFit="cover"
+          />
+
+          <Pressable
+            onPressIn={() => pickImage(onChange)}
+            style={styles.button}>
+            <Text style={styles.buttonText}>
+              {value ? "Change Photo" : "Select Photo"}
+            </Text>
+          </Pressable>
+        </View>
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 20 },
-  labelText: { fontSize: 16, fontWeight: "bold", marginBottom: 8 },
-  pickerWrapper: { flexDirection: "row", alignItems: "center", gap: 15 },
-  previewImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  placeholder: {
-    backgroundColor: "#e1e1e1",
-    justifyContent: "center",
+  container: {
+    paddingLeft: 20,
+
+    flexDirection: "row",
+    width: "100%",
+    height: "auto",
+    justifyContent: "flex-start",
+    gap: 12,
     alignItems: "center",
   },
-  placeholderText: { color: "#7c7c7c", fontSize: 12 },
+
+  previewImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+  },
+
   button: {
     backgroundColor: "#81b0ff",
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     borderRadius: 8,
   },
   buttonText: { color: "#fff", fontWeight: "bold" },

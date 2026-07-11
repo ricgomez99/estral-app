@@ -1,12 +1,12 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import { Platform } from "react-native";
 import { useState } from "react";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
 import { DateService } from "@/lib";
+import DateTimePicker, {
+  DateTimePickerChangeEvent,
+} from "@expo/ui/community/datetime-picker";
 import DateInput from "../DateInput";
-
+import { Column } from "@expo/ui";
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
@@ -30,36 +30,41 @@ export default function FormDateController<
             ? (DateService.parseToDate(value) ?? new Date())
             : value || new Date();
 
-        const defaultDisplay = Platform.OS === "ios" ? "default" : "calendar";
+        const defaultDisplay = "default";
         const formattedValue = DateService.formatToStoredDate(defaultDate);
 
         const handleDateChange = (
-          event: DateTimePickerEvent,
+          event: DateTimePickerChangeEvent,
           selectedDate?: Date,
         ) => {
           if (Platform.OS === "android") {
             setShowDate(false);
           }
-          if (event.type === "set" && selectedDate) {
+
+          if (event && selectedDate) {
             onChange(selectedDate);
           }
         };
 
         return (
-          <DateInput
-            handlePress={handleShowDate}
-            inputText={formattedValue}
-            addLabel={true}
-            labelText={labelText}>
+          <Column>
+            <DateInput
+              handlePress={handleShowDate}
+              inputText={formattedValue}
+              labelText={labelText}
+            />
             {showDate && (
               <DateTimePicker
                 value={defaultDate}
+                onValueChange={handleDateChange}
                 mode="date"
                 display={defaultDisplay}
-                onChange={handleDateChange}
+                onDismiss={() => {
+                  setShowDate(false);
+                }}
               />
             )}
-          </DateInput>
+          </Column>
         );
       }}
       name={controllerName}

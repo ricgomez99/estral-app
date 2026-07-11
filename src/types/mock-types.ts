@@ -1,9 +1,12 @@
+import { BREEDS, MIXES } from "@/utils/consts";
+
 interface IAnimal {
   id: string | number;
   name: string;
   age: string;
-  type: Species;
-  sex: Sex;
+  type: Species | undefined | string;
+  sex: Sex | undefined | string;
+  breed?: Breed;
   microchipId?: string;
   isRecipient?: boolean;
   isDonor?: boolean;
@@ -26,5 +29,8 @@ interface IFertilityRange {
 type Species = "horse" | "donkey" | "zebra";
 type Sex = "Male" | "Female";
 type Medication = "gnrh" | "progesterone";
+type Breed = PureBreed | Mixed;
+type PureBreed = (typeof BREEDS)[number];
+type Mixed = (typeof MIXES)[number];
 
 export type { IAnimal, IFertilityRange, Species, Sex, Medication };

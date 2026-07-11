@@ -2,8 +2,8 @@ import FormController from "@/components/shared/FormController";
 import FormDateController from "@/components/shared/FormDateController";
 import { medicationOptions } from "@/utils/consts";
 import { Control, useWatch } from "react-hook-form";
-import { View, StyleSheet } from "react-native";
 import { IFertilityRange } from "@/types/mock-types";
+import { FieldGroup } from "@expo/ui";
 
 interface IFieldProps {
   control: Control<IFertilityRange>;
@@ -15,12 +15,12 @@ export default function MedicatedFields({ control }: IFieldProps) {
   if (!isMedicated) return null;
 
   return (
-    <View style={styles.inputWrapper}>
+    <FieldGroup.Section>
       <FormController
         control={control}
         controllerName="medication"
         inputType="picker"
-        inputPlaceHolder="Select Medication"
+        inputPlaceHolder="Medication"
         pickerOptions={medicationOptions}
       />
       <FormDateController
@@ -28,14 +28,6 @@ export default function MedicatedFields({ control }: IFieldProps) {
         controllerName="application_date"
         labelText="Application Date"
       />
-    </View>
+    </FieldGroup.Section>
   );
 }
-
-const styles = StyleSheet.create({
-  inputWrapper: {
-    flexDirection: "column",
-    marginBottom: 20,
-    gap: 10,
-  },
-});

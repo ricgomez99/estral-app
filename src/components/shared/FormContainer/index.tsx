@@ -24,12 +24,13 @@ export default function FormContainer<T extends FieldValues = FieldValues>({
     <Host style={styles.container}>
       <FieldGroup>
         {children}
-        <FieldGroup.Section>
+
+        <FieldGroup.SectionFooter>
           <PrimaryButton
             title="Submit"
             handleClick={handleSubmit(onSubmit, onError)}
           />
-        </FieldGroup.Section>
+        </FieldGroup.SectionFooter>
       </FieldGroup>
     </Host>
   );
@@ -37,9 +38,6 @@ export default function FormContainer<T extends FieldValues = FieldValues>({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  fieldGroup: {
     flex: 1,
   },
 });

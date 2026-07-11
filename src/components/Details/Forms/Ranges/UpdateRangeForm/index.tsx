@@ -2,13 +2,13 @@ import FormContainer from "@/components/shared/FormContainer";
 import FormDateController from "@/components/shared/FormDateController";
 import { useForm } from "react-hook-form";
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { updateAnimalRange } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FieldGroup } from "@expo/ui";
 interface IFormProps {
   defaultData: IFertilityRange | undefined;
   animalId: string;
@@ -83,22 +83,20 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
   };
 
   return (
-    <SafeAreaView style={styles.formContainer}>
-      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
-        <View style={styles.wrapper}>
-          <FormDateController
-            control={control}
-            controllerName="min_date"
-            labelText="Min Date Range"
-          />
-          <FormDateController
-            control={control}
-            controllerName="max_date"
-            labelText="Max Date Range"
-          />
-        </View>
-      </FormContainer>
-    </SafeAreaView>
+    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+      <FieldGroup.Section>
+        <FormDateController
+          control={control}
+          controllerName="min_date"
+          labelText="Min Date Range"
+        />
+        <FormDateController
+          control={control}
+          controllerName="max_date"
+          labelText="Max Date Range"
+        />
+      </FieldGroup.Section>
+    </FormContainer>
   );
 }
 

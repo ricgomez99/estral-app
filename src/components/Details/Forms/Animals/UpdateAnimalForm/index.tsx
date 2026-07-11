@@ -9,14 +9,31 @@ import { useQueryClient } from "@tanstack/react-query";
 import { sexOptions, typeOptions } from "@/utils/consts";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { FieldGroup } from "@expo/ui";
+import { useEffect } from "react";
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
 }
 
 export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
-  const { control, handleSubmit } = useForm<IAnimal>({
-    defaultValues: defaultData,
+  const { control, handleSubmit, reset } = useForm<IAnimal>({
+    defaultValues: {
+      name: "",
+      age: "",
+      type: "",
+      sex: "",
+    },
   });
+
+  useEffect(() => {
+    if (defaultData) {
+      reset({
+        name: defaultData.name,
+        age: defaultData.age,
+        type: defaultData.type,
+        sex: defaultData.sex,
+      });
+    }
+  }, [defaultData, reset]);
 
   const router = useRouter();
   const queryClient = useQueryClient();
