@@ -1,18 +1,26 @@
 import { INestedPickerProps } from "@/types/shared-types/nested-picker-types";
 import {
-  Host,
   ExposedDropdownMenuBox,
   ExposedDropdownMenu,
   TextField,
   DropdownMenuItem,
   useNativeState,
   Text,
-  Column,
+  Box,
+  Row,
 } from "@expo/ui/jetpack-compose";
-import { menuAnchor } from "@expo/ui/jetpack-compose/modifiers";
-import { useState } from "react";
+import {
+  fillMaxSize,
+  fillMaxWidth,
+  menuAnchor,
+} from "@expo/ui/jetpack-compose/modifiers";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 
 export default function NestedPicker({
+  labelCategory,
+  labelSubcategory,
+  pickerLabel,
   selectedCategory,
   onCategoryChange,
   categories,
@@ -23,12 +31,26 @@ export default function NestedPicker({
   const [expanded, setExpanded] = useState(false);
   const [subExpanded, setSubExpanded] = useState(false);
 
-  const selectedCatLabel = useNativeState(selectedCategory);
-  const selectedSubCatLabel = useNativeState(selectedSubcategory);
+  const selectedCatLabel = useNativeState(selectedCategory || "");
+  const selectedSubCatLabel = useNativeState(selectedSubcategory || "");
+
+  useEffect(() => {
+    if (selectedSubcategory) {
+      selectedCatLabel.value = selectedSubcategory;
+    } else {
+      selectedCatLabel.value = selectedCategory || `Select ${labelCategory}`;
+    }
+    selectedSubCatLabel.value = selectedSubcategory || "";
+  }, [selectedCategory, selectedSubcategory]);
 
   return (
-    <Host matchContents>
-      <Column>
+    <Box modifiers={[fillMaxSize()]} contentAlignment="center">
+      <Row
+        modifiers={[fillMaxWidth()]}
+        horizontalAlignment="start"
+        verticalAlignment="center"
+        horizontalArrangement="spaceBetween">
+        <Text style={styles.label}>{pickerLabel}</Text>
         <ExposedDropdownMenuBox
           expanded={expanded}
           onExpandedChange={setExpanded}>
@@ -37,6 +59,7 @@ export default function NestedPicker({
             readOnly
             modifiers={[menuAnchor()]}
           />
+
           <ExposedDropdownMenu
             expanded={expanded}
             onDismissRequest={() => setExpanded(false)}>
@@ -45,8 +68,8 @@ export default function NestedPicker({
                 <DropdownMenuItem
                   key={item}
                   onClick={() => {
-                    selectedCatLabel.value = item;
                     onCategoryChange(item);
+                    onSubcategoryChange("");
                     setExpanded(false);
                   }}>
                   <DropdownMenuItem.Text>
@@ -54,37 +77,55 @@ export default function NestedPicker({
                   </DropdownMenuItem.Text>
                 </DropdownMenuItem>
               ))}
-          </ExposedDropdownMenu>
-        </ExposedDropdownMenuBox>
 
-        <ExposedDropdownMenuBox
-          expanded={subExpanded && subcategories.length > 0}
-          onExpandedChange={setSubExpanded}>
-          <TextField
-            value={selectedSubCatLabel}
-            readOnly
-            modifiers={[menuAnchor()]}
-          />
-          <ExposedDropdownMenu
-            expanded={subExpanded}
-            onDismissRequest={() => setSubExpanded(false)}>
-            {subcategories &&
-              subcategories.map((item) => (
-                <DropdownMenuItem
-                  key={item}
-                  onClick={() => {
-                    selectedSubCatLabel.value = item;
-                    onSubcategoryChange(item);
-                    setSubExpanded(false);
-                  }}>
-                  <DropdownMenuItem.Text>
-                    <Text>{item}</Text>
-                  </DropdownMenuItem.Text>
-                </DropdownMenuItem>
-              ))}
+            <ExposedDropdownMenuBox
+              expanded={subExpanded && subcategories.length > 0}
+              onExpandedChange={setSubExpanded}>
+              <DropdownMenuItem
+                modifiers={[menuAnchor()]}
+                onClick={() => {
+                  onCategoryChange(labelSubcategory);
+                  setSubExpanded(!subExpanded);
+                }}>
+                <DropdownMenuItem.Text>
+                  <Text>
+                    {selectedSubcategory
+                      ? `${labelSubcategory} (${selectedSubcategory})`
+                      : `Check ${labelSubcategory}... ❯`}
+                  </Text>
+                </DropdownMenuItem.Text>
+              </DropdownMenuItem>
+              <ExposedDropdownMenu
+                expanded={subExpanded}
+                onDismissRequest={() => setSubExpanded(false)}>
+                {subcategories &&
+                  subcategories.map((item) => (
+                    <DropdownMenuItem
+                      key={item}
+                      onClick={() => {
+                        onSubcategoryChange(item);
+                        setSubExpanded(false);
+                        setSubExpanded(false);
+                      }}>
+                      <DropdownMenuItem.Text>
+                        <Text>{item}</Text>
+                      </DropdownMenuItem.Text>
+                    </DropdownMenuItem>
+                  ))}
+              </ExposedDropdownMenu>
+            </ExposedDropdownMenuBox>
           </ExposedDropdownMenu>
         </ExposedDropdownMenuBox>
-      </Column>
-    </Host>
+      </Row>
+    </Box>
   );
 }
+
+const styles = StyleSheet.create({
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 6,
+  },
+});

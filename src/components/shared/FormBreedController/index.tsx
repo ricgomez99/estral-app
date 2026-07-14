@@ -12,6 +12,7 @@ export default function FormBreedController<T extends FieldValues>({
   controllerName,
 }: IControllerProps<T>) {
   const SUB_CATEGORY = "Mixes";
+  const CATEGORY_LABEL = "Breed";
 
   return (
     <Controller
@@ -25,8 +26,9 @@ export default function FormBreedController<T extends FieldValues>({
 
         return (
           <NestedPicker
-            labelCategory={controllerName}
+            labelCategory={CATEGORY_LABEL}
             labelSubcategory={SUB_CATEGORY}
+            pickerLabel="Breed"
             selectedCategory={computedCategory}
             onCategoryChange={(newType) => {
               if (newType !== SUB_CATEGORY) {

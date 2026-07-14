@@ -1,5 +1,5 @@
 import { OptionType } from "@/types/picker-types";
-import { Row, Picker, Text } from "@expo/ui";
+import { Row, Picker, Text, Spacer } from "@expo/ui";
 import { StyleSheet } from "react-native";
 
 interface ISelectProps {
@@ -22,6 +22,7 @@ export default function Select({
   return (
     <Row alignment="center" spacing={16}>
       <Text textStyle={styles.label}>{placeholder}</Text>
+      <Spacer flexible />
       <Picker
         appearance="menu"
         selectedValue={value}

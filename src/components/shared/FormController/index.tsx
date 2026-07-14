@@ -2,7 +2,6 @@ import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import Select from "../Select";
 import { OptionType } from "@/types/picker-types";
 import { TextInput } from "@expo/ui";
-
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
