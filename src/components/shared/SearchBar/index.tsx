@@ -13,6 +13,8 @@ export default function SearchBar({ value, handleChange }: SearchBarProps) {
         onChangeText={handleChange}
         clearButtonMode="always"
         placeholder="Search"
+        enterKeyHint="search"
+        inputMode="search"
       />
     </View>
   );
@@ -20,7 +22,7 @@ export default function SearchBar({ value, handleChange }: SearchBarProps) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 5,
+    marginBottom: 20,
   },
 
   searchBar: {

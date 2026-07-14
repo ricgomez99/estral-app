@@ -1,8 +1,10 @@
 import { Tabs } from "expo-router";
 import { VIEW_TABS } from "@/utils/consts";
 import Entypo from "@expo/vector-icons/Entypo";
+import useAppStateFocus from "@/hooks/useAppStateFocus";
 
 export default function TabsLayout() {
+  useAppStateFocus();
   return (
     <Tabs>
       {VIEW_TABS &&

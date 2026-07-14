@@ -1,26 +1,42 @@
-import Form from "@/components/shared/Form";
+import FormContainer from "@/components/shared/FormContainer";
 import FormController from "@/components/shared/FormController";
 import { useForm } from "react-hook-form";
 import { IAnimal } from "@/types/mock-types";
-import { OptionType } from "@/types/picker-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
-import { Alert } from "react-native";
-
+import { useRouter } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { sexOptions, typeOptions } from "@/utils/consts";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { FieldGroup } from "@expo/ui";
+import { useEffect } from "react";
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
-  onSuccessClose: () => void;
 }
 
-export default function UpdateAnimalForm({
-  defaultData,
-  onSuccessClose,
-}: IUpdateFormProps) {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IAnimal>({ defaultValues: defaultData });
+export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
+  const { control, handleSubmit, reset } = useForm<IAnimal>({
+    defaultValues: {
+      name: "",
+      age: "",
+      type: "",
+      sex: "",
+    },
+  });
+
+  useEffect(() => {
+    if (defaultData) {
+      reset({
+        name: defaultData.name,
+        age: defaultData.age,
+        type: defaultData.type,
+        sex: defaultData.sex,
+      });
+    }
+  }, [defaultData, reset]);
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { mutate: updateAnimal } = useGenericUpdate<IAnimal>({
     queryKey: ["animals"],
@@ -36,17 +52,6 @@ export default function UpdateAnimalForm({
     },
   });
 
-  const sexOptions: OptionType[] = [
-    { label: "Male", value: "Male" },
-    { label: "Female", value: "Female" },
-  ];
-
-  const typeOptions: OptionType[] = [
-    { label: "Donkey", value: "donkey" },
-    { label: "Horse", value: "horse" },
-    { label: "Zebra", value: "zebra" },
-  ];
-
   const submit = (data: IAnimal) => {
     // Provitional Update Process
     if (!defaultData?.id) return;
@@ -57,49 +62,64 @@ export default function UpdateAnimalForm({
         id: defaultData?.id,
       },
       {
-        onSuccess: () => {
-          onSuccessClose();
-          Alert.alert(
-            "Animal Updated!",
-            `${data.name} has been saved successfully`,
-          );
+        onSuccess: (updatedAnimal) => {
+          if (updatedAnimal) {
+            queryClient.setQueryData(["animal", defaultData.id], updatedAnimal);
+          }
+
+          if (router.canGoBack()) router.back();
+
+          Toast.show({
+            type: "success",
+            text1: `${data.name} has been updated successfully`,
+            position: "top",
+          });
         },
 
-        onError: () => {
-          Alert.alert("Error", "Unable to process changes");
+        onError: (error) => {
+          Toast.show({
+            type: "error",
+            text1: `Unable to update animal, error: ${error}`,
+            position: "top",
+          });
         },
       },
     );
   };
 
   return (
-    <Form onSubmit={handleSubmit(submit)} headerTitle="Update">
-      <FormController
-        control={control}
-        controllerName="name"
-        inputPlaceHolder="Name"
-        inputType="input"
-      />
-      <FormController
-        control={control}
-        controllerName="age"
-        inputPlaceHolder="Age"
-        inputType="input"
-      />
-      <FormController
-        control={control}
-        controllerName="type"
-        inputPlaceHolder="Type"
-        inputType="picker"
-        pickerOptions={typeOptions}
-      />
-      <FormController
-        control={control}
-        controllerName="sex"
-        inputPlaceHolder="Sex"
-        inputType="picker"
-        pickerOptions={sexOptions}
-      />
-    </Form>
+    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+      <FieldGroup.Section>
+        <FormController
+          control={control}
+          controllerName="name"
+          inputPlaceHolder="Name"
+          inputType="input"
+        />
+
+        <FormController
+          control={control}
+          controllerName="age"
+          inputPlaceHolder="Age"
+          inputType="input"
+        />
+      </FieldGroup.Section>
+      <FieldGroup.Section>
+        <FormController
+          control={control}
+          controllerName="type"
+          inputPlaceHolder="Type"
+          inputType="picker"
+          pickerOptions={typeOptions}
+        />
+        <FormController
+          control={control}
+          controllerName="sex"
+          inputPlaceHolder="Sex"
+          inputType="picker"
+          pickerOptions={sexOptions}
+        />
+      </FieldGroup.Section>
+    </FormContainer>
   );
 }
