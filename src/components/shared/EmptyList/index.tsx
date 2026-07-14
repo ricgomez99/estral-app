@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
 
   text: {
     color: "#bbbb",
-    fontFamily: "inherit",
     fontSize: 14,
     fontWeight: "500",
   },

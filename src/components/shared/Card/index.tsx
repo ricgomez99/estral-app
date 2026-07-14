@@ -2,9 +2,9 @@ import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 
 type CardProps = {
-  cardImage: string;
-  cardTitle: string;
-  cardSubTitle: string;
+  cardImage: string | undefined;
+  cardTitle: string | undefined;
+  cardSubTitle: string | undefined;
 };
 
 export default function Card(props: CardProps) {

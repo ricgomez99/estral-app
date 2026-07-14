@@ -1,13 +1,11 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
-import { TextInput, StyleSheet } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import Select from "../Select";
 import { OptionType } from "@/types/picker-types";
-
+import { TextInput } from "@expo/ui";
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
-  inputPlaceHolder: string;
+  inputPlaceHolder: string | undefined;
   inputType: "input" | "picker";
   pickerOptions?: OptionType[];
 }
@@ -25,28 +23,21 @@ export default function FormController<T extends FieldValues = FieldValues>({
       render={({ field: { onChange, onBlur, value } }) =>
         inputType === "input" ? (
           <TextInput
+            value={value}
             placeholder={inputPlaceHolder}
-            onBlur={onBlur}
             onChangeText={onChange}
-            value={value.toString()}
-            style={styles.input}
+            onBlur={onBlur}
           />
         ) : (
-          <Select options={pickerOptions} onChange={onChange} value={value} />
+          <Select
+            options={pickerOptions}
+            onChange={onChange}
+            value={value}
+            placeholder={inputPlaceHolder}
+          />
         )
       }
       name={controllerName}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: "#BBBB",
-    borderRadius: 8,
-    width: "100%",
-  },
-});

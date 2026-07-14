@@ -1,17 +1,16 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, StatusBar } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 interface ListProps {
   children: React.ReactNode;
 }
 
 export default function ListContainer({ children }: ListProps) {
-  return <SafeAreaView style={styles.container}>{children}</SafeAreaView>;
+  return <View style={styles.container}>{children}</View>;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginVertical: 10,
   },
 });

@@ -1,11 +1,10 @@
-import { DrawerToggleButton } from "@react-navigation/drawer";
-import { Drawer } from "expo-router/drawer";
+import { Drawer, DrawerToggleButton } from "expo-router/drawer";
 import { DRAWER_SCREENS } from "@/utils/consts";
 
 export default function WorkshopLayout() {
   return (
     <Drawer
-      initialRouteName="animals/index"
+      initialRouteName="animals"
       screenOptions={{
         headerShadowVisible: false,
         headerTitle: "Workshop",
@@ -18,7 +17,11 @@ export default function WorkshopLayout() {
       }}>
       {DRAWER_SCREENS &&
         DRAWER_SCREENS.map((screen) => (
-          <Drawer.Screen name={screen.screenName} options={screen.options} />
+          <Drawer.Screen
+            key={screen.screenName}
+            name={screen.screenName}
+            options={screen.options}
+          />
         ))}
     </Drawer>
   );

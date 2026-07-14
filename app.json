@@ -7,18 +7,34 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.estralapp",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This application needs acess to your gallery to select pictures for your registered animals",
+        "NSCameraUsageDescription": "This application needs access to the camera for taking pictures for your registered animals"
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.estralapp"
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router",
+      "@react-native-community/datetimepicker",
+      "expo-font",
+      "expo-image",
+      "expo-status-bar"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "dd05d2f9-4ae1-4b9f-9cb2-6a5bf9b17b05"
+      }
+    },
+    "owner": "ricgomez99"
   }
 }
