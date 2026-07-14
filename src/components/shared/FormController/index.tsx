@@ -1,8 +1,7 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
-import { TextInput, StyleSheet } from "react-native";
 import Select from "../Select";
 import { OptionType } from "@/types/picker-types";
-
+import { TextInput } from "@expo/ui";
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
@@ -24,11 +23,10 @@ export default function FormController<T extends FieldValues = FieldValues>({
       render={({ field: { onChange, onBlur, value } }) =>
         inputType === "input" ? (
           <TextInput
+            value={value}
             placeholder={inputPlaceHolder}
-            onBlur={onBlur}
             onChangeText={onChange}
-            value={value?.toString()}
-            style={styles.input}
+            onBlur={onBlur}
           />
         ) : (
           <Select
@@ -43,14 +41,3 @@ export default function FormController<T extends FieldValues = FieldValues>({
     />
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: "#BBBB",
-    borderRadius: 8,
-    width: "100%",
-  },
-});

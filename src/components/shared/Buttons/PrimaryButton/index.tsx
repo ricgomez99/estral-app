@@ -1,9 +1,9 @@
-import { Pressable, Text, StyleSheet } from "react-native";
-
+import { StyleSheet } from "react-native";
+import { Button, Text } from "@expo/ui";
 interface IPrimaryButtonProps {
   title: string;
   handleClick: () => void;
-  type: "danger" | "normal";
+  type?: "danger" | "normal";
 }
 
 export default function PrimaryButton({
@@ -13,11 +13,9 @@ export default function PrimaryButton({
 }: IPrimaryButtonProps) {
   const buttonColor = type === "danger" ? "#E03F4F" : "#093C5D";
   return (
-    <Pressable
-      onPress={handleClick}
-      style={[styles.button, { backgroundColor: buttonColor }]}>
-      <Text style={styles.buttonTitle}>{title}</Text>
-    </Pressable>
+    <Button onPress={handleClick} variant="filled">
+      <Text>{title}</Text>
+    </Button>
   );
 }
 

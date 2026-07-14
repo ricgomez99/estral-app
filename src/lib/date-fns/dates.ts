@@ -1,4 +1,4 @@
-import { format, isValid, parseISO } from "date-fns";
+import { format, isValid, parseISO, addDays } from "date-fns";
 import { es, enUS } from "date-fns/locale";
 import { DATE_EN_FORMAT, DATE_ES_FORMAT } from "@/utils/consts";
 
@@ -17,6 +17,20 @@ export class DateService {
     es: DATE_ES_FORMAT,
     en: DATE_EN_FORMAT,
   };
+
+  public static addDaysToDate(date: Date | string | undefined, days: number) {
+    if (!date) {
+      throw new Error("Date is required");
+    }
+
+    const formatDate = new Date(date);
+
+    if (!isValid(formatDate)) {
+      throw new Error("Invalid date format");
+    }
+
+    return addDays(formatDate, days);
+  }
 
   public static formatToLongDate(isoString: IsoString, language: Languages) {
     if (!isoString || isoString === "undefined") return;

@@ -4,25 +4,36 @@ import { useForm } from "react-hook-form";
 import { IAnimal } from "@/types/mock-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { ANIMALS } from "@/utils/mocks";
-import { Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { sexOptions, typeOptions } from "@/utils/consts";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { SafeAreaView } from "react-native-safe-area-context";
-
+import { FieldGroup } from "@expo/ui";
+import { useEffect } from "react";
 interface IUpdateFormProps {
   defaultData: IAnimal | undefined;
 }
 
 export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IAnimal>({
-    defaultValues: defaultData,
+  const { control, handleSubmit, reset } = useForm<IAnimal>({
+    defaultValues: {
+      name: "",
+      age: "",
+      type: "",
+      sex: "",
+    },
   });
+
+  useEffect(() => {
+    if (defaultData) {
+      reset({
+        name: defaultData.name,
+        age: defaultData.age,
+        type: defaultData.type,
+        sex: defaultData.sex,
+      });
+    }
+  }, [defaultData, reset]);
 
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -77,21 +88,23 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
   };
 
   return (
-    <SafeAreaView style={styles.formWrapper}>
-      <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+      <FieldGroup.Section>
         <FormController
           control={control}
           controllerName="name"
           inputPlaceHolder="Name"
           inputType="input"
         />
-        {errors.name && <Text>{errors.name.message}</Text>}
+
         <FormController
           control={control}
           controllerName="age"
           inputPlaceHolder="Age"
           inputType="input"
         />
+      </FieldGroup.Section>
+      <FieldGroup.Section>
         <FormController
           control={control}
           controllerName="type"
@@ -106,13 +119,7 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
           inputType="picker"
           pickerOptions={sexOptions}
         />
-      </FormContainer>
-    </SafeAreaView>
+      </FieldGroup.Section>
+    </FormContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  formWrapper: {
-    flex: 1,
-  },
-});

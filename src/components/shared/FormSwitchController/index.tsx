@@ -1,6 +1,6 @@
 import { Control, Path, FieldValues } from "react-hook-form";
-import { Switch, View, Text, StyleSheet } from "react-native";
 import { Controller } from "react-hook-form";
+import { Switch } from "@expo/ui";
 
 interface IControlllerProps<T extends FieldValues> {
   control: Control<T>;
@@ -17,40 +17,21 @@ export default function FormSwitchController<
   onCustomChange,
 }: IControlllerProps<T>) {
   return (
-    <View style={styles.switchWrapper}>
-      <Text style={styles.labelText}>{labelText}</Text>
-      <Controller
-        control={control}
-        name={controllerName}
-        render={({ field: { onChange, value } }) => (
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={value ? "#f5dd4b" : "#f4f3f4"}
-            onValueChange={(newValue) => {
-              onChange(newValue);
-              if (onCustomChange) {
-                onCustomChange(newValue);
-              }
-            }}
-            value={value}
-          />
-        )}
-      />
-    </View>
+    <Controller
+      control={control}
+      name={controllerName}
+      render={({ field: { onChange, value } }) => (
+        <Switch
+          label={labelText}
+          value={value}
+          onValueChange={(newValue) => {
+            onChange(newValue);
+            if (onCustomChange) {
+              onCustomChange(newValue);
+            }
+          }}
+        />
+      )}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  switchWrapper: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    gap: 3,
-  },
-
-  labelText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
-  },
-});
