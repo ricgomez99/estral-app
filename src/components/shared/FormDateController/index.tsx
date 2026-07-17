@@ -53,6 +53,7 @@ export default function FormDateController<
               inputText={formattedValue}
               labelText={labelText}
             />
+
             {showDate && (
               <DateTimePicker
                 value={defaultDate}

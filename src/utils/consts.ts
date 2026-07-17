@@ -60,6 +60,12 @@ const typeOptions: OptionType[] = [
   { label: "Zebra", value: "zebra" },
 ];
 
+const conditionOptions: OptionType[] = [
+  { label: "Young Female", value: "Young Female" },
+  { label: "Pregnant", value: "Pregnant" },
+  { label: "Not Pregnant", value: "Not Pregnant" },
+];
+
 const medicationOptions: OptionType[] = [
   { label: "Gnrh", value: "gnrh" },
   { label: "Progesterone", value: "progesterone" },
@@ -92,15 +98,19 @@ const BREEDS = [
 
 const MIXES = ["Mix 1", "Mix 2", "Mix 3", "Mix 4"] as const;
 
+const REPRODUCTION_TYPES = ["Natural", "Insemination", "Transfer"];
+
 export {
   VIEW_TABS,
   DRAWER_SCREENS,
   DATE_EN_FORMAT,
   DATE_ES_FORMAT,
+  REPRODUCTION_TYPES,
   BREEDS,
   MIXES,
   sexOptions,
   typeOptions,
   medicationOptions,
+  conditionOptions,
   images,
 };

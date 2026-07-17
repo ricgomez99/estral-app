@@ -3,9 +3,10 @@ import FormController from "@/components/shared/FormController";
 import FormSwitchController from "@/components/shared/FormSwitchController";
 import FormImageController from "@/components/shared/FormImageController";
 import FormBreedController from "@/components/shared/FormBreedController";
+import FormConditionController from "@/components/shared/FormConditionController";
 import { IAnimal } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
-import { sexOptions, typeOptions } from "@/utils/consts";
+import { sexOptions, typeOptions, conditionOptions } from "@/utils/consts";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
 import { addAnimalMock } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
@@ -22,6 +23,12 @@ export default function CreateAnimalForm() {
       age: "",
       microchipId: "",
       breed: undefined,
+      condition: undefined,
+      reproduction_details: {
+        type: "transfer",
+        date: "",
+        embryon_days: "",
+      },
       isDonor: false,
       isRecipient: false,
     },
@@ -106,7 +113,17 @@ export default function CreateAnimalForm() {
           inputPlaceHolder="Specie"
           pickerOptions={typeOptions}
         />
+        <FormController
+          control={control}
+          controllerName="condition"
+          inputType="picker"
+          inputPlaceHolder="Condition"
+          pickerOptions={conditionOptions}
+        />
         <FormBreedController control={control} controllerName="breed" />
+      </FieldGroup.Section>
+      <FieldGroup.Section>
+        <FormConditionController control={control} controllerName="condition" />
       </FieldGroup.Section>
       <FieldGroup.Section>
         <FormController
