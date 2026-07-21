@@ -123,7 +123,11 @@ export default function CreateAnimalForm() {
         <FormBreedController control={control} controllerName="breed" />
       </FieldGroup.Section>
       <FieldGroup.Section>
-        <FormConditionController control={control} controllerName="condition" />
+        <FormConditionController
+          control={control}
+          controllerName="reproduction_details"
+          setControlValue={setValue}
+        />
       </FieldGroup.Section>
       <FieldGroup.Section>
         <FormController

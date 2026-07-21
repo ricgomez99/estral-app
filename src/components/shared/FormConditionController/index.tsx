@@ -1,15 +1,22 @@
 import React, { useState } from "react";
-import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import {
+  Control,
+  FieldValues,
+  Path,
+  UseFormSetValue,
+  useWatch,
+} from "react-hook-form";
 import SegmentedButtons from "../Buttons/SegmentedButtons";
 import { TransferReproduction } from "@/components/FormSections";
 import { REPRODUCTION_TYPES } from "@/utils/consts";
 import FormDateController from "../FormDateController";
 import { Column } from "@expo/ui";
+import { IAnimal } from "@/types/mock-types";
 
 interface IControllerProps<T extends FieldValues> {
-  control: Control<T>;
+  control: Control<T | IAnimal>;
   controllerName: Path<T>;
-  watchProp?: string;
+  setControlValue: UseFormSetValue<IAnimal>;
 }
 
 type ReproductiveOptions = "natural" | "insemination" | "transfer";
@@ -17,8 +24,14 @@ type ReproductiveOptions = "natural" | "insemination" | "transfer";
 export default function FormConditionController<T extends FieldValues>({
   control,
   controllerName,
+  setControlValue,
 }: IControllerProps<T>) {
-  const options = REPRODUCTION_TYPES;
+  const conditionValue = useWatch({
+    control: control,
+    name: "condition" as Path<T>,
+  });
+
+  const isPregnant = conditionValue === "Pregnant";
 
   const [optionSelected, setOptionSelected] =
     useState<ReproductiveOptions>("natural");
@@ -26,52 +39,45 @@ export default function FormConditionController<T extends FieldValues>({
     const selected = options.at(index)?.toLowerCase() as ReproductiveOptions;
     if (selected) {
       setOptionSelected(selected);
+      setControlValue(`${controllerName}.type` as Path<IAnimal>, selected);
     }
   };
 
-  const REPRODUCTIVE_FORMS: Record<
-    ReproductiveOptions,
-    () => React.JSX.Element
+  if (!isPregnant) {
+    return null;
+  }
+
+  const options = REPRODUCTION_TYPES;
+  const DATE_LABELS: Record<
+    Extract<ReproductiveOptions, "natural" | "insemination">,
+    string
   > = {
-    natural: () => (
-      <FormDateController
-        control={control}
-        controllerName={`${controllerName}.date` as Path<T>}
-        labelText="Mating Date"
-      />
-    ),
-    insemination: () => (
-      <FormDateController
-        control={control}
-        controllerName={`${controllerName}.date` as Path<T>}
-        labelText="Insemination Date"
-      />
-    ),
-    transfer: () => (
-      <TransferReproduction
-        control={control}
-        controllerName={"reproduction_details" as Path<T>}
-      />
-    ),
+    insemination: "Insemination Date",
+    natural: "Mating Date",
   };
 
   const selectedOption =
     optionSelected.charAt(0).toUpperCase() + optionSelected.slice(1);
 
   return (
-    <Controller
-      control={control}
-      name={controllerName}
-      render={({ field: { onChange, value } }) => (
-        <Column spacing={12}>
-          <SegmentedButtons
-            options={options}
-            selectedOption={selectedOption}
-            onPress={handlePress}
-          />
-          {REPRODUCTIVE_FORMS[optionSelected]()}
-        </Column>
+    <Column spacing={12}>
+      <SegmentedButtons
+        options={options}
+        selectedOption={selectedOption}
+        onPress={handlePress}
+      />
+      {optionSelected !== "transfer" ? (
+        <FormDateController
+          control={control}
+          controllerName={`${controllerName}.date` as Path<T>}
+          labelText={DATE_LABELS[optionSelected]}
+        />
+      ) : (
+        <TransferReproduction
+          control={control}
+          controllerName={controllerName}
+        />
       )}
-    />
+    </Column>
   );
 }
