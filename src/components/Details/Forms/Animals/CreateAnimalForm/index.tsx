@@ -6,6 +6,7 @@ import FormBreedController from "@/components/shared/FormBreedController";
 import FormConditionController from "@/components/shared/FormConditionController";
 import { IAnimal } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { sexOptions, typeOptions, conditionOptions } from "@/utils/consts";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
 import { addAnimalMock } from "@/utils/mock-functions";
@@ -13,25 +14,28 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { FieldGroup, RNHostView } from "@expo/ui";
+import { createAnimalSchema } from "@/lib/zod-schemas";
 
 export default function CreateAnimalForm() {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { control, handleSubmit, setValue } = useForm<IAnimal>({
+  const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       name: "",
-      age: "",
+      age: 0,
       microchipId: "",
       breed: undefined,
       condition: undefined,
       reproduction_details: {
         type: "transfer",
         date: "",
-        embryon_days: "",
+        embryon_days: 0,
       },
       isDonor: false,
       isRecipient: false,
     },
+    mode: "onTouched",
+    resolver: zodResolver(createAnimalSchema),
   });
 
   const { mutate: createAnimal } = useOptimisticCreate({
@@ -91,6 +95,7 @@ export default function CreateAnimalForm() {
           inputType="input"
           inputPlaceHolder="Animal Name"
         />
+
         <FormController
           control={control}
           controllerName="age"
@@ -106,6 +111,7 @@ export default function CreateAnimalForm() {
           inputPlaceHolder="Sex"
           pickerOptions={sexOptions}
         />
+
         <FormController
           control={control}
           controllerName="type"
@@ -113,6 +119,7 @@ export default function CreateAnimalForm() {
           inputPlaceHolder="Specie"
           pickerOptions={typeOptions}
         />
+
         <FormController
           control={control}
           controllerName="condition"
@@ -120,6 +127,7 @@ export default function CreateAnimalForm() {
           inputPlaceHolder="Condition"
           pickerOptions={conditionOptions}
         />
+
         <FormBreedController control={control} controllerName="breed" />
       </FieldGroup.Section>
       <FieldGroup.Section>

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Control,
   FieldValues,
   Path,
+  PathValue,
   UseFormSetValue,
   useWatch,
 } from "react-hook-form";
@@ -14,9 +15,9 @@ import { Column } from "@expo/ui";
 import { IAnimal } from "@/types/mock-types";
 
 interface IControllerProps<T extends FieldValues> {
-  control: Control<T | IAnimal>;
+  control: Control<T>;
   controllerName: Path<T>;
-  setControlValue: UseFormSetValue<IAnimal>;
+  setControlValue: UseFormSetValue<T>;
 }
 
 type ReproductiveOptions = "natural" | "insemination" | "transfer";
@@ -37,9 +38,11 @@ export default function FormConditionController<T extends FieldValues>({
     useState<ReproductiveOptions>("natural");
   const handlePress = (index: number) => {
     const selected = options.at(index)?.toLowerCase() as ReproductiveOptions;
+    const typePath = `${controllerName}.type` as Path<T>;
+
     if (selected) {
       setOptionSelected(selected);
-      setControlValue(`${controllerName}.type` as Path<IAnimal>, selected);
+      setControlValue(typePath, selected as PathValue<T, typeof typePath>);
     }
   };
 

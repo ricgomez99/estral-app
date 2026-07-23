@@ -13,7 +13,7 @@ interface IInseminationReproduction {
 interface ITransferReproduction {
   type: "transfer";
   date: string;
-  embryon_days: string | undefined;
+  embryon_days: number | undefined;
 }
 
 type ReproductionDetails =
@@ -24,7 +24,7 @@ type ReproductionDetails =
 interface IAnimal {
   id: string | number;
   name: string;
-  age: string;
+  age: number;
   type: Species | undefined | string;
   sex: Sex | undefined | string;
   breed?: Breed;
@@ -35,7 +35,7 @@ interface IAnimal {
   isDonor?: boolean;
   image: string;
   last_oestrus?: string;
-  fertility_ranges: IFertilityRange[];
+  fertility_ranges?: IFertilityRange[];
 }
 
 interface IFertilityRange {
