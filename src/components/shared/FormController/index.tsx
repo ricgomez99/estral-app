@@ -1,7 +1,9 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import Select from "../Select";
 import { OptionType } from "@/types/picker-types";
-import { TextInput } from "@expo/ui";
+import { TextInput, Column } from "@expo/ui";
+import { useController } from "react-hook-form";
+import ErrorText from "../ErrorText";
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
@@ -17,24 +19,39 @@ export default function FormController<T extends FieldValues = FieldValues>({
   inputType,
   pickerOptions,
 }: IControllerProps<T>) {
+  const {
+    fieldState: { error },
+  } = useController({
+    name: controllerName,
+    control,
+  });
   return (
     <Controller
       control={control}
-      render={({ field: { onChange, onBlur, value } }) =>
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) =>
         inputType === "input" ? (
-          <TextInput
-            value={value}
-            placeholder={inputPlaceHolder}
-            onChangeText={onChange}
-            onBlur={onBlur}
-          />
+          <Column>
+            <TextInput
+              value={value}
+              placeholder={inputPlaceHolder}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            {error && <ErrorText message={error.message} />}
+          </Column>
         ) : (
-          <Select
-            options={pickerOptions}
-            onChange={onChange}
-            value={value}
-            placeholder={inputPlaceHolder}
-          />
+          <Column>
+            <Select
+              options={pickerOptions}
+              onChange={onChange}
+              value={value}
+              placeholder={inputPlaceHolder}
+            />
+            {error && <ErrorText message={error.message} />}
+          </Column>
         )
       }
       name={controllerName}
