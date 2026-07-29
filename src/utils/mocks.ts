@@ -4,7 +4,7 @@ const ANIMALS: IAnimal[] = [
   {
     id: "1",
     name: "Princesa",
-    age: "5",
+    age: 5,
     type: "horse",
     sex: "Female",
     breed: "Colombian Criollo Horse (CCC)",
@@ -27,7 +27,7 @@ const ANIMALS: IAnimal[] = [
   {
     id: "2",
     name: "Babieca",
-    age: "7",
+    age: 7,
     type: "horse",
     sex: "Female",
     breed: "American Quarter Horse",
@@ -50,7 +50,7 @@ const ANIMALS: IAnimal[] = [
   {
     id: "3",
     name: "Malvina",
-    age: "4",
+    age: 4,
     type: "donkey",
     sex: "Female",
     breed: "Chilean Criollo",

@@ -7,12 +7,11 @@ import {
   UseFormSetValue,
   useWatch,
 } from "react-hook-form";
-import SegmentedButtons from "../Buttons/SegmentedButtons";
-import { TransferReproduction } from "@/components/FormSections";
+import SegmentedButtons from "../../Buttons/SegmentedButtons";
+import TransferReproductionController from "../TransferReproductionController";
 import { REPRODUCTION_TYPES } from "@/utils/consts";
 import FormDateController from "../FormDateController";
 import { Column } from "@expo/ui";
-import { IAnimal } from "@/types/mock-types";
 
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
@@ -76,7 +75,7 @@ export default function FormConditionController<T extends FieldValues>({
           labelText={DATE_LABELS[optionSelected]}
         />
       ) : (
-        <TransferReproduction
+        <TransferReproductionController
           control={control}
           controllerName={controllerName}
         />

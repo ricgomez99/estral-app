@@ -1,5 +1,7 @@
-import FormController from "@/components/shared/FormController";
-import FormDateController from "@/components/shared/FormDateController";
+import {
+  FormDateController,
+  FormController,
+} from "@/components/shared/Controllers";
 import { medicationOptions } from "@/utils/consts";
 import { Control, useWatch } from "react-hook-form";
 import { IFertilityRange } from "@/types/mock-types";

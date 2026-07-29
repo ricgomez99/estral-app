@@ -1,5 +1,5 @@
 import FormContainer from "@/components/shared/FormContainer";
-import FormDateController from "@/components/shared/FormDateController";
+import { FormDateController } from "@/components/shared/Controllers";
 import { useForm } from "react-hook-form";
 import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { StyleSheet } from "react-native";
@@ -37,7 +37,7 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
               ["animal-ranges", animalId],
               (oldData) => {
                 if (!oldData) return oldData;
-                const nextRanges = oldData?.fertility_ranges.map((r) =>
+                const nextRanges = oldData?.fertility_ranges?.map((r) =>
                   r.id === updatedRange.id ? updatedRange : r,
                 );
 
@@ -82,8 +82,10 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
     );
   };
 
+  const onPressSubmit = handleSubmit(submit);
+
   return (
-    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+    <FormContainer onSubmit={onPressSubmit}>
       <FieldGroup.Section>
         <FormDateController
           control={control}

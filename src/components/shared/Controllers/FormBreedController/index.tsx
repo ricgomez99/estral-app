@@ -1,8 +1,8 @@
 import { FieldValues, Control, Path, Controller } from "react-hook-form";
 import { BREEDS, MIXES } from "@/utils/consts";
-import NestedPicker from "../NestedPicker";
+import NestedPicker from "../../NestedPicker";
 import { Column } from "@expo/ui";
-import ErrorText from "../ErrorText";
+import ErrorText from "../../ErrorText";
 
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;

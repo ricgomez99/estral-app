@@ -2,10 +2,10 @@ import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import { useState } from "react";
 import { DateService } from "@/lib";
 
-import DatePickerCustom from "../DatePickerCustom";
+import DatePickerCustom from "../../DatePickerCustom";
 import { Platform } from "react-native";
 import { Column } from "@expo/ui";
-import DateInput from "../DateInput";
+import DateInput from "../../DateInput";
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
