@@ -1,3 +1,7 @@
-import { createAnimalSchema, AnimalFormData } from "./createAnimalSchema";
+import {
+  createAnimalSchema,
+  AnimalFormData,
+  AnimalFormOutput,
+} from "./createAnimalSchema";
 
-export { createAnimalSchema, AnimalFormData };
+export { createAnimalSchema, AnimalFormData, AnimalFormOutput };

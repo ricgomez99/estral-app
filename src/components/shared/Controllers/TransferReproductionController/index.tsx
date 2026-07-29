@@ -1,13 +1,14 @@
 import { Column, TextInput } from "@expo/ui";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import FormDateController from "@/components/shared/FormDateController";
+import FormDateController from "../FormDateController";
+import ErrorText from "../../ErrorText";
 
 interface IProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
 }
 
-export default function TransferReproduction<T extends FieldValues>({
+export default function TransferReproductionController<T extends FieldValues>({
   control,
   controllerName,
 }: IProps<T>) {
@@ -22,13 +23,17 @@ export default function TransferReproduction<T extends FieldValues>({
       <Controller
         control={control}
         name={`${controllerName}.embryon_days` as Path<T>}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            value={value}
-            onChangeText={onChange}
-            placeholder="Embryon Days"
-            style={{ paddingVertical: 20 }}
-          />
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <Column spacing={8}>
+            <TextInput
+              value={value}
+              onChangeText={onChange}
+              placeholder="Embryon Days"
+              style={{ paddingVertical: 20 }}
+              inputMode="numeric"
+            />
+            {error && <ErrorText message={error.message} />}
+          </Column>
         )}
       />
     </Column>

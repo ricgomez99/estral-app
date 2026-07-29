@@ -19,7 +19,10 @@ const inseminationReproductionSchema = z.object({
 const transferReproductionSchema = z.object({
   type: z.literal("transfer"),
   date: z.string().min(1, "Date is required"),
-  embryon_days: z.number().nonnegative().min(1),
+  embryon_days: z.coerce
+    .number()
+    .min(1, "The minimun days value is 1")
+    .nonnegative(),
 });
 
 const reproductionDetailsSchema = z.discriminatedUnion("type", [

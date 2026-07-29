@@ -1,5 +1,5 @@
 import FormContainer from "@/components/shared/FormContainer";
-import FormController from "@/components/shared/FormController";
+import { FormController } from "@/components/shared/Controllers";
 import { useForm } from "react-hook-form";
 import { IAnimal } from "@/types/mock-types";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
@@ -18,7 +18,7 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
   const { control, handleSubmit, reset } = useForm<IAnimal>({
     defaultValues: {
       name: "",
-      age: "",
+      age: 3,
       type: "",
       sex: "",
     },
@@ -87,8 +87,9 @@ export default function UpdateAnimalForm({ defaultData }: IUpdateFormProps) {
     );
   };
 
+  const onPressSubmit = handleSubmit(submit);
   return (
-    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+    <FormContainer onSubmit={onPressSubmit}>
       <FieldGroup.Section>
         <FormController
           control={control}

@@ -46,7 +46,7 @@ export default function Ranges() {
               <Card
                 cardTitle={item.name}
                 cardImage={item.image}
-                cardSubTitle={`ranges: ${item.fertility_ranges.length}`}
+                cardSubTitle={`ranges: ${item.fertility_ranges?.length}`}
               />
             </LinkPressable>
           )}

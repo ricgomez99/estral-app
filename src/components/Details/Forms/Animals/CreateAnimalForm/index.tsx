@@ -1,9 +1,13 @@
 import FormContainer from "@/components/shared/FormContainer";
-import FormController from "@/components/shared/FormController";
-import FormSwitchController from "@/components/shared/FormSwitchController";
-import FormImageController from "@/components/shared/FormImageController";
-import FormBreedController from "@/components/shared/FormBreedController";
-import FormConditionController from "@/components/shared/FormConditionController";
+import {
+  FormController,
+  FormBreedController,
+  FormSwitchController,
+  FormImageController,
+  FormConditionController,
+  FormDateController,
+} from "@/components/shared/Controllers";
+
 import { IAnimal } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,28 +19,45 @@ import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { FieldGroup, RNHostView } from "@expo/ui";
 import { createAnimalSchema } from "@/lib/zod-schemas";
+import { AnimalFormData } from "@/lib/zod-schemas";
+import { useEffect } from "react";
+import { DateService } from "@/lib";
 
 export default function CreateAnimalForm() {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { control, handleSubmit, setValue } = useForm({
+  const defaultDate = DateService.formatToStoredDate(new Date());
+  const { control, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
       name: "",
-      age: 0,
+      age: 3,
+      type: "horse",
       microchipId: "",
-      breed: undefined,
-      condition: undefined,
-      reproduction_details: {
-        type: "transfer",
-        date: "",
-        embryon_days: 0,
-      },
+      sex: "Female",
+      breed: "American Quarter Horse",
+      condition: "Not Pregnant",
+      reproduction_details: undefined,
+      last_oestrus: defaultDate,
       isDonor: false,
       isRecipient: false,
     },
     mode: "onTouched",
     resolver: zodResolver(createAnimalSchema),
   });
+
+  const [sexValue, conditionValue] = watch(["sex", "condition"]);
+
+  useEffect(() => {
+    if (conditionValue !== "Pregnant") {
+      setValue("reproduction_details", undefined, { shouldValidate: true });
+    } else {
+      setValue("reproduction_details", {
+        type: "transfer",
+        date: defaultDate as string,
+        embryon_days: 1,
+      });
+    }
+  }, [conditionValue, setValue, defaultDate]);
 
   const { mutate: createAnimal } = useOptimisticCreate({
     queryKey: ["animals"],
@@ -55,11 +76,11 @@ export default function CreateAnimalForm() {
     },
   });
 
-  const submit = (data: IAnimal) => {
+  const submit = (data: AnimalFormData) => {
     if (!data) return;
 
     createAnimal(
-      { ...data },
+      { ...(data as IAnimal) },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
@@ -86,8 +107,10 @@ export default function CreateAnimalForm() {
     );
   };
 
+  const onPressSubmit = handleSubmit(submit);
+
   return (
-    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+    <FormContainer onSubmit={onPressSubmit}>
       <FieldGroup.Section>
         <FormController
           control={control}
@@ -101,6 +124,7 @@ export default function CreateAnimalForm() {
           controllerName="age"
           inputType="input"
           inputPlaceHolder="Age"
+          mode="numeric"
         />
       </FieldGroup.Section>
       <FieldGroup.Section>
@@ -119,24 +143,33 @@ export default function CreateAnimalForm() {
           inputPlaceHolder="Specie"
           pickerOptions={typeOptions}
         />
-
-        <FormController
-          control={control}
-          controllerName="condition"
-          inputType="picker"
-          inputPlaceHolder="Condition"
-          pickerOptions={conditionOptions}
-        />
-
         <FormBreedController control={control} controllerName="breed" />
       </FieldGroup.Section>
-      <FieldGroup.Section>
-        <FormConditionController
-          control={control}
-          controllerName="reproduction_details"
-          setControlValue={setValue}
-        />
-      </FieldGroup.Section>
+      {sexValue === "Female" && (
+        <FieldGroup.Section>
+          <FormController
+            control={control}
+            controllerName="condition"
+            inputType="picker"
+            inputPlaceHolder="Condition"
+            pickerOptions={conditionOptions}
+          />
+          <FormDateController
+            control={control}
+            controllerName="last_oestrus"
+            labelText="Last Oestrus Date"
+          />
+        </FieldGroup.Section>
+      )}
+      {conditionValue === "Pregnant" && (
+        <FieldGroup.Section>
+          <FormConditionController
+            control={control}
+            controllerName="reproduction_details"
+            setControlValue={setValue}
+          />
+        </FieldGroup.Section>
+      )}
       <FieldGroup.Section>
         <FormController
           control={control}

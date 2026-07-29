@@ -5,19 +5,26 @@ type CardProps = {
   cardImage: string | undefined;
   cardTitle: string | undefined;
   cardSubTitle: string | undefined;
+  children?: React.ReactNode;
 };
 
-export default function Card(props: CardProps) {
+export default function Card({
+  cardImage,
+  cardSubTitle,
+  cardTitle,
+  children,
+}: CardProps) {
   return (
     <>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Image style={styles.cardImage} source={props.cardImage} />
+          <Image style={styles.cardImage} source={cardImage} />
           <View style={styles.headerText}>
-            <Text>{props.cardTitle}</Text>
-            <Text>{props.cardSubTitle}</Text>
+            <Text>{cardTitle}</Text>
+            <Text>{cardSubTitle}</Text>
           </View>
         </View>
+        <View>{children}</View>
       </View>
     </>
   );
