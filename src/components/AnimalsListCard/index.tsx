@@ -43,7 +43,7 @@ const AnimalsListCard = memo(({ animal }: ICardProps) => {
             />
             <LabeldText
               labelTitle="Last Oestrus Date"
-              text={formattedOuestrusDate}
+              text={formattedOuestrusDate ?? "Not avilable"}
               disposition="horizontal"
             />
           </View>
