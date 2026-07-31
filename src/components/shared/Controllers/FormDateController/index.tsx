@@ -1,12 +1,11 @@
 import { Controller, Control, FieldValues, Path } from "react-hook-form";
-import { Platform } from "react-native";
 import { useState } from "react";
 import { DateService } from "@/lib";
-import DateTimePicker, {
-  DateTimePickerChangeEvent,
-} from "@expo/ui/community/datetime-picker";
-import DateInput from "../DateInput";
+
+import DatePickerCustom from "../../DatePickerCustom";
+import { Platform } from "react-native";
 import { Column } from "@expo/ui";
+import DateInput from "../../DateInput";
 interface IControllerProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
@@ -18,56 +17,49 @@ export default function FormDateController<
 >({ control, controllerName, labelText }: IControllerProps<T>) {
   const [showDate, setShowDate] = useState(false);
   const handleShowDate = () => {
-    setShowDate(true);
+    setShowDate(!showDate);
   };
 
   return (
     <Controller
       control={control}
+      name={controllerName}
       render={({ field: { onChange, value } }) => {
         const defaultDate =
           typeof value === "string"
             ? (DateService.parseToDate(value) ?? new Date())
             : value || new Date();
 
-        const defaultDisplay = "default";
         const formattedValue = DateService.formatToStoredDate(defaultDate);
 
-        const handleDateChange = (
-          event: DateTimePickerChangeEvent,
-          selectedDate?: Date,
-        ) => {
-          if (Platform.OS === "android") {
-            setShowDate(false);
-          }
-
-          if (event && selectedDate) {
-            onChange(selectedDate);
-          }
-        };
-
-        return (
+        return Platform.OS === "android" ? (
           <Column>
             <DateInput
               handlePress={handleShowDate}
               inputText={formattedValue}
               labelText={labelText}
             />
+
             {showDate && (
-              <DateTimePicker
-                value={defaultDate}
-                onValueChange={handleDateChange}
-                mode="date"
-                display={defaultDisplay}
-                onDismiss={() => {
-                  setShowDate(false);
-                }}
+              <DatePickerCustom
+                label={labelText}
+                selectedDate={defaultDate}
+                onChange={onChange}
+                components={"date"}
+                variant="input"
               />
             )}
           </Column>
+        ) : (
+          <DatePickerCustom
+            label={labelText}
+            selectedDate={defaultDate}
+            onChange={onChange}
+            components={"date"}
+            variant="picker"
+          />
         );
       }}
-      name={controllerName}
     />
   );
 }

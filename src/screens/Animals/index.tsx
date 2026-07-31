@@ -1,16 +1,21 @@
 import { FlatList, Pressable, View, Text, StyleSheet } from "react-native";
-import Card from "@/components/shared/Card";
+
 import ListContainer from "@/components/shared/ListContainer";
 import SearchBar from "@/components/shared/SearchBar";
 import { useState, useMemo, useDeferredValue } from "react";
 import filter from "lodash/filter";
 import { IAnimal } from "@/types/mock-types";
-import LinkPressable from "@/components/shared/LinkPressable";
 import useRawAnimalsData from "@/hooks/useRawAnimalsData";
 import EmptyList from "@/components/shared/EmptyList";
 import SpinLoader from "@/components/shared/SpinLoader";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AnimalsListCard from "@/components/AnimalsListCard";
+
+const keyExtractor = (item: IAnimal) => item.id.toString();
+const renderItem = ({ item }: { item: IAnimal }) => (
+  <AnimalsListCard animal={item as IAnimal} />
+);
 
 export default function Animals() {
   const [query, setQuery] = useState("");
@@ -20,13 +25,14 @@ export default function Animals() {
 
   const filteredData = useMemo(() => {
     if (!animals) return [];
-    if (!deferredValue) return animals;
+    const cleanValue = deferredValue.trim().toLowerCase();
+    if (!cleanValue) return animals;
 
     return filter(
       animals,
       (animal: IAnimal) =>
-        animal.name.toLowerCase().includes(deferredValue.toLowerCase()) ||
-        animal.type.toLowerCase().includes(deferredValue.toLowerCase()),
+        animal.name?.toLowerCase().includes(cleanValue) ||
+        animal.type?.toLowerCase().includes(cleanValue),
     );
   }, [deferredValue, animals]);
 
@@ -54,22 +60,17 @@ export default function Animals() {
       </View>
       <ListContainer>
         <FlatList
-          data={filteredData}
-          renderItem={({ item }) => (
-            <LinkPressable href={`/workshop/animals/${item.id}`}>
-              <Card
-                cardTitle={item.name}
-                cardImage={item.image}
-                cardSubTitle={item.type}
-              />
-            </LinkPressable>
-          )}
-          keyExtractor={(item) => item.id.toString()}
+          data={filteredData as IAnimal[]}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
           refreshing={isRefetching}
           onRefresh={refetch}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
           ListEmptyComponent={<EmptyList notFoundItems="Animals" />}
           removeClippedSubviews={true}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
         />
       </ListContainer>
     </SafeAreaView>

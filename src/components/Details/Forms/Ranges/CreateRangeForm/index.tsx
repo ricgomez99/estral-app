@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { DateService } from "@/lib";
-import FormSwitchController from "@/components/shared/FormSwitchController";
+import { FormSwitchController } from "@/components/shared/Controllers";
 import MedicatedFields from "../MedicatedFields";
 import NaturalRange from "../NaturalRange";
 import { getRangeDates } from "@/services";
@@ -44,7 +44,10 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
         if (!oldAnimal) return {} as IAnimal;
         return {
           ...oldAnimal,
-          fertility_ranges: [...oldAnimal.fertility_ranges, newRange],
+          fertility_ranges: [
+            ...(oldAnimal.fertility_ranges as IFertilityRange[]),
+            newRange,
+          ],
         };
       },
     },
@@ -90,8 +93,10 @@ export default function CreateRangeForm({ animalId }: IFormProps) {
     );
   };
 
+  const onPressSubmit = handleSubmit(submit);
+
   return (
-    <FormContainer onSubmit={submit} handleSubmit={handleSubmit}>
+    <FormContainer onSubmit={onPressSubmit}>
       <FieldGroup.SectionHeader>
         <NaturalRange control={control} lastOestrus={last_oestrus!} />
       </FieldGroup.SectionHeader>
