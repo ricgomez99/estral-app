@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
+import { images } from "@/utils/consts";
 
 type CardProps = {
   cardImage: string | undefined;
@@ -18,7 +19,10 @@ export default function Card({
     <>
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Image style={styles.cardImage} source={cardImage} />
+          <Image
+            style={styles.cardImage}
+            source={cardImage ?? images.defaultHorse}
+          />
           <View style={styles.headerText}>
             <Text>{cardTitle}</Text>
             <Text>{cardSubTitle}</Text>
