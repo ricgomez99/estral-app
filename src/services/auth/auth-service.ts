@@ -1,9 +1,12 @@
 import { supabase } from "@/lib";
+import { expo } from "../../../app.json";
+import * as WebBrowser from "expo-web-browser";
 import {
   IProfile,
   IVetDetails,
   IRanchDetails,
   UserRole,
+  IAppleSignInParams,
 } from "@/types/auth-types";
 
 import {
@@ -122,5 +125,62 @@ export const AuthService = {
   async signOut() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+  },
+
+  async signInWithApple({
+    identityToken,
+    authorizationCode,
+    nonce,
+  }: IAppleSignInParams) {
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: "apple",
+      token: identityToken,
+      nonce,
+      access_token: authorizationCode,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  },
+
+  async signInWithGoogle() {
+    const redirectUrl = `${expo.scheme}://google-auth`;
+    const response = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: redirectUrl,
+        queryParams: { prompt: "consent" },
+        skipBrowserRedirect: true,
+      },
+    });
+
+    const googleOAuthUrl = response.data.url;
+
+    if (!googleOAuthUrl) {
+      throw new Error("No Auth URL found");
+    }
+
+    const result = await WebBrowser.openAuthSessionAsync(
+      googleOAuthUrl,
+      redirectUrl,
+      { showInRecents: true },
+    ).catch((err) => {
+      throw err;
+    });
+
+    return result;
+  },
+
+  async setAuthSession(accessToken: string, refreshToken: string) {
+    if (!accessToken && !refreshToken) {
+      throw new Error("Unable to process tokens");
+    }
+    await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
   },
 };

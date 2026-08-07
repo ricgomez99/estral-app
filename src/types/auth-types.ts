@@ -42,3 +42,9 @@ export interface IAuthState {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
+
+export interface IAppleSignInParams {
+  identityToken: string;
+  authorizationCode: string;
+  nonce: string;
+}

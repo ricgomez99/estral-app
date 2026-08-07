@@ -9,7 +9,7 @@ interface IControllerProps<T extends FieldValues> {
   inputPlaceHolder: string | undefined;
   inputType: "input" | "picker";
   pickerOptions?: OptionType[];
-  mode?: "text" | "numeric";
+  mode?: "text" | "numeric" | "email";
 }
 
 export default function FormController<T extends FieldValues = FieldValues>({

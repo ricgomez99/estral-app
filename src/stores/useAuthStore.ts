@@ -5,6 +5,11 @@ import { AuthService } from "@/services";
 import { Session } from "@supabase/supabase-js";
 
 type SetType = StoreApi<IAuthState>["setState"];
+type GetType = StoreApi<IAuthState>["getState"];
+
+let hasInitializedAuthListener = false;
+let currentSyncPromise: Promise<void> | null = null;
+let currentRequestId = 0;
 
 export const useAuthStore = create<IAuthState>((set, get) => ({
   session: null,
@@ -16,31 +21,56 @@ export const useAuthStore = create<IAuthState>((set, get) => ({
   isLoading: true,
 
   initialize: async () => {
-    try {
-      supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === "TOKEN_REFRESHED" && get().session) {
-          set({ session });
+    if (hasInitializedAuthListener) return;
+    hasInitializedAuthListener = true;
+
+    const { getState, setState } = useAuthStore;
+
+    supabase.auth.onAuthStateChange((event, session) => {
+      const state = getState();
+      const currentSession = state.session;
+
+      if (!session) {
+        currentRequestId++;
+        clearStore(setState);
+        return;
+      }
+
+      if (event === "SIGNED_OUT") {
+        currentRequestId++;
+        clearStore(setState);
+        return;
+      }
+
+      if (event === "TOKEN_REFRESHED") {
+        if (!currentSession) return;
+
+        if (currentSession.access_token === session.access_token) return;
+
+        setState({ session });
+        return;
+      }
+
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+        if (
+          currentSession?.access_token === session.access_token &&
+          state.profile !== null
+        ) {
+          setState({ isLoading: false });
           return;
         }
 
-        if (session) {
-          const userId = session.user.id;
-          await syncUserData(userId, session, set);
-        } else {
-          clearStore(set);
-        }
-      });
-    } catch (error) {
-      console.error("Error to initialice AuthStore: ", error);
-      set({ isLoading: false });
-    }
+        syncUserData(session.user.id, session, setState, getState);
+      }
+    });
   },
 
   refreshProfile: async () => {
     const { user, session } = get();
-    if (user && session) {
-      await syncUserData(user.id, session, set);
+    if (!user || !session) {
+      return;
     }
+    await syncUserData(user.id, session, set, get);
   },
 
   signOut: async () => {
@@ -53,19 +83,61 @@ export const useAuthStore = create<IAuthState>((set, get) => ({
   },
 }));
 
-const syncUserData = async (userId: string, session: Session, set: SetType) => {
-  const { profile, vetDetails, ranchDetails } =
-    await AuthService.getFullUserData(userId);
+const syncUserData = async (
+  userId: string,
+  session: Session,
+  set: SetType,
+  get: GetType,
+) => {
+  const requestId = ++currentRequestId;
 
-  set({
-    session,
-    user: session.user,
-    profile,
-    role: profile?.role ?? null,
-    vetDetails,
-    ranchDetails,
-    isLoading: false,
-  });
+  if (currentSyncPromise) {
+    return currentSyncPromise;
+  }
+
+  currentSyncPromise = (async () => {
+    try {
+      const state = get();
+
+      const hasData = state.profile !== null;
+      if (!hasData) set({ isLoading: true });
+
+      const { profile, vetDetails, ranchDetails } =
+        await AuthService.getFullUserData(userId);
+
+      if (requestId !== currentRequestId) {
+        set({ isLoading: false });
+        return;
+      }
+
+      const isSameSession =
+        state.session?.access_token === session.access_token;
+
+      const alreadyHydrated = state.profile !== null;
+
+      if (isSameSession && alreadyHydrated) {
+        set({ isLoading: false });
+        return;
+      }
+
+      set({
+        session,
+        user: session.user,
+        profile,
+        role: profile?.role ?? null,
+        vetDetails,
+        ranchDetails,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error("syncUserData error:", error);
+      set({ isLoading: false });
+    } finally {
+      currentSyncPromise = null;
+    }
+  })();
+
+  return currentSyncPromise;
 };
 
 const clearStore = (set: SetType) => {

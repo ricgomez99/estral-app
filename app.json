@@ -13,6 +13,11 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This application needs acess to your gallery to select pictures for your registered animals",
         "NSCameraUsageDescription": "This application needs access to the camera for taking pictures for your registered animals"
+      },
+      "entitlements": {
+        "com.apple.developer.applesignin": [
+          "Default"
+        ]
       }
     },
     "android": {
@@ -30,7 +35,8 @@
       "expo-image",
       "expo-status-bar",
       "expo-secure-store",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {
