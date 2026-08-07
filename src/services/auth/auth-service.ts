@@ -127,6 +127,19 @@ export const AuthService = {
     if (error) throw error;
   },
 
+  async signInWithEmail(email: string, password: string) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  },
+
   async signInWithApple({
     identityToken,
     authorizationCode,
@@ -175,7 +188,7 @@ export const AuthService = {
   },
 
   async setAuthSession(accessToken: string, refreshToken: string) {
-    if (!accessToken && !refreshToken) {
+    if (!accessToken || !refreshToken) {
       throw new Error("Unable to process tokens");
     }
     await supabase.auth.setSession({

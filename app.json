@@ -2,7 +2,7 @@
   "expo": {
     "name": "estral-app",
     "slug": "estral-app",
-    "scheme": "estral-mobile-app",
+    "scheme": "estralapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,11 +13,6 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This application needs acess to your gallery to select pictures for your registered animals",
         "NSCameraUsageDescription": "This application needs access to the camera for taking pictures for your registered animals"
-      },
-      "entitlements": {
-        "com.apple.developer.applesignin": [
-          "Default"
-        ]
       }
     },
     "android": {

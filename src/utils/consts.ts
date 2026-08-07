@@ -73,6 +73,7 @@ const medicationOptions: OptionType[] = [
 
 const images = {
   defaultHorse: require("../../assets/default-horse.jpg"),
+  googleLogo: require("../../assets/google.png"),
 };
 
 const BREEDS = [
