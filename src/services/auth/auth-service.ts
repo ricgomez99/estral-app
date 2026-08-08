@@ -1,6 +1,5 @@
 import { supabase } from "@/lib";
-import { expo } from "../../../app.json";
-import * as WebBrowser from "expo-web-browser";
+
 import {
   IProfile,
   IVetDetails,
@@ -13,6 +12,8 @@ import {
   ADMIN_MOCK_RANCH_DETAILS,
   ADMIN_MOCK_VET_DETAILS,
 } from "@/utils/mocks";
+
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 export interface IFullUserData {
   profile: IProfile | null;
@@ -160,31 +161,25 @@ export const AuthService = {
   },
 
   async signInWithGoogle() {
-    const redirectUrl = `${expo.scheme}://google-auth`;
-    const response = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: redirectUrl,
-        queryParams: { prompt: "consent" },
-        skipBrowserRedirect: true,
-      },
+    GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_AUTH_WEB_CLIENT_ID,
     });
 
-    const googleOAuthUrl = response.data.url;
+    await GoogleSignin.hasPlayServices();
+    const response = await GoogleSignin.signIn();
 
-    if (!googleOAuthUrl) {
-      throw new Error("No Auth URL found");
+    if (!response.data?.idToken) {
+      throw new Error("No Id token returned from Google");
     }
 
-    const result = await WebBrowser.openAuthSessionAsync(
-      googleOAuthUrl,
-      redirectUrl,
-      { showInRecents: true },
-    ).catch((err) => {
-      throw err;
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: "google",
+      token: response.data.idToken,
     });
 
-    return result;
+    if (error) throw error;
+
+    return data;
   },
 
   async setAuthSession(accessToken: string, refreshToken: string) {

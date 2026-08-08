@@ -11,7 +11,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.estralapp",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "This application needs acess to your gallery to select pictures for your registered animals",
+        "NSPhotoLibraryUsageDescription": "This application needs access to your gallery to select pictures for your registered animals",
         "NSCameraUsageDescription": "This application needs access to the camera for taking pictures for your registered animals"
       }
     },
@@ -31,7 +31,13 @@
       "expo-status-bar",
       "expo-secure-store",
       "expo-splash-screen",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.263196030335-dnv4cph079qlfiec6l6god1uo3vthq7a"
+        }
+      ]
     ],
     "extra": {
       "eas": {
