@@ -125,6 +125,11 @@ export const AuthService = {
 
   async signOut() {
     const { error } = await supabase.auth.signOut();
+    const currentUser = GoogleSignin.getCurrentUser();
+
+    if (currentUser) {
+      await GoogleSignin.signOut();
+    }
     if (error) throw error;
   },
 
@@ -161,10 +166,6 @@ export const AuthService = {
   },
 
   async signInWithGoogle() {
-    GoogleSignin.configure({
-      webClientId: process.env.EXPO_PUBLIC_GOOGLE_AUTH_WEB_CLIENT_ID,
-    });
-
     await GoogleSignin.hasPlayServices();
     const response = await GoogleSignin.signIn();
 
