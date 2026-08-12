@@ -4,4 +4,12 @@ import {
   AnimalFormOutput,
 } from "./createAnimalSchema";
 
-export { createAnimalSchema, AnimalFormData, AnimalFormOutput };
+import { authSchema, LoginFormValues } from "./authSchema";
+
+export {
+  createAnimalSchema,
+  AnimalFormData,
+  AnimalFormOutput,
+  authSchema,
+  LoginFormValues,
+};

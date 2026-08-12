@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { AuthService } from "@/services";
 import { AuthError } from "@supabase/supabase-js";
 import Toast from "react-native-toast-message";
+import { LoginFormValues, authSchema } from "@/lib/zod-schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface ILoginProps {
   email: string;
@@ -16,8 +18,15 @@ export default function LoginForm() {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<ILoginProps>();
+    formState: { isSubmitting, isValid },
+  } = useForm<LoginFormValues>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: zodResolver(authSchema),
+    mode: "all",
+  });
   const submit = async (data: ILoginProps) => {
     if (!data.email || !data.password) return;
     try {
@@ -37,7 +46,9 @@ export default function LoginForm() {
     }
   };
   return (
-    <FormContainer onSubmit={handleSubmit(submit)} disableButton={isSubmitting}>
+    <FormContainer
+      onSubmit={handleSubmit(submit)}
+      disableButton={isSubmitting || !isValid}>
       <FieldGroup.Section>
         <FormController
           control={control}
@@ -52,6 +63,7 @@ export default function LoginForm() {
           controllerName="password"
           inputType="input"
           inputPlaceHolder="Password"
+          secureText={true}
         />
       </FieldGroup.Section>
       <FieldGroup.Section>
