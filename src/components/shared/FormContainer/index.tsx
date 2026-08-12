@@ -1,24 +1,31 @@
 import { StyleSheet } from "react-native";
-import { FieldValues } from "react-hook-form";
 import { Host, FieldGroup } from "@expo/ui";
 import { PrimaryButton } from "../Buttons";
 
-interface IFormProps<T extends FieldValues = FieldValues> {
+interface IFormProps {
   onSubmit: () => void;
   children: React.ReactNode;
+  buttonTittle?: string;
+  disableButton?: boolean;
 }
 
-export default function FormContainer<T extends FieldValues = FieldValues>({
+export default function FormContainer({
   children,
   onSubmit,
-}: IFormProps<T>) {
+  buttonTittle = "Submit",
+  disableButton,
+}: IFormProps) {
   return (
     <Host style={styles.container}>
       <FieldGroup>
         {children}
 
         <FieldGroup.SectionFooter>
-          <PrimaryButton title="Submit" handleClick={onSubmit} />
+          <PrimaryButton
+            disable={disableButton}
+            title={buttonTittle}
+            handleClick={onSubmit}
+          />
         </FieldGroup.SectionFooter>
       </FieldGroup>
     </Host>

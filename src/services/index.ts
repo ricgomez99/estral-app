@@ -3,4 +3,6 @@ import {
   calculateFertilityRange,
 } from "./ranges/fertility-range-service";
 
-export { getRangeDates, calculateFertilityRange };
+import { IFullUserData, AuthService } from "./auth/auth-service";
+
+export { getRangeDates, calculateFertilityRange, IFullUserData, AuthService };

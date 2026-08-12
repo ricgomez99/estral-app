@@ -1,3 +1,4 @@
+import { IVetDetails, IRanchDetails } from "@/types/auth-types";
 import { IAnimal } from "@/types/mock-types";
 
 const ANIMALS: IAnimal[] = [
@@ -72,4 +73,21 @@ const ANIMALS: IAnimal[] = [
   },
 ];
 
-export { ANIMALS };
+const ADMIN_MOCK_VET_DETAILS: IVetDetails = {
+  id: "admin-vet-mock-id",
+  profile_id: "",
+  license_number: "VET-ADMIN-DEBUG-000",
+  specialty: "General & Debugging",
+  created_at: new Date().toISOString(),
+};
+
+const ADMIN_MOCK_RANCH_DETAILS: IRanchDetails = {
+  id: "admin-ranch-mock-id",
+  profile_id: "",
+  ranch_name: "Rancho de Pruebas (Admin)",
+  location: "Entorno de Desarrollo",
+  capacity: 9999,
+  created_at: new Date().toISOString(),
+};
+
+export { ANIMALS, ADMIN_MOCK_RANCH_DETAILS, ADMIN_MOCK_VET_DETAILS };

@@ -9,7 +9,8 @@ interface IControllerProps<T extends FieldValues> {
   inputPlaceHolder: string | undefined;
   inputType: "input" | "picker";
   pickerOptions?: OptionType[];
-  mode?: "text" | "numeric";
+  mode?: "text" | "numeric" | "email";
+  secureText?: boolean;
 }
 
 export default function FormController<T extends FieldValues = FieldValues>({
@@ -19,6 +20,7 @@ export default function FormController<T extends FieldValues = FieldValues>({
   inputType,
   pickerOptions,
   mode = "text",
+  secureText = false,
 }: IControllerProps<T>) {
   return (
     <Controller
@@ -35,6 +37,7 @@ export default function FormController<T extends FieldValues = FieldValues>({
               onChangeText={onChange}
               onBlur={onBlur}
               inputMode={mode}
+              secureTextEntry={secureText}
             />
             {error && <ErrorText message={error.message} />}
           </Column>
