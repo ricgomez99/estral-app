@@ -35,7 +35,7 @@ const getRangeById = async (animalId: string, rangeId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 
   const animal = ANIMALS.find((animal) => animal.id === animalId);
-  const range = animal?.fertility_ranges.find((range) => range.id === rangeId);
+  const range = animal?.fertility_ranges?.find((range) => range.id === rangeId);
 
   return range;
 };
@@ -49,10 +49,10 @@ const updateAnimalRange = async (range: IFertilityRange, animalId: string) => {
     throw new Error(`Not found animal with id: ${animalId}`);
   }
 
-  const animal = ANIMALS[animalIndex];
-  const rangeIndex = animal.fertility_ranges.findIndex(
+  const animal = ANIMALS[animalIndex] as IAnimal;
+  const rangeIndex = animal.fertility_ranges?.findIndex(
     (r) => r.id === range?.id,
-  );
+  )!;
 
   if (rangeIndex !== -1) {
     const updatedRanges = [...animal.fertility_ranges];

@@ -23,13 +23,13 @@ export class DateService {
       throw new Error("Date is required");
     }
 
-    const formatDate = new Date(date);
+    const parsedDate = typeof date === "string" ? parseISO(date) : date;
 
-    if (!isValid(formatDate)) {
+    if (!isValid(parsedDate)) {
       throw new Error("Invalid date format");
     }
 
-    return addDays(formatDate, days);
+    return addDays(parsedDate, days);
   }
 
   public static formatToLongDate(isoString: IsoString, language: Languages) {

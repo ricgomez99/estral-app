@@ -23,10 +23,12 @@ export function calculateFertilityRange(
       },
     };
 
+  const { addDaysToDate } = DateService;
+
   const { min, max } = daysPerMedication[processType];
 
-  const minDate = DateService.addDaysToDate(startingDate, min);
-  const maxDate = DateService.addDaysToDate(startingDate, max);
+  const minDate = addDaysToDate(startingDate, min);
+  const maxDate = addDaysToDate(startingDate, max);
 
   return {
     minDate,
