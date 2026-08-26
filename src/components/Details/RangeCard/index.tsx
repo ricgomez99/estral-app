@@ -20,7 +20,7 @@ export default function RangeCard({
   const router = useRouter();
 
   const handlePressUpdate = () => {
-    router.push(`/workshop/ranges/${id}/${rangeId}`);
+    //router.push(`/workshop/ranges/${id}/${rangeId}`);
   };
 
   const handlePressDelete = () => {};

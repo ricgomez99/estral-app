@@ -18,9 +18,7 @@ export default function UpdateRangeScreen() {
         "animal-ranges",
         id,
       ]);
-      return animalCache?.fertility_ranges.find(
-        (range) => range.id === rangeId,
-      );
+      return animalCache?.events?.find((range) => range.id === rangeId);
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -29,5 +27,6 @@ export default function UpdateRangeScreen() {
     return <SpinLoader />;
   }
 
-  return <UpdateRangeForm defaultData={range} animalId={id as string} />;
+  // return <UpdateRangeForm defaultData={range} animalId={id as string} />;
+  return null;
 }

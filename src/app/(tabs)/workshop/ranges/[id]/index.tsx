@@ -22,7 +22,7 @@ export default function RangeDetails() {
   const ranges = useMemo(() => {
     if (!animal) return [];
 
-    return animal.fertility_ranges.map((range) => ({
+    return animal.events?.map((range) => ({
       ...range,
       min_date: DateService.formatToLongDate(range.min_date, "en"),
       max_date: DateService.formatToLongDate(range.max_date, "en"),
@@ -57,7 +57,7 @@ export default function RangeDetails() {
             <RangeCard
               max_date={item.max_date}
               min_date={item.min_date}
-              creation_date={item.creation_date}
+              creation_date={item.created_at}
               rangeId={item.id}
               id={Number(id)}
             />

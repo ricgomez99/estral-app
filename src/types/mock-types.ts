@@ -49,7 +49,7 @@ interface IAnimal {
   isDonor?: boolean;
   image: string;
   last_oestrus?: string;
-  fertility_ranges?: IFertilityRange[];
+  events?: IReproductiveEvent[];
 }
 
 interface IFertilityRange {

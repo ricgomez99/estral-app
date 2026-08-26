@@ -1,7 +1,11 @@
 import FormContainer from "@/components/shared/FormContainer";
 import { FormDateController } from "@/components/shared/Controllers";
 import { useForm } from "react-hook-form";
-import { IAnimal, IFertilityRange } from "@/types/mock-types";
+import {
+  IAnimal,
+  IFertilityRange,
+  ReproductiveEventType,
+} from "@/types/mock-types";
 import { StyleSheet } from "react-native";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { updateAnimalRange } from "@/utils/mock-functions";
@@ -10,7 +14,7 @@ import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { FieldGroup } from "@expo/ui";
 interface IFormProps {
-  defaultData: IFertilityRange | undefined;
+  defaultData: ReproductiveEventType;
   animalId: string;
 }
 
@@ -37,7 +41,7 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
               ["animal-ranges", animalId],
               (oldData) => {
                 if (!oldData) return oldData;
-                const nextRanges = oldData?.fertility_ranges?.map((r) =>
+                const nextRanges = oldData?.events?.map((r) =>
                   r.id === updatedRange.id ? updatedRange : r,
                 );
 

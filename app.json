@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.estralapp"
+      "package": "com.anonymous.estralapp",
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
       "expo-router",

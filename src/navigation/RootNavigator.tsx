@@ -1,13 +1,35 @@
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import SpinLoader from "@/components/shared/SpinLoader";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useNotificationsStore } from "@/stores";
 
 export default function RootNavigator() {
   const { session, initialize, isLoading, profile } = useAuthStore();
+  const {
+    initialize: initializeNotifications,
+    notification,
+    response,
+  } = useNotificationsStore();
+
   useEffect(() => {
     initialize();
   }, []);
+
+  useEffect(() => {
+    let cleanUp: (() => void) | undefined;
+
+    const setup = async () => {
+      if (!!session) {
+        cleanUp = await initializeNotifications();
+      }
+    };
+
+    setup();
+
+    return () => {
+      if (cleanUp) cleanUp();
+    };
+  }, [initializeNotifications, session]);
 
   if (isLoading) {
     return <SpinLoader />;
