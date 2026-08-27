@@ -12,11 +12,6 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AnimalsListCard from "@/components/AnimalsListCard";
 
-const keyExtractor = (item: IAnimal) => item.id.toString();
-const renderItem = ({ item }: { item: IAnimal }) => (
-  <AnimalsListCard animal={item as IAnimal} />
-);
-
 export default function Animals() {
   const [query, setQuery] = useState("");
   const deferredValue = useDeferredValue(query);
@@ -61,8 +56,10 @@ export default function Animals() {
       <ListContainer>
         <FlatList
           data={filteredData as IAnimal[]}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
+          renderItem={({ item }: { item: IAnimal }) => (
+            <AnimalsListCard animal={item} />
+          )}
+          keyExtractor={(item: IAnimal) => item.id.toString()}
           refreshing={isRefetching}
           onRefresh={refetch}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}

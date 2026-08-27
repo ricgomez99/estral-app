@@ -11,11 +11,9 @@ interface ICardProps {
 }
 
 const AnimalsListCard = memo(({ animal }: ICardProps) => {
+  const oestrus = animal?.last_oestrus ?? "";
   const ROUTE = `/workshop/animals/${animal.id}`;
-  const formattedOuestrusDate = DateService.formatToLongDate(
-    animal.last_oestrus,
-    "en",
-  );
+  const formattedOuestrusDate = DateService.formatToLongDate(oestrus, "en");
   return (
     <LinkPressable href={ROUTE}>
       <Card

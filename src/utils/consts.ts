@@ -1,11 +1,6 @@
 import { OptionType } from "@/types/picker-types";
 import { TabProps, DrawerScreenProps } from "@/types/tabs-types";
-import {
-  IReproductionStrategyConfig,
-  ReproductionType,
-  ReproductiveMilestone,
-} from "@/types/reproductive-calculation-types";
-import { generateRecipientTranferEvent } from "@/helpers/custom-events";
+import { ReproductiveMilestone } from "@/types/reproductive-calculation-types";
 
 const VIEW_TABS: TabProps[] = [
   {
@@ -51,9 +46,6 @@ const DRAWER_SCREENS: DrawerScreenProps[] = [
     },
   },
 ];
-
-const DATE_ES_FORMAT = "d 'de' MMMM 'de' yyyy";
-const DATE_EN_FORMAT = "MMMM do, yyyy";
 
 const sexOptions: OptionType[] = [
   { label: "Male", value: "Male" },
@@ -186,37 +178,12 @@ const REPRODUCTIVE_MILESTONES_RECEPTOR_TRANSFER: ReproductiveMilestone = {
   },
 };
 
-const REPRODUCTION_STRATEGIES: Record<
-  ReproductionType,
-  IReproductionStrategyConfig
-> = {
-  natural: {
-    type: "natural",
-    defaultMark: "natural_range",
-    suggestedCondition: "Pregnant",
-  },
-  insemination: {
-    type: "insemination",
-    defaultMark: "insemination_range",
-    suggestedCondition: "Pregnant",
-  },
-  transfer: {
-    type: "transfer",
-    defaultMark: "transfer_range",
-    suggestedCondition: "Pregnant",
-    customEventGenerator: generateRecipientTranferEvent,
-  },
-};
-
 export {
   VIEW_TABS,
   DRAWER_SCREENS,
   REPRODUCTIVE_MILESTONES,
   REPRODUCTIVE_MILESTONES_DONANT_TRANSFER,
   REPRODUCTIVE_MILESTONES_RECEPTOR_TRANSFER,
-  REPRODUCTION_STRATEGIES,
-  DATE_EN_FORMAT,
-  DATE_ES_FORMAT,
   REPRODUCTION_TYPES,
   BREEDS,
   MIXES,

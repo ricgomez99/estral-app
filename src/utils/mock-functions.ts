@@ -1,6 +1,5 @@
-import { IAnimal, IFertilityRange } from "@/types/mock-types";
+import { IAnimal } from "@/types/mock-types";
 import { ANIMALS } from "./mocks";
-import { DateService } from "@/lib";
 import * as crypto from "expo-crypto";
 
 const addAnimalMock = async (

@@ -7,7 +7,7 @@ import {
 } from "@/types/reproductive-calculation-types";
 
 import { generateEventsArray } from "@/helpers/generate-events-array";
-import { REPRODUCTION_STRATEGIES } from "@/utils/consts";
+import { REPRODUCTION_STRATEGIES } from "@/helpers/reproduction-strategies";
 
 class ReproductiveCalculator implements IRreproductiveCalculator {
   constructor(private readonly config: IReproductionStrategyConfig) {}
