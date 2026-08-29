@@ -52,17 +52,6 @@ interface IAnimal {
   events?: IReproductiveEvent[];
 }
 
-interface IFertilityRange {
-  id: string | number;
-  subject?: string;
-  medicated?: boolean;
-  medication?: Medication | null;
-  application_date?: string;
-  min_date: string;
-  max_date: string;
-  creation_date: string;
-}
-
 interface IReproductiveEvent {
   id: string;
   animal_id: string;
@@ -88,11 +77,11 @@ type ReproductiveCondition = "Pregnant" | "Open" | "Insemination Ready";
 
 export type {
   IAnimal,
-  IFertilityRange,
   Species,
   Sex,
   Medication,
   ReproductiveEventType,
+  IReproductiveEvent,
   MarkType,
   Condition,
   ReproductiveCondition,

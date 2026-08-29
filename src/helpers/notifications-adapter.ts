@@ -37,7 +37,6 @@ interface IHandleNotificationPayload {
 interface IGetExpoPushTokenProps {
   projectId: string;
 }
-
 export class NotificationsAdapter implements INotificationsProcessor {
   constructor(
     private readonly notificationsAPI: typeof Notifications = Notifications,

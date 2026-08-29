@@ -1,11 +1,7 @@
 import FormContainer from "@/components/shared/FormContainer";
 import { FormDateController } from "@/components/shared/Controllers";
 import { useForm } from "react-hook-form";
-import {
-  IAnimal,
-  IFertilityRange,
-  ReproductiveEventType,
-} from "@/types/mock-types";
+import { IAnimal, IReproductiveEvent } from "@/types/mock-types";
 import { StyleSheet } from "react-native";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { updateAnimalRange } from "@/utils/mock-functions";
@@ -14,7 +10,7 @@ import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { FieldGroup } from "@expo/ui";
 interface IFormProps {
-  defaultData: ReproductiveEventType;
+  defaultData: IReproductiveEvent;
   animalId: string;
 }
 
@@ -22,16 +18,16 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { handleSubmit, control } = useForm<IFertilityRange>({
+  const { handleSubmit, control } = useForm<IReproductiveEvent>({
     defaultValues: defaultData,
   });
 
-  const { mutate: updateRange } = useGenericUpdate<IFertilityRange>({
+  const { mutate: updateRange } = useGenericUpdate<IReproductiveEvent>({
     queryKey: ["animal-ranges", animalId],
-    mutateFn: (range: IFertilityRange) => updateAnimalRange(range, animalId),
+    mutateFn: (range: IReproductiveEvent) => updateAnimalRange(range, animalId),
   });
 
-  const submit = (data: IFertilityRange) => {
+  const submit = (data: IReproductiveEvent) => {
     updateRange(
       { ...data },
       {
@@ -41,13 +37,13 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
               ["animal-ranges", animalId],
               (oldData) => {
                 if (!oldData) return oldData;
-                const nextRanges = oldData?.events?.map((r) =>
+                const nextEvents = oldData?.events?.map((r) =>
                   r.id === updatedRange.id ? updatedRange : r,
                 );
 
                 return {
                   ...oldData,
-                  fertility_ranges: nextRanges,
+                  events: nextEvents,
                 };
               },
             );
@@ -71,7 +67,7 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
 
           Toast.show({
             type: "success",
-            text1: `${data.subject || "The animal"} range has been saved successfully`,
+            text1: `${data.animal_name || "The animal"} range has been saved successfully`,
             position: "top",
           });
         },

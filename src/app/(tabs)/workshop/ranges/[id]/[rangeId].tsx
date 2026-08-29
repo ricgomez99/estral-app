@@ -1,10 +1,9 @@
 import { UpdateRangeForm } from "@/components/Details/Forms";
 import { useLocalSearchParams } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRangeById } from "@/utils/mock-functions";
 import SpinLoader from "@/components/shared/SpinLoader";
-import { useQueryClient } from "@tanstack/react-query";
-import { IAnimal } from "@/types/mock-types";
+import { IAnimal, IReproductiveEvent } from "@/types/mock-types";
 
 export default function UpdateRangeScreen() {
   const queryClient = useQueryClient();
@@ -27,6 +26,12 @@ export default function UpdateRangeScreen() {
     return <SpinLoader />;
   }
 
-  // return <UpdateRangeForm defaultData={range} animalId={id as string} />;
-  return null;
+  console.log("event: ", range);
+
+  return (
+    <UpdateRangeForm
+      defaultData={range as IReproductiveEvent}
+      animalId={id as string}
+    />
+  );
 }

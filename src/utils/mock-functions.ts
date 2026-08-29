@@ -1,6 +1,7 @@
-import { IAnimal } from "@/types/mock-types";
+import { IAnimal, IReproductiveEvent } from "@/types/mock-types";
 import { ANIMALS } from "./mocks";
 import * as crypto from "expo-crypto";
+import { DateService } from "@/lib/date-fns/dates";
 
 const addAnimalMock = async (
   newAnimal: Omit<IAnimal, "id" | "fertility_ranges">,
@@ -39,68 +40,79 @@ const getRangeById = async (animalId: string, rangeId: string) => {
   return range;
 };
 
-// const updateAnimalRange = async (range: IFertilityRange, animalId: string) => {
-//   await new Promise((resolve) => setTimeout(resolve, 500));
+const updateAnimalRange = async (
+  range: IReproductiveEvent,
+  animalId: string,
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
-//   const animalIndex = ANIMALS.findIndex((a) => a.id === animalId);
+  const animalIndex = ANIMALS.findIndex((a) => a.id === animalId) ?? "";
 
-//   if (animalIndex === -1) {
-//     throw new Error(`Not found animal with id: ${animalId}`);
-//   }
+  if (animalIndex === -1) {
+    throw new Error(`Not found animal with id: ${animalId}`);
+  }
 
-//   const animal = ANIMALS[animalIndex] as IAnimal;
-//   if (!animal) {
-//     throw new Error(`Unable to find animal with id: ${animalId}`);
-//   }
-//   const rangeIndex = animal.events?.findIndex((r) => r.id === range?.id)!;
+  let animal = ANIMALS[animalIndex] as IAnimal;
+  let animalEvents = animal?.events ?? [];
 
-//   if (rangeIndex !== -1) {
-//     const updatedRanges = [...animal.events];
-//     updatedRanges[rangeIndex] = {
-//       ...updatedRanges[rangeIndex],
-//       ...range,
-//     };
+  if (!animal) {
+    throw new Error(`Unable to find animal with id: ${animalId}`);
+  }
 
-//     ANIMALS[animalIndex] = {
-//       ...animal,
-//       events: updatedRanges,
-//     };
+  const rangeIndex = animal.events?.findIndex((r) => r.id === range?.id)!;
+  const currentEvents = animal?.events ?? [];
 
-//     return ANIMALS[animalIndex].events[rangeIndex];
-//   }
+  if (rangeIndex !== -1) {
+    const updatedRanges = [...currentEvents];
+    updatedRanges[rangeIndex] = {
+      ...updatedRanges[rangeIndex],
+      ...range,
+    };
 
-//   return undefined;
-// };
+    animal = {
+      ...animal,
+      events: updatedRanges,
+    };
 
-// const createAnimalRange = async (
-//   animalId: string,
-//   newRange: Omit<IFertilityRange, "id" | "creation_date" | "subject">,
-// ) => {
-//   await new Promise((resolve) => setTimeout(resolve, 500));
+    return animalEvents[rangeIndex];
+  }
 
-//   const animal = ANIMALS.find((a) => a.id === animalId);
+  return undefined;
+};
 
-//   if (!animal) {
-//     throw new Error("No range available to process");
-//   }
+const createAnimalRange = async (
+  animalId: string,
+  newRangeEevent: Omit<
+    IReproductiveEvent,
+    "id" | "creation_at" | "animal_name"
+  >,
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
-//   const fullRangeData = {
-//     ...newRange,
-//     id: crypto.randomUUID(),
-//     creation_date: DateService.formatToStoredDate(new Date()) as string,
-//     subject: animal.name as string,
-//   };
+  const animal = ANIMALS.find((a) => a.id === animalId);
+  let animalEvents = animal?.events ?? [];
 
-//   animal.fertility_ranges = [...animal.fertility_ranges, fullRangeData];
+  if (!animal) {
+    throw new Error("No range available to process");
+  }
 
-//   return fullRangeData;
-// };
+  const fullRangeData = {
+    ...newRangeEevent,
+    id: crypto.randomUUID(),
+    creation_at: DateService.formatToStoredDate(new Date()) as string,
+    animal_name: animal.name as string,
+  };
+
+  animal.events = [...animalEvents, fullRangeData];
+
+  return fullRangeData;
+};
 
 export {
   addAnimalMock,
   getAnimalsMock,
   getAnimalById,
   getRangeById,
-  // updateAnimalRange,
-  // createAnimalRange,
+  updateAnimalRange,
+  createAnimalRange,
 };
