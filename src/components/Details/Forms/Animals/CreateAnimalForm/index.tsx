@@ -62,7 +62,7 @@ export default function CreateAnimalForm() {
     }
   }, [conditionValue, setValue, defaultDate]);
 
-  const { mutate: createAnimal } = useOptimisticCreate({
+  const { mutate: createAnimal, isPending } = useOptimisticCreate({
     queryKey: ["animals"],
     mutateFn: async (formData: AnimalFormData) => {
       if (!session?.user.id) {
@@ -88,20 +88,24 @@ export default function CreateAnimalForm() {
         age: newItem.age,
         condition: newItem.condition,
         image: newItem.image,
-        fertility_ranges: [],
+        reproduction_details: newItem.reproduction_details,
       } as unknown as IAnimal;
 
-      return [...currentArray, tempAnimal];
+      return [tempAnimal, ...currentArray];
     },
   });
 
   const submit = (data: AnimalFormData) => {
-    if (!data) return;
+    if (!data || isPending) return;
 
     createAnimal(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["animals"],
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ["calendar-events"],
         });
 
         if (router.canGoBack()) router.back();
@@ -116,11 +120,18 @@ export default function CreateAnimalForm() {
       onError: (error) => {
         Toast.show({
           type: "error",
-          text1: `Unable to create animal, error: ${error}`,
+          text1:
+            error instanceof Error
+              ? error.message
+              : `Unable to create animal, error: ${error}`,
           position: "top",
         });
       },
     });
+
+    if (router.canGoBack()) {
+      router.back();
+    }
   };
 
   const onPressSubmit = handleSubmit(submit);
