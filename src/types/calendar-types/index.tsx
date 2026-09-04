@@ -22,7 +22,11 @@ interface IDot {
 }
 
 type MarkedDate = Record<string, Partial<MarkingProps>>;
-type MarkType = "transfer_range" | "natural_range" | "insemination_range";
+type MarkType =
+  | "transfer_range"
+  | "natural_range"
+  | "insemination_range"
+  | "donant_transfer_range";
 type Dots = IDot[];
 type Periods = ICalendarPeriod[];
 

@@ -37,6 +37,7 @@ type MarkType =
 
 interface IAnimal {
   id: string | number;
+  owner_id: string;
   name: string;
   age: number;
   type: Species | undefined | string;
@@ -44,10 +45,10 @@ interface IAnimal {
   breed?: Breed;
   condition?: Condition;
   reproduction_details?: ReproductionDetails;
-  microchipId?: string;
-  isRecipient?: boolean;
-  isDonor?: boolean;
-  image: string;
+  microchip_id?: string | null;
+  is_recipient?: boolean;
+  is_donor?: boolean;
+  image: string | null;
   last_oestrus?: string;
   events?: IReproductiveEvent[];
 }

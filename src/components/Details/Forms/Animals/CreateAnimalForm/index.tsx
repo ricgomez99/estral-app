@@ -13,7 +13,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sexOptions, typeOptions, conditionOptions } from "@/utils/consts";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
-import { addAnimalMock } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -22,6 +21,8 @@ import { createAnimalSchema } from "@/lib/zod-schemas";
 import { AnimalFormData } from "@/lib/zod-schemas";
 import { useEffect } from "react";
 import { DateService } from "@/lib";
+import { runAnimalCreationPipeline } from "@/services/orchestrators/register-animal-orchestrator-runner";
+import { useAuthStore } from "@/stores";
 
 export default function CreateAnimalForm() {
   const queryClient = useQueryClient();
@@ -47,6 +48,8 @@ export default function CreateAnimalForm() {
 
   const [sexValue, conditionValue] = watch(["sex", "condition"]);
 
+  const { session } = useAuthStore();
+
   useEffect(() => {
     if (conditionValue !== "Pregnant") {
       setValue("reproduction_details", undefined, { shouldValidate: true });
@@ -61,50 +64,63 @@ export default function CreateAnimalForm() {
 
   const { mutate: createAnimal } = useOptimisticCreate({
     queryKey: ["animals"],
-    mutateFn: (newAnimal: IAnimal) => addAnimalMock(newAnimal),
-    updateFn: (oldData: IAnimal[] | undefined, newItem: IAnimal) => {
+    mutateFn: async (formData: AnimalFormData) => {
+      if (!session?.user.id) {
+        throw new Error("User must be authenticated");
+      }
+
+      const result = await runAnimalCreationPipeline(formData, session.user.id);
+
+      if (!result.ok) {
+        throw result.error;
+      }
+
+      return result.value;
+    },
+    updateFn: (oldData: IAnimal[] | undefined, newItem: AnimalFormData) => {
       const currentArray = oldData ?? [];
-      return [
-        ...currentArray,
-        {
-          ...newItem,
-          id: `temp-${Date.now()}`,
-          image: newItem.image,
-          fertility_ranges: [],
-        },
-      ];
+      const tempAnimal: IAnimal = {
+        id: `temp-${Date.now()}`,
+        name: newItem.name,
+        sex: newItem.sex,
+        type: newItem.type,
+        breed: newItem.breed,
+        age: newItem.age,
+        condition: newItem.condition,
+        image: newItem.image,
+        fertility_ranges: [],
+      } as unknown as IAnimal;
+
+      return [...currentArray, tempAnimal];
     },
   });
 
   const submit = (data: AnimalFormData) => {
     if (!data) return;
 
-    createAnimal(
-      { ...(data as IAnimal) },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["animals"],
-          });
+    createAnimal(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["animals"],
+        });
 
-          if (router.canGoBack()) router.back();
+        if (router.canGoBack()) router.back();
 
-          Toast.show({
-            type: "success",
-            text1: `Animal created successfully`,
-            position: "top",
-          });
-        },
-
-        onError: (error) => {
-          Toast.show({
-            type: "error",
-            text1: `Unable to create animal, error: ${error}`,
-            position: "top",
-          });
-        },
+        Toast.show({
+          type: "success",
+          text1: `Animal created successfully`,
+          position: "top",
+        });
       },
-    );
+
+      onError: (error) => {
+        Toast.show({
+          type: "error",
+          text1: `Unable to create animal, error: ${error}`,
+          position: "top",
+        });
+      },
+    });
   };
 
   const onPressSubmit = handleSubmit(submit);

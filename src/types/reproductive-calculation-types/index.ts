@@ -28,6 +28,13 @@ interface ICreateReproductiveEventPayload {
   completed: boolean;
 }
 
+interface IInsertReproductionEventDTO extends Omit<
+  ICreateReproductiveEventPayload,
+  "animal_name"
+> {
+  owner_id: string;
+}
+
 interface IReproductiveFactoryResult {
   suggestedCondition: ReproductiveCondition;
   eventsToCreate: ICreateReproductiveEventPayload[];
@@ -60,6 +67,7 @@ type ReproductiveMilestone = Record<string, IReproductiveMilestoneBody>;
 export type {
   IRreproductiveCalculator,
   IReproductionStrategyConfig,
+  IInsertReproductionEventDTO,
   ReproductionType,
   IReproductiveFactoryResult,
   ICalculateRangeProps,

@@ -1,21 +1,31 @@
 import { MarkType, ReproductiveEventType } from "../mock-types";
 
-interface INotificationPayload {
-  to: string;
-  sound: string;
+interface INotificationPayloadData {
+  profile_id: string;
+  animal_id?: string;
+  animal_name?: string;
+  event_id?: string;
+  event_type?: ReproductiveEventType;
+  mark_type?: MarkType | string;
   title: string;
   body: string;
-  data: INotificationPayloadData;
 }
 
-interface INotificationPayloadData {
-  notification_id: string;
-  animal_id: string;
-  animal_name: string;
-  event_id: string;
-  event_type: ReproductiveEventType;
-  mark_type: MarkType;
-  screen?: string;
+interface INotificationFunctionResponse {
+  success?: boolean;
+  expoResponse?: unknown;
+  error?: string;
 }
 
-export type { INotificationPayload, INotificationPayloadData };
+interface INotificationOptions {
+  enableReminder?: boolean;
+  profileId: string;
+  customTitle?: string;
+  customBody?: string;
+}
+
+export {
+  INotificationFunctionResponse,
+  INotificationOptions,
+  INotificationPayloadData,
+};

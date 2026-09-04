@@ -5,6 +5,7 @@ enum MarkColors {
   transfer_range = "#FB8C00",
   natural_range = "#43A047",
   insemination_range = "#E53935",
+  donant_transfer_range = "#8E24AA",
 }
 
 export const CalendarEventsService = {
