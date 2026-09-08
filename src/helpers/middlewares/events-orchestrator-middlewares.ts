@@ -1,9 +1,34 @@
-import { PipelineStep } from "@/types/middlewares-types/event-orchestrator-types";
+import {
+  IOrchestratorInput,
+  PipelineStep,
+} from "@/types/middlewares-types/event-orchestrator-types";
 import { ReproductiveRangeFactory } from "@/services/ranges/reproductive-type-service";
 import { ICalculateRangeProps } from "@/types/reproductive-calculation-types";
 import { MarkedDate } from "@/types/calendar-types";
 import { CalendarEventsService } from "@/services";
 import { createAnimalWithEvents } from "@/lib/supabase-data-management/data-management";
+import { uploadAnimalImage } from "@/services/storage/uploadAnimalImage";
+
+const uploadAnimalImageStep: PipelineStep = async (ctx, next) => {
+  const { animalData } = ctx.input;
+  if (!animalData.image || !animalData.image.startsWith("file://")) {
+    await next();
+    return;
+  }
+
+  const publicUrl = await uploadAnimalImage(
+    animalData.image,
+    animalData.owner_id,
+  );
+  (ctx as { input: IOrchestratorInput }).input = {
+    ...ctx.input,
+    animalData: {
+      ...animalData,
+      image: publicUrl,
+    },
+  };
+  await next();
+};
 
 const calculateReproductiveRangeStep: PipelineStep = async (ctx, next) => {
   const { reproductionConfig } = ctx.input;
@@ -121,6 +146,7 @@ const persistAnimalAndEventsStep: PipelineStep = async (ctx, next) => {
 };
 
 export {
+  uploadAnimalImageStep,
   calculateReproductiveRangeStep,
   buildCalendarMarksStep,
   persistAnimalAndEventsStep,

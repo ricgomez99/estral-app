@@ -1,5 +1,6 @@
 import { EventsOrchestrator, Result } from "@/helpers/events-orchestrator";
 import {
+  uploadAnimalImageStep,
   calculateReproductiveRangeStep,
   buildCalendarMarksStep,
   persistAnimalAndEventsStep,
@@ -53,6 +54,7 @@ export async function runAnimalCreationPipeline(
   const orchestrator = new EventsOrchestrator();
 
   orchestrator
+    .use(uploadAnimalImageStep)
     .use(calculateReproductiveRangeStep)
     .use(buildCalendarMarksStep)
     .use(persistAnimalAndEventsStep);
