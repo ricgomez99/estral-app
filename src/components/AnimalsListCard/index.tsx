@@ -18,13 +18,13 @@ const AnimalsListCard = memo(({ animal }: ICardProps) => {
     <LinkPressable href={ROUTE}>
       <Card
         cardTitle={animal.name}
-        cardImage={animal.image}
+        cardImage={animal.image ?? ""}
         cardSubTitle={animal.type}>
         <View style={styles.cardBody}>
           <View style={styles.firstSection}>
             <LabeldText
               labelTitle="Age"
-              text={animal.age}
+              text={String(animal.age)}
               disposition="horizontal"
             />
             <LabeldText

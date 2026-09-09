@@ -50,12 +50,13 @@ interface IAnimal {
   is_donor?: boolean;
   image: string | null;
   last_oestrus?: string;
-  events?: IReproductiveEvent[];
+  reproductive_events?: IReproductiveEvent[];
 }
 
 interface IReproductiveEvent {
   id: string;
   animal_id: string;
+  owner_id: string;
   animal_name: string;
   event_type: ReproductiveEventType;
   mark_type: MarkType;
@@ -65,6 +66,7 @@ interface IReproductiveEvent {
   max_date: string;
   completed: boolean;
   created_at: string;
+  updated_at?: string;
 }
 
 type Species = "horse" | "donkey" | "zebra";

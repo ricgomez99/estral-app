@@ -1,18 +1,16 @@
 import { MarkingProps } from "react-native-calendars/src/calendar/day/marking";
+import { ReproductiveEventType } from "../mock-types";
 
-interface ICalendarPeriod {
+interface ICalendarPeriod extends IPeriodMetadata {
   startingDay?: boolean;
   endingDay?: boolean;
   color?: string;
-  animalName: string;
-  eventType: string;
-  description: string;
 }
 
 interface IPeriodMetadata {
-  animalName: string;
-  eventType: string;
-  description: string;
+  animalName: string | undefined;
+  eventType: ReproductiveEventType;
+  description: string | undefined;
 }
 
 interface IDot {
