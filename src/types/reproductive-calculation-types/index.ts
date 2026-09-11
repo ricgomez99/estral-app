@@ -4,7 +4,7 @@ import {
   ReproductiveCondition,
 } from "../mock-types";
 
-type ReproductionType = "natural" | "insemination" | "transfer";
+type ReproductionType = "natural" | "insemination" | "transfer" | "oestrus";
 
 interface ICalculateRangeProps {
   type: ReproductionType;
@@ -12,7 +12,7 @@ interface ICalculateRangeProps {
   animal_id: string;
   animal_name: string;
   isDonor: boolean;
-  isTransfer: boolean;
+  isRecipient: boolean;
   end_date?: string;
   embryon_days?: number;
 }

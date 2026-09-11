@@ -76,7 +76,11 @@ type Breed = PureBreed | Mixed;
 type PureBreed = (typeof BREEDS)[number];
 type Mixed = (typeof MIXES)[number];
 type Condition = "Young Female" | "Pregnant" | "Not Pregnant";
-type ReproductiveCondition = "Pregnant" | "Open" | "Insemination Ready";
+type ReproductiveCondition =
+  | "Pregnant"
+  | "Open"
+  | "Insemination Ready"
+  | "Not Pregnant";
 
 export type {
   IAnimal,

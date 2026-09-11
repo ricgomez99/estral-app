@@ -1,8 +1,9 @@
-import { Calendar } from "react-native-calendars";
+import { AgendaList, Calendar, CalendarProvider } from "react-native-calendars";
 import { useState, useMemo } from "react";
 import { CalendarEventsService } from "@/services";
 import useRawEventsData from "@/hooks/useRawEventsData";
-import { MarkedDate, ICalendarPeriod } from "@/types/calendar-types";
+import { ICalendarPeriod, MarkedDate } from "@/types/calendar-types";
+import { Text, View } from "react-native";
 
 export default function EventsCalendar() {
   const [selected, setSelected] = useState("");
@@ -28,13 +29,12 @@ export default function EventsCalendar() {
   }, [events]);
 
   const agendaItems = useMemo(() => {
-    const items: { [key: string]: ICalendarPeriod[] } = {};
-    Object.keys(baseMarkedDates).forEach((dateKey) => {
-      const periods = baseMarkedDates[dateKey]?.periods || [];
-      items[dateKey] = periods;
-    });
+    if (!baseMarkedDates) return [];
 
-    return items;
+    return Object.keys(baseMarkedDates).map((dataKey) => ({
+      title: dataKey,
+      data: baseMarkedDates[dataKey]?.periods || [],
+    }));
   }, [baseMarkedDates]);
 
   const markedDates = useMemo(() => {
@@ -51,14 +51,27 @@ export default function EventsCalendar() {
   }, [baseMarkedDates, selected]);
 
   const selectedEvents = baseMarkedDates[selected]?.periods || [];
-
+  const today = new Date().toISOString().split("T")[0];
   return (
-    <Calendar
-      markingType="multi-period"
-      onDayPress={(day) => {
-        setSelected(day.dateString);
-      }}
-      markedDates={markedDates}
-    />
+    <CalendarProvider date={today}>
+      <Calendar
+        firstDay={1}
+        markingType="multi-period"
+        onDayPress={(day) => {
+          setSelected(day.dateString);
+        }}
+        markedDates={markedDates}
+      />
+      <AgendaList
+        sections={agendaItems}
+        renderItem={({ item }: { item: ICalendarPeriod }) => (
+          <View>
+            <Text>{item.animalName}</Text>
+            <Text>{item.eventType}</Text>
+            <Text>{item.description}</Text>
+          </View>
+        )}
+      />
+    </CalendarProvider>
   );
 }

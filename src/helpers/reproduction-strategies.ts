@@ -2,7 +2,10 @@ import {
   ReproductionType,
   IReproductionStrategyConfig,
 } from "@/types/reproductive-calculation-types";
-import { generateRecipientTranferEvent } from "./custom-events";
+import {
+  generateRecipientTranferEvent,
+  generateNextOestrusEvent,
+} from "./custom-events";
 
 export const REPRODUCTION_STRATEGIES: Record<
   ReproductionType,
@@ -23,5 +26,11 @@ export const REPRODUCTION_STRATEGIES: Record<
     defaultMark: "transfer_range",
     suggestedCondition: "Pregnant",
     customEventGenerator: generateRecipientTranferEvent,
+  },
+  oestrus: {
+    type: "oestrus",
+    defaultMark: "natural_range",
+    suggestedCondition: "Not Pregnant",
+    customEventGenerator: generateNextOestrusEvent,
   },
 };

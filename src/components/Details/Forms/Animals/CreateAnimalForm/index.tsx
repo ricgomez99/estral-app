@@ -27,7 +27,13 @@ export default function CreateAnimalForm() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const defaultDate = DateService.formatToStoredDate(new Date());
-  const { control, handleSubmit, setValue, watch } = useForm({
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: "",
       age: 3,
@@ -50,16 +56,28 @@ export default function CreateAnimalForm() {
   const { session } = useAuthStore();
 
   useEffect(() => {
-    if (conditionValue !== "Pregnant") {
+    if (sexValue !== "Female") {
       setValue("reproduction_details", undefined, { shouldValidate: true });
-    } else {
+      setValue("last_oestrus", "", { shouldValidate: true });
+      setValue("isDonor", false);
+      setValue("isRecipient", false);
+      return;
+    }
+
+    if (conditionValue === "Pregnant") {
+      setValue("last_oestrus", "", { shouldValidate: true });
       setValue("reproduction_details", {
         type: "transfer",
         date: defaultDate as string,
         embryon_days: 1,
       });
+    } else {
+      setValue("reproduction_details", undefined, { shouldValidate: true });
+      setValue("last_oestrus", String(defaultDate), {
+        shouldValidate: true,
+      });
     }
-  }, [conditionValue, setValue, defaultDate]);
+  }, [sexValue, conditionValue, setValue, defaultDate]);
 
   const { mutate: createAnimal, isPending } = useOptimisticCreate({
     queryKey: ["animals"],
@@ -94,8 +112,12 @@ export default function CreateAnimalForm() {
     },
   });
 
+  console.log("errors: ", errors);
+
   const submit = (data: AnimalFormData) => {
     if (!data || isPending) return;
+
+    console.log(data);
 
     createAnimal(data, {
       onSuccess: () => {
@@ -104,7 +126,7 @@ export default function CreateAnimalForm() {
         });
 
         queryClient.invalidateQueries({
-          queryKey: ["calendar-events"],
+          queryKey: ["reproductive_events"],
         });
 
         if (router.canGoBack()) router.back();
@@ -127,10 +149,6 @@ export default function CreateAnimalForm() {
         });
       },
     });
-
-    if (router.canGoBack()) {
-      router.back();
-    }
   };
 
   const onPressSubmit = handleSubmit(submit);
@@ -180,14 +198,16 @@ export default function CreateAnimalForm() {
             inputPlaceHolder="Condition"
             pickerOptions={conditionOptions}
           />
-          <FormDateController
-            control={control}
-            controllerName="last_oestrus"
-            labelText="Last Oestrus Date"
-          />
+          {conditionValue === "Not Pregnant" && (
+            <FormDateController
+              control={control}
+              controllerName="last_oestrus"
+              labelText="Last Oestrus Date"
+            />
+          )}
         </FieldGroup.Section>
       )}
-      {conditionValue === "Pregnant" && (
+      {conditionValue === "Pregnant" && sexValue === "Female" && (
         <FieldGroup.Section>
           <FormConditionController
             control={control}
@@ -213,24 +233,26 @@ export default function CreateAnimalForm() {
         />
       </RNHostView>
 
-      <FieldGroup.Section>
-        <FormSwitchController
-          control={control}
-          controllerName="isRecipient"
-          labelText="Mark as recipient"
-          onCustomChange={(newValue) => {
-            if (newValue) setValue("isDonor", false);
-          }}
-        />
-        <FormSwitchController
-          control={control}
-          controllerName="isDonor"
-          labelText="Mark as Donor"
-          onCustomChange={(newValue) => {
-            if (newValue) setValue("isRecipient", false);
-          }}
-        />
-      </FieldGroup.Section>
+      {sexValue === "Female" && (
+        <FieldGroup.Section>
+          <FormSwitchController
+            control={control}
+            controllerName="isRecipient"
+            labelText="Mark as recipient"
+            onCustomChange={(newValue) => {
+              if (newValue) setValue("isDonor", false);
+            }}
+          />
+          <FormSwitchController
+            control={control}
+            controllerName="isDonor"
+            labelText="Mark as Donor"
+            onCustomChange={(newValue) => {
+              if (newValue) setValue("isRecipient", false);
+            }}
+          />
+        </FieldGroup.Section>
+      )}
     </FormContainer>
   );
 }

@@ -17,7 +17,7 @@ interface IOrchestratorInput {
     starting_date: string;
     embryon_days?: number;
     isDonor?: boolean;
-    isTransfer?: boolean;
+    isRecipient?: boolean;
   };
   notificationOptions?: INotificationOptions;
 }

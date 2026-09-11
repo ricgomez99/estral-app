@@ -178,12 +178,23 @@ const REPRODUCTIVE_MILESTONES_RECEPTOR_TRANSFER: ReproductiveMilestone = {
   },
 };
 
+const REPRODUCTIVE_MILESTONES_NEXT_OESTRUS: ReproductiveMilestone = {
+  next_oestrus: {
+    min_days: 21,
+    max_days: 25,
+    title: "Next Estimated Oestrus",
+    description: "Time window for the next oestrus",
+    event_type: "estrus_range",
+  },
+};
+
 export {
   VIEW_TABS,
   DRAWER_SCREENS,
   REPRODUCTIVE_MILESTONES,
   REPRODUCTIVE_MILESTONES_DONANT_TRANSFER,
   REPRODUCTIVE_MILESTONES_RECEPTOR_TRANSFER,
+  REPRODUCTIVE_MILESTONES_NEXT_OESTRUS,
   REPRODUCTION_TYPES,
   BREEDS,
   MIXES,

@@ -50,7 +50,7 @@ const calculateReproductiveRangeStep: PipelineStep = async (ctx, next) => {
     animal_id: animalId,
     animal_name: animalName,
     isDonor: reproductionConfig.isDonor ?? false,
-    isTransfer: reproductionConfig.isTransfer ?? false,
+    isRecipient: reproductionConfig.isRecipient ?? false,
     ...(reproductionConfig.embryon_days !== undefined && {
       embryon_days: reproductionConfig.embryon_days,
     }),

@@ -13,8 +13,7 @@ class ReproductiveCalculator implements IRreproductiveCalculator {
   constructor(private readonly config: IReproductionStrategyConfig) {}
 
   calculateRange(options: ICalculateRangeProps): IReproductiveFactoryResult {
-    const { type, starting_date, animal_id, animal_name, isDonor, isTransfer } =
-      options;
+    const { type, starting_date, animal_id, animal_name, isDonor } = options;
 
     if (type !== this.config.type) {
       throw new Error(
@@ -22,11 +21,13 @@ class ReproductiveCalculator implements IRreproductiveCalculator {
       );
     }
 
-    const markType =
-      isDonor && isTransfer ? "donant_transfer_range" : this.config.defaultMark;
+    const isDonorTransfer = type === "transfer" && isDonor;
 
-    const condition =
-      isDonor && isTransfer ? "Open" : this.config.suggestedCondition;
+    const markType = isDonorTransfer
+      ? "donant_transfer_range"
+      : this.config.defaultMark;
+
+    const condition = isDonorTransfer ? "Open" : this.config.suggestedCondition;
 
     const events = this.config.customEventGenerator
       ? this.config.customEventGenerator(options, markType)
@@ -36,7 +37,6 @@ class ReproductiveCalculator implements IRreproductiveCalculator {
           animal_name,
           mark_type: markType,
           isDonor,
-          isTransfer,
         });
     return {
       suggestedCondition: condition,

@@ -8,24 +8,14 @@ import {
 import { AnimalFormData } from "@/lib/zod-schemas";
 import { IContext } from "@/types/middlewares-types/event-orchestrator-types";
 import { IAnimal } from "@/types/mock-types";
+import { ReproductiveConfigBuilder } from "../ranges/reproductive-config-builder";
 
 export async function runAnimalCreationPipeline(
   formData: AnimalFormData,
   ownerId: string,
 ): Promise<Result<IAnimal, Error>> {
-  const reproductionDetails = formData.reproduction_details;
-  const reproductionConfig = reproductionDetails
-    ? {
-        type: reproductionDetails.type,
-        starting_date: reproductionDetails.date,
-        embryon_days:
-          reproductionDetails.type === "transfer"
-            ? reproductionDetails.embryon_days
-            : undefined,
-        isDonor: formData.isDonor,
-        isTrasnfer: reproductionDetails.type === "transfer",
-      }
-    : undefined;
+  const reproductionConfig =
+    ReproductiveConfigBuilder.buildFromFormData(formData);
 
   const initialContext: IContext = {
     input: {
@@ -42,7 +32,7 @@ export async function runAnimalCreationPipeline(
         age: formData.age,
         image: formData.image ?? null,
         last_oestrus: formData.last_oestrus,
-        reproduction_details: reproductionDetails,
+        reproduction_details: formData.reproduction_details,
       },
       reproductionConfig,
       notificationOptions: {
