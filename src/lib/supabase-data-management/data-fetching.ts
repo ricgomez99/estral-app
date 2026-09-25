@@ -31,9 +31,14 @@ const getAnimalById = async (animalId: string) => {
 };
 
 const getReproductiveEvents = async (userId: string) => {
-  const { data: events, error } = await supabase
+  const { data, error } = await supabase
     .from("reproductive_events")
-    .select("*")
+    .select(
+      `*,
+      animals (
+        name
+      )`,
+    )
     .eq("owner_id", userId)
     .order("created_at", { ascending: false });
 
@@ -42,13 +47,22 @@ const getReproductiveEvents = async (userId: string) => {
     throw new Error("Unable to fetch reproductive events data from supabase");
   }
 
+  const events = data?.map(({ animals, ...event }) => ({
+    ...event,
+    animal_name: animals?.name ?? null,
+  }));
   return (events as IReproductiveEvent[]) ?? [];
 };
 
 const getReproductiveEventsByAnimalId = async (animalId: string) => {
-  const { data: events, error } = await supabase
+  const { data, error } = await supabase
     .from("reproductive_events")
-    .select(`*`)
+    .select(
+      `*,
+      animals (
+        name
+      )`,
+    )
     .eq("animal_id", animalId)
     .order("created_at", { ascending: false });
 
@@ -56,6 +70,11 @@ const getReproductiveEventsByAnimalId = async (animalId: string) => {
     console.error("[getReproductiveEventsByAnimalId Error]: ", error);
     throw new Error("Unable to fetch reproductive events data from supabase");
   }
+
+  const events = data?.map(({ animals, ...event }) => ({
+    ...event,
+    animal_name: animals?.name ?? null,
+  }));
 
   return (events as IReproductiveEvent[]) ?? [];
 };

@@ -3,7 +3,7 @@ import EventsCalendar from "@/components/EventsCalendar";
 
 export default function Calculations() {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Text>Events</Text>
       <EventsCalendar />
     </View>

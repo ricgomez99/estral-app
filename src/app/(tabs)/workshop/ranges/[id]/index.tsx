@@ -1,33 +1,20 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { getAnimalById } from "@/utils/mock-functions";
 import SpinLoader from "@/components/shared/SpinLoader";
-import { DetailsLayout } from "@/layouts";
-import { DateService } from "@/lib";
-import { FlatList } from "react-native";
+import { getReproductiveEventsByAnimalId } from "@/lib/supabase-data-management/data-fetching";
+
 import ListContainer from "@/components/shared/ListContainer";
 import { RangeCard } from "@/components/Details";
-import { useMemo } from "react";
 
 export default function RangeDetails() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { data: animal, isLoading } = useQuery({
+  const { data: reproductiveEvents, isLoading } = useQuery({
     queryKey: ["animal-ranges", id],
-    queryFn: () => getAnimalById(id as string),
+    queryFn: async () => await getReproductiveEventsByAnimalId(String(id)),
     enabled: !!id,
   });
-
-  const ranges = useMemo(() => {
-    if (!animal) return [];
-
-    return animal.events?.map((range) => ({
-      ...range,
-      min_date: DateService.formatToLongDate(range.min_date, "en"),
-      max_date: DateService.formatToLongDate(range.max_date, "en"),
-    }));
-  }, [animal]);
 
   const handleCreatePress = () => {
     router.push({
@@ -40,10 +27,7 @@ export default function RangeDetails() {
     return <SpinLoader />;
   }
   return (
-    <DetailsLayout imageSource={animal?.image} showUpdateButton={false}>
-      <View style={styles.container}>
-        <Text>{animal?.name}</Text>
-      </View>
+    <View style={styles.container}>
       <View>
         <Pressable style={styles.createButton} onPress={handleCreatePress}>
           <Text style={styles.createButtonText}>Add new range</Text>
@@ -51,8 +35,8 @@ export default function RangeDetails() {
       </View>
       <ListContainer>
         <FlatList
-          data={ranges}
-          extraData={ranges}
+          data={reproductiveEvents}
+          extraData={reproductiveEvents}
           renderItem={({ item }) => (
             <RangeCard
               max_date={item.max_date}
@@ -68,13 +52,13 @@ export default function RangeDetails() {
           ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
         />
       </ListContainer>
-    </DetailsLayout>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    flex: 1,
   },
 
   listSeparator: {

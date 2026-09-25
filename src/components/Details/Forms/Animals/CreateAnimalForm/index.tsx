@@ -31,6 +31,7 @@ export default function CreateAnimalForm() {
     control,
     handleSubmit,
     setValue,
+    getValues,
     watch,
     formState: { errors },
   } = useForm({
@@ -64,7 +65,8 @@ export default function CreateAnimalForm() {
       return;
     }
 
-    if (conditionValue === "Pregnant") {
+    const currentReproductionDetails = getValues("reproduction_details");
+    if (conditionValue === "Pregnant" && !currentReproductionDetails) {
       setValue("last_oestrus", "", { shouldValidate: true });
       setValue("reproduction_details", {
         type: "transfer",
@@ -77,7 +79,7 @@ export default function CreateAnimalForm() {
         shouldValidate: true,
       });
     }
-  }, [sexValue, conditionValue, setValue, defaultDate]);
+  }, [sexValue, conditionValue, setValue, getValues, defaultDate]);
 
   const { mutate: createAnimal, isPending } = useOptimisticCreate({
     queryKey: ["animals"],
@@ -113,6 +115,7 @@ export default function CreateAnimalForm() {
   });
 
   console.log("errors: ", errors);
+  console.log("reproduction_details: ", getValues("reproduction_details"));
 
   const submit = (data: AnimalFormData) => {
     if (!data || isPending) return;

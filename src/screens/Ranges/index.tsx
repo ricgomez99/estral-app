@@ -45,8 +45,8 @@ export default function Ranges() {
             <LinkPressable href={`/workshop/ranges/${item.id}`}>
               <Card
                 cardTitle={item.name}
-                cardImage={item.image}
-                cardSubTitle={`ranges: ${item.events?.length}`}
+                cardImage={item.image ?? ""}
+                cardSubTitle={`ranges`}
               />
             </LinkPressable>
           )}

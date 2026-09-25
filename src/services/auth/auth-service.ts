@@ -79,14 +79,23 @@ const onboardingsLookup: Record<
 export const AuthService = {
   async getFullUserData(userId: string): Promise<IFullUserData> {
     try {
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+      if (sessionError || !sessionData.session) {
+        throw new Error("No active or valid auth session");
+      }
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
         .single();
 
-      if (profileError || !profile) {
+      if (profileError) {
         console.error("Error fetching profile: ", profileError);
+        throw profileError;
+      }
+
+      if (!profile) {
         return { profile: null, vetDetails: null, ranchDetails: null };
       }
       const typedProfile = profile as IProfile;
@@ -102,7 +111,7 @@ export const AuthService = {
       };
     } catch (error) {
       console.error("Error in getFullUserData: ", error);
-      return { profile: null, vetDetails: null, ranchDetails: null };
+      throw error;
     }
   },
 
@@ -118,9 +127,11 @@ export const AuthService = {
 
     if (profileError) throw profileError;
 
-    onboardingsLookup[role]
-      ? await onboardingsLookup[role](userId, details)
-      : null;
+    const saveRoleDetails = onboardingsLookup[role];
+
+    if (saveRoleDetails) {
+      await saveRoleDetails(userId, details);
+    }
   },
 
   async signOut() {

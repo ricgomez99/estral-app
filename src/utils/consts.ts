@@ -166,7 +166,7 @@ const REPRODUCTIVE_MILESTONES_RECEPTOR_TRANSFER: ReproductiveMilestone = {
     min_days: 14,
     max_days: 16,
     title: "Receptor Pregnancy Check",
-    description: "Verification for embryo transferred at day: ",
+    description: "Verification for embryo transfer process",
     event_type: "pregnancy_check",
   },
   expected_birth: {

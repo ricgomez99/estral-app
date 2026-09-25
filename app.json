@@ -4,6 +4,9 @@
     "slug": "estral-app",
     "scheme": "estralapp",
     "version": "1.0.0",
+    "experiments": {
+      "reactCompiler": true
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

@@ -40,6 +40,7 @@ const calculateReproductiveRangeStep: PipelineStep = async (ctx, next) => {
   const animalId = String(ctx.createdAnimal?.id) ?? "";
   const animalName = ctx.createdAnimal?.name ?? "";
 
+  console.log("reporduction type - in pipeline", reproductionConfig.type);
   const calculator = ReproductiveRangeFactory.createRange(
     reproductionConfig.type,
   );
