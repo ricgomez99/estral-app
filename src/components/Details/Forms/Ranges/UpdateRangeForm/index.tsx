@@ -1,5 +1,5 @@
 import FormContainer from "@/components/shared/FormContainer";
-import { FormDateController } from "@/components/shared/Controllers";
+import { FormSwitchController } from "@/components/shared/Controllers";
 import { useForm } from "react-hook-form";
 import { IAnimal, IReproductiveEvent } from "@/types/mock-types";
 import { StyleSheet } from "react-native";
@@ -28,58 +28,55 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
   });
 
   const submit = (data: IReproductiveEvent) => {
-    updateRange(
-      { ...data },
-      {
-        onSuccess: (updatedRange) => {
-          if (updatedRange) {
-            queryClient.setQueryData<IAnimal>(
-              ["animal-ranges", animalId],
-              (oldData) => {
-                if (!oldData) return oldData;
-                const nextEvents = oldData?.events?.map((r) =>
-                  r.id === updatedRange.id ? updatedRange : r,
-                );
+    updateRange(data, {
+      onSuccess: (updatedEvent) => {
+        if (updatedEvent) {
+          queryClient.setQueryData<IAnimal>(
+            ["animal-ranges", animalId],
+            (oldData) => {
+              if (!oldData) return oldData;
+              const nextEvents = oldData?.reproductive_events?.map((event) =>
+                event.id === updatedEvent.id ? updatedEvent : event,
+              );
 
-                return {
-                  ...oldData,
-                  events: nextEvents,
-                };
-              },
-            );
+              return {
+                ...oldData,
+                events: nextEvents,
+              };
+            },
+          );
 
-            queryClient.setQueryData(
-              ["range", animalId, updatedRange.id],
-              updatedRange,
-            );
-          }
-          queryClient.invalidateQueries({
-            queryKey: ["animal-ranges", animalId],
-            refetchType: "none",
-          });
+          queryClient.setQueryData(
+            ["range", animalId, updatedEvent.id],
+            updatedEvent,
+          );
+        }
+        queryClient.invalidateQueries({
+          queryKey: ["animal-ranges", animalId],
+          refetchType: "none",
+        });
 
-          queryClient.invalidateQueries({
-            queryKey: ["range", animalId, updatedRange.id],
-            refetchType: "none",
-          });
+        queryClient.invalidateQueries({
+          queryKey: ["range", animalId, updatedEvent.id],
+          refetchType: "none",
+        });
 
-          if (router.canGoBack()) router.back();
+        if (router.canGoBack()) router.back();
 
-          Toast.show({
-            type: "success",
-            text1: `${data.animal_name || "The animal"} range has been saved successfully`,
-            position: "top",
-          });
-        },
-        onError: (error) => {
-          Toast.show({
-            type: "error",
-            text1: `Unable to process changes, error: ${error}`,
-            position: "top",
-          });
-        },
+        Toast.show({
+          type: "success",
+          text1: `${data.animal_name || "The animal"} range has been saved successfully`,
+          position: "top",
+        });
       },
-    );
+      onError: (error) => {
+        Toast.show({
+          type: "error",
+          text1: `Unable to process changes, error: ${error}`,
+          position: "top",
+        });
+      },
+    });
   };
 
   const onPressSubmit = handleSubmit(submit);
@@ -87,15 +84,10 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
   return (
     <FormContainer onSubmit={onPressSubmit}>
       <FieldGroup.Section>
-        <FormDateController
+        <FormSwitchController
           control={control}
-          controllerName="min_date"
-          labelText="Min Date Range"
-        />
-        <FormDateController
-          control={control}
-          controllerName="max_date"
-          labelText="Max Date Range"
+          controllerName="completed"
+          labelText="Mark as completed"
         />
       </FieldGroup.Section>
     </FormContainer>

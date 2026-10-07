@@ -22,6 +22,23 @@ interface IOrchestratorInput {
   notificationOptions?: INotificationOptions;
 }
 
+interface ICreateEventOrchestrationInput extends Omit<
+  IOrchestratorInput,
+  "animalData"
+> {
+  animalData: Omit<
+    IAnimal,
+    | "events"
+    | "image"
+    | "age"
+    | "type"
+    | "sex"
+    | "microchip_id"
+    | "condition"
+    | "breed"
+  >;
+}
+
 interface IContext {
   readonly input: IOrchestratorInput;
   createdAnimal?: IAnimal;
@@ -32,11 +49,27 @@ interface IContext {
   notificationPayloads?: INotificationPayloadData[];
   notificationResults?: INotificationFunctionResponse[];
   error?: Error;
+  cycle_id?: string;
 }
 
-type PipelineStep = (
-  context: IContext,
+interface ICreateEventContext extends Omit<
+  IContext,
+  "createdAnimal" | "input"
+> {
+  readonly input: ICreateEventOrchestrationInput;
+}
+
+type PipelineStep<T> = (context: T, next: () => Promise<void>) => Promise<void>;
+
+type CreateEventPipelineStep = (
+  context: ICreateEventContext,
   next: () => Promise<void>,
 ) => Promise<void>;
 
-export { IOrchestratorInput, IContext, PipelineStep };
+export {
+  IOrchestratorInput,
+  IContext,
+  ICreateEventContext,
+  PipelineStep,
+  CreateEventPipelineStep,
+};

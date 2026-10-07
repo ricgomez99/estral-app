@@ -3,10 +3,12 @@ import { IInsertReproductionEventDTO } from "@/types/reproductive-calculation-ty
 
 const createReproductionEvent = async (
   payload: IInsertReproductionEventDTO[],
+  animalId: string,
 ) => {
   const { data: insertedEvents, error } = await supabase
     .from("reproductive_events")
     .insert(payload)
+    .eq("animal_id", animalId)
     .select();
   if (error) {
     console.error("[createReproductiveEvent Error]: ", error);
@@ -15,7 +17,7 @@ const createReproductionEvent = async (
     );
   }
 
-  return insertedEvents;
+  return { insertedEvents };
 };
 
 const updateAnimal = async (

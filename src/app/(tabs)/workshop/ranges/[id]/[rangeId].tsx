@@ -11,6 +11,7 @@ export default function UpdateRangeScreen() {
   const { data: range, isLoading } = useQuery({
     queryKey: ["range", id, rangeId],
     queryFn: async () =>
+      // This function should be replaced
       await getReproductiveEventById(String(rangeId), String(id)),
     enabled: !!id && !!rangeId,
     initialData: () => {
@@ -28,8 +29,6 @@ export default function UpdateRangeScreen() {
   if (isLoading) {
     return <SpinLoader />;
   }
-
-  console.log("event: ", range);
 
   return (
     <UpdateRangeForm

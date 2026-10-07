@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import SpinLoader from "@/components/shared/SpinLoader";
 import { getReproductiveEventsByAnimalId } from "@/lib/supabase-data-management/data-fetching";
+import canStartNewReproductiveCycle from "@/helpers/reproductive-event-availability";
 
 import ListContainer from "@/components/shared/ListContainer";
 import { RangeCard } from "@/components/Details";
@@ -15,6 +16,8 @@ export default function RangeDetails() {
     queryFn: async () => await getReproductiveEventsByAnimalId(String(id)),
     enabled: !!id,
   });
+
+  const areEventsAvailable = canStartNewReproductiveCycle(reproductiveEvents);
 
   const handleCreatePress = () => {
     router.push({
@@ -29,9 +32,13 @@ export default function RangeDetails() {
   return (
     <View style={styles.container}>
       <View>
-        <Pressable style={styles.createButton} onPress={handleCreatePress}>
-          <Text style={styles.createButtonText}>Add new range</Text>
-        </Pressable>
+        {areEventsAvailable ? (
+          <Pressable style={styles.createButton} onPress={handleCreatePress}>
+            <Text style={styles.createButtonText}>Add new range</Text>
+          </Pressable>
+        ) : (
+          <Text>This animal still has active events</Text>
+        )}
       </View>
       <ListContainer>
         <FlatList
@@ -42,8 +49,8 @@ export default function RangeDetails() {
               max_date={item.max_date}
               min_date={item.min_date}
               creation_date={item.created_at}
-              rangeId={item.id}
-              id={Number(id)}
+              rangeId={String(item.id)}
+              id={String(id)}
             />
           )}
           keyExtractor={(item) => String(item.id)}

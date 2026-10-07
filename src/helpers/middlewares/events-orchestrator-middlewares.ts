@@ -1,4 +1,5 @@
 import {
+  IContext,
   IOrchestratorInput,
   PipelineStep,
 } from "@/types/middlewares-types/event-orchestrator-types";
@@ -9,7 +10,7 @@ import { CalendarEventsService } from "@/services";
 import { createAnimalWithEvents } from "@/lib/supabase-data-management/data-management";
 import { uploadAnimalImage } from "@/services/storage/uploadAnimalImage";
 
-const uploadAnimalImageStep: PipelineStep = async (ctx, next) => {
+const uploadAnimalImageStep: PipelineStep<IContext> = async (ctx, next) => {
   const { animalData } = ctx.input;
   if (!animalData.image || !animalData.image.startsWith("file://")) {
     await next();
@@ -30,7 +31,10 @@ const uploadAnimalImageStep: PipelineStep = async (ctx, next) => {
   await next();
 };
 
-const calculateReproductiveRangeStep: PipelineStep = async (ctx, next) => {
+const calculateReproductiveRangeStep: PipelineStep<IContext> = async (
+  ctx,
+  next,
+) => {
   const { reproductionConfig } = ctx.input;
   if (!reproductionConfig) {
     await next();
@@ -40,7 +44,6 @@ const calculateReproductiveRangeStep: PipelineStep = async (ctx, next) => {
   const animalId = String(ctx.createdAnimal?.id) ?? "";
   const animalName = ctx.createdAnimal?.name ?? "";
 
-  console.log("reporduction type - in pipeline", reproductionConfig.type);
   const calculator = ReproductiveRangeFactory.createRange(
     reproductionConfig.type,
   );
@@ -64,7 +67,7 @@ const calculateReproductiveRangeStep: PipelineStep = async (ctx, next) => {
   await next();
 };
 
-const buildCalendarMarksStep: PipelineStep = async (ctx, next) => {
+const buildCalendarMarksStep: PipelineStep<IContext> = async (ctx, next) => {
   const events = ctx.calculatedEvents;
 
   if (!events || events.length === 0) {
@@ -93,11 +96,20 @@ const buildCalendarMarksStep: PipelineStep = async (ctx, next) => {
   await next();
 };
 
-const persistAnimalAndEventsStep: PipelineStep = async (ctx, next) => {
-  const { input, calculatedEvents, suggestedCondition } = ctx;
+const persistAnimalAndEventsStep: PipelineStep<IContext> = async (
+  ctx,
+  next,
+) => {
+  const { input, calculatedEvents, suggestedCondition, cycle_id } = ctx;
   if (!input.animalData) {
     await next();
     return;
+  }
+
+  if (!cycle_id) {
+    throw new Error(
+      "Pipeline Error: 'cycleId' standard attribute is missing from orchestration context.",
+    );
   }
 
   const animalPayload = {
@@ -126,6 +138,7 @@ const persistAnimalAndEventsStep: PipelineStep = async (ctx, next) => {
 
   const eventsPayload = (calculatedEvents || []).map((event) => ({
     owner_id: input.notificationOptions?.profileId ?? "",
+    cycle_id,
     event_type: event.event_type,
     mark_type: event.mark_type,
     title: event.title,

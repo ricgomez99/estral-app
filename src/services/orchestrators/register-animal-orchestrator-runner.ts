@@ -9,6 +9,7 @@ import { AnimalFormData } from "@/lib/zod-schemas";
 import { IContext } from "@/types/middlewares-types/event-orchestrator-types";
 import { IAnimal } from "@/types/mock-types";
 import { ReproductiveConfigBuilder } from "../ranges/reproductive-config-builder";
+import * as crypto from "expo-crypto";
 
 export async function runAnimalCreationPipeline(
   formData: AnimalFormData,
@@ -18,6 +19,7 @@ export async function runAnimalCreationPipeline(
     ReproductiveConfigBuilder.buildFromFormData(formData);
 
   const initialContext: IContext = {
+    cycle_id: crypto.randomUUID(),
     input: {
       animalData: {
         owner_id: ownerId,
@@ -41,7 +43,7 @@ export async function runAnimalCreationPipeline(
     },
   };
 
-  const orchestrator = new EventsOrchestrator();
+  const orchestrator = new EventsOrchestrator<IContext>();
 
   orchestrator
     .use(uploadAnimalImageStep)

@@ -57,6 +57,7 @@ interface IReproductiveEvent {
   id: string;
   animal_id: string;
   owner_id: string;
+  cycle_id: string;
   animal_name: string;
   event_type: ReproductiveEventType;
   mark_type: MarkType;
@@ -65,6 +66,8 @@ interface IReproductiveEvent {
   min_date: string;
   max_date: string;
   completed: boolean;
+  cancelled: boolean;
+  cancellation_reason?: string | null;
   created_at: string;
   updated_at?: string;
 }

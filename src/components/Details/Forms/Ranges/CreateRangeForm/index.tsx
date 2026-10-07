@@ -1,112 +1,117 @@
 import FormContainer from "@/components/shared/FormContainer";
-import { IAnimal, IFertilityRange } from "@/types/mock-types";
 import { useForm } from "react-hook-form";
-import { createAnimalRange, getAnimalById } from "@/utils/mock-functions";
 import useOptimisticCreate from "@/hooks/useOptimisticCreate";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { DateService } from "@/lib";
-import { FormSwitchController } from "@/components/shared/Controllers";
+import {
+  FormConditionController,
+  FormDateController,
+  FormSwitchController,
+} from "@/components/shared/Controllers";
 import MedicatedFields from "../MedicatedFields";
-import NaturalRange from "../NaturalRange";
-import { getRangeDates } from "@/services";
 import { FieldGroup } from "@expo/ui";
+import useGetAnimalById from "@/hooks/useGetAnimalById";
+import { CreateReproductiveEventData } from "@/lib/zod-schemas/createReproductiveEventsSchema";
+import { runCreateSingleEventOrchestrator } from "@/services/orchestrators/create-single-event-orchestrator";
 
 interface IFormProps {
   animalId: string;
 }
 
 export default function CreateRangeForm({ animalId }: IFormProps) {
-  const { control, handleSubmit } = useForm<IFertilityRange>({
-    defaultValues: {
-      application_date: "",
-      medicated: false,
-      medication: null,
-    },
-  });
+  const { animal } = useGetAnimalById(animalId);
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { control, handleSubmit, setValue } =
+    useForm<CreateReproductiveEventData>({
+      defaultValues: {
+        medicated: false,
+        medication: undefined,
+        application_date: new Date().toString(),
+      },
+    });
 
-  const { data: last_oestrus } = useQuery({
-    queryKey: ["animal", animalId, "last_oestrus"],
-    queryFn: () => getAnimalById(animalId!),
-    select: (data: IAnimal | undefined) => data?.last_oestrus,
-    enabled: !!animalId,
+  const { mutate: createRange, isPending } = useOptimisticCreate({
+    queryKey: ["animal-ranges", animalId],
+    mutateFn: async (formData: CreateReproductiveEventData) => {
+      const payload = {
+        ...formData,
+        id: String(animal?.id),
+        name: String(animal?.name),
+        is_donor: animal?.is_donor ?? false,
+        is_recipient: animal?.is_recipient ?? false,
+      };
+      const result = await runCreateSingleEventOrchestrator(
+        payload,
+        String(animal?.owner_id),
+      );
+
+      if (!result.ok) {
+        throw result.error;
+      }
+
+      return result.value;
+    },
   });
 
-  const { mutate: createRange } = useOptimisticCreate<IFertilityRange, IAnimal>(
-    {
-      queryKey: ["animal-ranges", animalId],
-      mutateFn: (newRange: IFertilityRange) =>
-        createAnimalRange(animalId, newRange),
-      updateFn: (oldAnimal, newRange) => {
-        if (!oldAnimal) return {} as IAnimal;
-        return {
-          ...oldAnimal,
-          fertility_ranges: [
-            ...(oldAnimal.fertility_ranges as IFertilityRange[]),
-            newRange,
-          ],
-        };
-      },
-    },
-  );
-
-  const submit = (data: IFertilityRange) => {
+  const submit = (data: CreateReproductiveEventData) => {
     if (!data) return;
-    const ranges = getRangeDates(data, last_oestrus);
 
-    if (!ranges) return;
-    const { minDate, maxDate } = ranges;
-    createRange(
-      {
-        ...data,
-        medication: data.medicated ? data.medication : null,
-        application_date: data.application_date ? data.application_date : "",
-        min_date: DateService.formatToStoredDate(minDate) as string,
-        max_date: DateService.formatToStoredDate(maxDate) as string,
-        id: `temp-${Date.now()}`,
+    createRange(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["animal-ranges", animalId],
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ["animal", animalId],
+        });
+
+        if (router.canGoBack()) router.back();
+
+        Toast.show({
+          type: "success",
+          text1: `New range created successfully`,
+          position: "top",
+        });
       },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["animal-ranges", animalId],
-          });
-
-          if (router.canGoBack()) router.back();
-
-          Toast.show({
-            type: "success",
-            text1: `New range created successfully`,
-            position: "top",
-          });
-        },
-        onError: (error) => {
-          Toast.show({
-            type: "error",
-            text1: `Unable to create range, error: ${error}`,
-            position: "top",
-          });
-        },
+      onError: (error) => {
+        Toast.show({
+          type: "error",
+          text1: `Unable to create range, error: ${error}`,
+          position: "top",
+        });
       },
-    );
+    });
   };
 
   const onPressSubmit = handleSubmit(submit);
 
   return (
-    <FormContainer onSubmit={onPressSubmit}>
-      <FieldGroup.SectionHeader>
-        <NaturalRange control={control} lastOestrus={last_oestrus!} />
-      </FieldGroup.SectionHeader>
+    <FormContainer onSubmit={onPressSubmit} disableButton={isPending}>
       <FieldGroup.Section>
         <FormSwitchController
           control={control}
           controllerName="medicated"
           labelText="Medication Applied"
         />
-        <MedicatedFields control={control} />
+        <MedicatedFields
+          control={control}
+          controlName={["medication", "application_date"]}
+        />
+      </FieldGroup.Section>
+      <FieldGroup.Section>
+        <FormConditionController
+          control={control}
+          controllerName="reproduction_details"
+          setControlValue={setValue}
+        />
+        <FormDateController
+          control={control}
+          controllerName="last_oestrus"
+          labelText="Last Oestrus Date"
+        />
       </FieldGroup.Section>
     </FormContainer>
   );

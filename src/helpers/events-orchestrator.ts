@@ -1,7 +1,4 @@
-import {
-  PipelineStep,
-  IContext,
-} from "@/types/middlewares-types/event-orchestrator-types";
+import { PipelineStep } from "@/types/middlewares-types/event-orchestrator-types";
 
 export type Result<T, E = Error> =
   | { ok: true; value: T }
@@ -20,19 +17,19 @@ function toError(error: unknown): Error {
 
   return new Error(typeof error === "string" ? error : JSON.stringify(error));
 }
-export class EventsOrchestrator {
-  private steps: PipelineStep[] = [];
+export class EventsOrchestrator<TContext> {
+  private steps: PipelineStep<TContext>[] = [];
 
-  use(step: PipelineStep): this {
+  use(step: PipelineStep<TContext>): this {
     this.steps.push(step);
     return this;
   }
 
-  async execute(context: IContext): Promise<Result<IContext, Error>> {
+  async execute(context: TContext): Promise<Result<TContext, Error>> {
     let index = -1;
     const dispatch = async (i: number): Promise<void> => {
       if (i <= index) {
-        throw new Error("next() called multiple times in srchestrator steps");
+        throw new Error("next() called multiple times in orchestrator steps");
       }
 
       index = i;

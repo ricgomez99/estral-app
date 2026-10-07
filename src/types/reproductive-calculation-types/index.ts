@@ -26,13 +26,16 @@ interface ICreateReproductiveEventPayload {
   min_date: string; // YYYY-MM-DD
   max_date: string; // YYYY-MM-DD
   completed: boolean;
+  medicated?: boolean | null;
+  medication?: string | null;
 }
 
 interface IInsertReproductionEventDTO extends Omit<
   ICreateReproductiveEventPayload,
-  "animal_name"
+  "animal_id"
 > {
   owner_id: string;
+  cycle_id: string;
 }
 
 interface IReproductiveFactoryResult {
