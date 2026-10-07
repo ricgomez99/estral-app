@@ -28,32 +28,21 @@ export const useAuthStore = create<IAuthState>((set, get) => ({
 
     supabase.auth.onAuthStateChange((event, session) => {
       const state = getState();
-      const currentSession = state.session;
 
-      if (!session) {
-        currentRequestId++;
-        clearStore(setState);
-        return;
-      }
-
-      if (event === "SIGNED_OUT") {
+      if (!session || event === "SIGNED_OUT") {
         currentRequestId++;
         clearStore(setState);
         return;
       }
 
       if (event === "TOKEN_REFRESHED") {
-        if (!currentSession) return;
-
-        if (currentSession.access_token === session.access_token) return;
-
-        setState({ session });
+        setState({ session, user: session.user });
         return;
       }
 
       if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
         if (
-          currentSession?.access_token === session.access_token &&
+          state.session?.access_token === session.access_token &&
           state.profile !== null
         ) {
           setState({ isLoading: false });
@@ -98,9 +87,18 @@ const syncUserData = async (
   currentSyncPromise = (async () => {
     try {
       const state = get();
-
       const hasData = state.profile !== null;
       if (!hasData) set({ isLoading: true });
+
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+
+      if (sessionError || !sessionData.session) {
+        clearStore(set);
+        return;
+      }
+
+      const currentValidSession = sessionData.session;
 
       const { profile, vetDetails, ranchDetails } =
         await AuthService.getFullUserData(userId);
@@ -110,28 +108,24 @@ const syncUserData = async (
         return;
       }
 
-      const isSameSession =
-        state.session?.access_token === session.access_token;
-
-      const alreadyHydrated = state.profile !== null;
-
-      if (isSameSession && alreadyHydrated) {
-        set({ isLoading: false });
-        return;
-      }
-
       set({
-        session,
-        user: session.user,
+        session: currentValidSession,
+        user: currentValidSession.user,
         profile,
         role: profile?.role ?? null,
         vetDetails,
         ranchDetails,
         isLoading: false,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("syncUserData error:", error);
-      set({ isLoading: false });
+      const err = error as { code?: string; message?: string };
+      if (err.code === "PGRST303" || err.message?.includes("JWT expired")) {
+        await supabase.auth.signOut();
+        clearStore(set);
+      } else {
+        set({ isLoading: false });
+      }
     } finally {
       currentSyncPromise = null;
     }

@@ -1,6 +1,6 @@
 import { IAnimal } from "@/types/mock-types";
 import useTabQuery from "./useTabQuery";
-import { getAnimalsMock } from "@/utils/mock-functions";
+import { getAnimals } from "@/lib/supabase-data-management/data-fetching";
 
 export default function useRawAnimalsData() {
   const {
@@ -11,7 +11,7 @@ export default function useRawAnimalsData() {
     refetch,
   } = useTabQuery<IAnimal[]>({
     queryKey: ["animals"],
-    queryFn: getAnimalsMock,
+    queryFn: getAnimals,
   });
 
   return { animals, isLoading, error, isRefetching, refetch };

@@ -2,12 +2,17 @@ import { useEffect } from "react";
 import { Stack } from "expo-router";
 import SpinLoader from "@/components/shared/SpinLoader";
 import { useAuthStore } from "@/stores";
+import { useInitNotifications, useSyncPushToken } from "@/hooks/notifications";
 
 export default function RootNavigator() {
   const { session, initialize, isLoading, profile } = useAuthStore();
+
   useEffect(() => {
     initialize();
   }, []);
+
+  useInitNotifications();
+  useSyncPushToken();
 
   if (isLoading) {
     return <SpinLoader />;

@@ -1,24 +1,25 @@
 import { UpdateRangeForm } from "@/components/Details/Forms";
 import { useLocalSearchParams } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
-import { getRangeById } from "@/utils/mock-functions";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import SpinLoader from "@/components/shared/SpinLoader";
-import { useQueryClient } from "@tanstack/react-query";
-import { IAnimal } from "@/types/mock-types";
+import { IAnimal, IReproductiveEvent } from "@/types/mock-types";
+import { getReproductiveEventById } from "@/lib/supabase-data-management/data-fetching";
 
 export default function UpdateRangeScreen() {
   const queryClient = useQueryClient();
   const { id, rangeId } = useLocalSearchParams();
   const { data: range, isLoading } = useQuery({
     queryKey: ["range", id, rangeId],
-    queryFn: () => getRangeById(id as string, rangeId as string),
+    queryFn: async () =>
+      // This function should be replaced
+      await getReproductiveEventById(String(rangeId), String(id)),
     enabled: !!id && !!rangeId,
     initialData: () => {
       const animalCache = queryClient.getQueryData<IAnimal>([
         "animal-ranges",
         id,
       ]);
-      return animalCache?.fertility_ranges.find(
+      return animalCache?.reproductive_events?.find(
         (range) => range.id === rangeId,
       );
     },
@@ -29,5 +30,10 @@ export default function UpdateRangeScreen() {
     return <SpinLoader />;
   }
 
-  return <UpdateRangeForm defaultData={range} animalId={id as string} />;
+  return (
+    <UpdateRangeForm
+      defaultData={range as IReproductiveEvent}
+      animalId={id as string}
+    />
+  );
 }

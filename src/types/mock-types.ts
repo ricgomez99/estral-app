@@ -21,8 +21,23 @@ type ReproductionDetails =
   | IInseminationReproduction
   | ITransferReproduction;
 
+type ReproductiveEventType =
+  | "estrus_range"
+  | "embryo_flush"
+  | "pregnancy_check"
+  | "birth_type_check"
+  | "expected_birth"
+  | "treatment";
+
+type MarkType =
+  | "natural_range"
+  | "insemination_range"
+  | "transfer_range"
+  | "donant_transfer_range";
+
 interface IAnimal {
   id: string | number;
+  owner_id: string;
   name: string;
   age: number;
   type: Species | undefined | string;
@@ -30,23 +45,31 @@ interface IAnimal {
   breed?: Breed;
   condition?: Condition;
   reproduction_details?: ReproductionDetails;
-  microchipId?: string;
-  isRecipient?: boolean;
-  isDonor?: boolean;
-  image: string;
+  microchip_id?: string | null;
+  is_recipient?: boolean;
+  is_donor?: boolean;
+  image: string | null;
   last_oestrus?: string;
-  fertility_ranges?: IFertilityRange[];
+  reproductive_events?: IReproductiveEvent[];
 }
 
-interface IFertilityRange {
-  id: string | number;
-  subject?: string;
-  medicated?: boolean;
-  medication?: Medication | null;
-  application_date?: string;
+interface IReproductiveEvent {
+  id: string;
+  animal_id: string;
+  owner_id: string;
+  cycle_id: string;
+  animal_name: string;
+  event_type: ReproductiveEventType;
+  mark_type: MarkType;
+  title: string;
+  description?: string;
   min_date: string;
   max_date: string;
-  creation_date: string;
+  completed: boolean;
+  cancelled: boolean;
+  cancellation_reason?: string | null;
+  created_at: string;
+  updated_at?: string;
 }
 
 type Species = "horse" | "donkey" | "zebra";
@@ -56,5 +79,20 @@ type Breed = PureBreed | Mixed;
 type PureBreed = (typeof BREEDS)[number];
 type Mixed = (typeof MIXES)[number];
 type Condition = "Young Female" | "Pregnant" | "Not Pregnant";
+type ReproductiveCondition =
+  | "Pregnant"
+  | "Open"
+  | "Insemination Ready"
+  | "Not Pregnant";
 
-export type { IAnimal, IFertilityRange, Species, Sex, Medication };
+export type {
+  IAnimal,
+  Species,
+  Sex,
+  Medication,
+  ReproductiveEventType,
+  IReproductiveEvent,
+  MarkType,
+  Condition,
+  ReproductiveCondition,
+};

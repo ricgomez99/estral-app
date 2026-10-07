@@ -1,9 +1,11 @@
 import { Text, View } from "react-native";
+import EventsCalendar from "@/components/EventsCalendar";
 
 export default function Calculations() {
   return (
-    <View>
-      <Text>Calculations List</Text>
+    <View style={{ flex: 1 }}>
+      <Text>Events</Text>
+      <EventsCalendar />
     </View>
   );
 }

@@ -46,3 +46,8 @@ scripts/
 
 # local ESLint output
 eslint-results.txt
+
+# Firebase Admin SDK Keys & Credentials
+*-firebase-adminsdk-*.json
+google-services.json
+GoogleService-Info.plist

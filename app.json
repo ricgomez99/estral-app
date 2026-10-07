@@ -4,6 +4,9 @@
     "slug": "estral-app",
     "scheme": "estralapp",
     "version": "1.0.0",
+    "experiments": {
+      "reactCompiler": true
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,7 +24,8 @@
         "backgroundColor": "#ffffff"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.estralapp"
+      "package": "com.anonymous.estralapp",
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
       "expo-router",
@@ -36,6 +40,16 @@
         "@react-native-google-signin/google-signin",
         {
           "iosUrlScheme": "com.googleusercontent.apps.263196030335-dnv4cph079qlfiec6l6god1uo3vthq7a"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#ffffff",
+          "defaultChannel": "default",
+          "sounds": ["./assets/notification_sounds/notification_sound.wav"],
+          "enableBackgroundRemoteNotifications": false
         }
       ]
     ],

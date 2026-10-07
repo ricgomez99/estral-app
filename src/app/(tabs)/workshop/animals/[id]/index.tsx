@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import Chip from "@/components/shared/Chip";
 import { CardHeader, GridItem } from "@/components/Details";
 import { useQuery } from "@tanstack/react-query";
-import { getAnimalById } from "@/utils/mock-functions";
+import { getAnimalById } from "@/lib/supabase-data-management/data-fetching";
 import SpinLoader from "@/components/shared/SpinLoader";
 import { DetailsLayout } from "@/layouts";
 
@@ -15,8 +15,23 @@ export default function AnimalDetails() {
     enabled: !!id,
   });
 
-  const chipText =
-    subject?.isDonor && !subject.isRecipient ? "Donor" : "Recipient";
+  const chipTextOptions = {
+    donor: "Donor",
+    recipient: "Recipient",
+    defualt: "No Role Asigned",
+  };
+
+  const chipText = () => {
+    if (subject?.is_recipient) {
+      return chipTextOptions.recipient;
+    }
+
+    if (subject?.is_donor) {
+      return chipTextOptions.donor;
+    }
+
+    return chipTextOptions.defualt;
+  };
 
   const updateButtonRoute = `/workshop/animals/${id}/update-animal`;
 
@@ -25,21 +40,25 @@ export default function AnimalDetails() {
   }
 
   return (
-    <DetailsLayout updateRoute={updateButtonRoute} imageSource={subject?.image}>
+    <DetailsLayout
+      updateRoute={updateButtonRoute}
+      imageSource={subject?.image as string}>
       <View style={styles.infoContainer}>
         <CardHeader title={subject?.name} badgeText={subject?.type} />
         <View style={styles.grid}>
           <GridItem label={true} labelText="Age">
-            <Text style={styles.gridItemText}>{subject?.age}</Text>
+            <Text style={styles.gridItemText}>{String(subject?.age)}</Text>
           </GridItem>
           <GridItem label={true} labelText="Sex">
             <Text style={styles.gridItemText}>{subject?.sex}</Text>
           </GridItem>
           <GridItem label={false}>
-            <Chip chipText={chipText} active={subject?.isDonor} />
+            <Chip chipText={chipText()} active={subject?.is_donor} />
           </GridItem>
           <GridItem label={true} labelText="Chip ID">
-            <Text style={styles.gridItemText}>{subject?.microchipId}</Text>
+            <Text style={styles.gridItemText}>
+              {subject?.microchip_id || "N/A"}
+            </Text>
           </GridItem>
         </View>
       </View>

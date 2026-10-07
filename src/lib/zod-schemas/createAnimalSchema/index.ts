@@ -30,7 +30,7 @@ export const createAnimalSchema = z.object({
   isRecipient: z.boolean().optional(),
   isDonor: z.boolean().optional(),
   image: z.string().optional(),
-  last_oestrus: z.string().min(1, "Last Oestrus date is required"),
+  last_oestrus: z.string().optional(),
 });
 
 type AnimalFormData = z.infer<typeof createAnimalSchema>;

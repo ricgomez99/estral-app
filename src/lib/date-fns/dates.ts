@@ -1,8 +1,7 @@
 import { format, isValid, parseISO, addDays } from "date-fns";
-import { es, enUS } from "date-fns/locale";
-import { DATE_EN_FORMAT, DATE_ES_FORMAT } from "@/utils/consts";
+import { es } from "date-fns/locale/es";
+import { enUS } from "date-fns/locale/en-US";
 
-type IsoString = string | undefined;
 type Languages = "es" | "en";
 type StoreDate = Date | string | undefined | null;
 type UnformattedString = string | undefined | null;
@@ -14,8 +13,8 @@ export class DateService {
   };
 
   private static readonly formats: Record<Languages, string> = {
-    es: DATE_ES_FORMAT,
-    en: DATE_EN_FORMAT,
+    es: "d 'de' MMMM 'de' yyyy",
+    en: "MMMM do, yyyy",
   };
 
   public static addDaysToDate(date: Date | string | undefined, days: number) {
@@ -23,26 +22,31 @@ export class DateService {
       throw new Error("Date is required");
     }
 
-    const formatDate = new Date(date);
+    const parsedDate = typeof date === "string" ? parseISO(date) : date;
 
-    if (!isValid(formatDate)) {
+    if (!isValid(parsedDate)) {
       throw new Error("Invalid date format");
     }
 
-    return addDays(formatDate, days);
+    return addDays(parsedDate, days);
   }
 
-  public static formatToLongDate(isoString: IsoString, language: Languages) {
-    if (!isoString || isoString === "undefined") return;
-    const date = new Date(isoString);
+  public static formatToLongDate(date: StoreDate, language: Languages) {
+    if (!date || date === "undefined") return;
 
-    if (isNaN(date.getTime())) {
-      console.warn(`DateService: Invalid date format ${isoString}`);
+    const parsedDate = typeof date === "string" ? parseISO(date) : date;
+
+    if (!isValid(parsedDate)) {
+      console.warn(`DateService: Invalid date format ${parsedDate}`);
       return undefined;
     }
 
-    return format(date, this.formats[language], {
-      locale: this.locales[language],
+    const selectedLanguage = language in DateService.formats ? language : "en";
+    const formatPattern = DateService.formats[selectedLanguage];
+    const locale = DateService.locales[selectedLanguage];
+
+    return format(parsedDate, formatPattern, {
+      locale,
     });
   }
 
