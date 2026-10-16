@@ -1,15 +1,10 @@
-import { getAnimalById } from "@/utils/mock-functions";
-import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { UpdateAnimalForm } from "@/components/Details/Forms";
+import useGetAnimalById from "@/hooks/useGetAnimalById";
 
 export default function UpdateAnimalScreen() {
   const { id } = useLocalSearchParams();
-  const { data: subject } = useQuery({
-    queryKey: ["animal", id],
-    queryFn: () => getAnimalById(id as string),
-    enabled: !!id,
-  });
+  const { animal } = useGetAnimalById(String(id));
 
-  return <UpdateAnimalForm defaultData={subject} />;
+  return <UpdateAnimalForm defaultData={animal} />;
 }

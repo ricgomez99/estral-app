@@ -50,7 +50,7 @@ export default function RangeDetails() {
               min_date={item.min_date}
               creation_date={item.created_at}
               rangeId={String(item.id)}
-              id={String(id)}
+              animalId={String(id)}
             />
           )}
           keyExtractor={(item) => String(item.id)}
