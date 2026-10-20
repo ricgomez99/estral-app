@@ -69,6 +69,19 @@ const medicationOptions: OptionType[] = [
   { label: "Progesterone", value: "progesterone" },
 ];
 
+const cancelEventOptions: OptionType[] = [
+  { label: "Failed Pregnancy", value: "failed_pregnancy" },
+  { label: "Health Issue", value: "health_issue" },
+  {
+    label: "Recipient Desynchronization",
+    value: "recipient_desynchronization",
+  },
+  { label: "Breeding Stock Unavailable", value: "semen_unavailable" },
+  { label: "Operational Decision", value: "magement" },
+  { label: "Data Entry Error", value: "data_entry_error" },
+  { label: "Other", value: "other" },
+];
+
 const images = {
   defaultHorse: require("../../assets/default-horse.jpg"),
   googleLogo: require("../../assets/google.png"),
@@ -201,6 +214,7 @@ export {
   sexOptions,
   typeOptions,
   medicationOptions,
+  cancelEventOptions,
   conditionOptions,
   images,
 };

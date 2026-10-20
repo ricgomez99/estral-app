@@ -95,10 +95,28 @@ const getReproductiveEventById = async (eventId: string, animalId: string) => {
   return (event as IReproductiveEvent) ?? undefined;
 };
 
+const getReproductiveCycleId = async (eventId: string) => {
+  const { data: cycleId, error } = await supabase
+    .from("reproductive_events")
+    .select("cycle_id")
+    .eq("id", eventId)
+    .single();
+
+  if (error) {
+    console.error("[getReproductiveCycleId Error]: ", error);
+    throw new Error(
+      `Unable to fetch cycle_id for the event with id: ${eventId} from supabase`,
+    );
+  }
+
+  return cycleId.cycle_id as string;
+};
+
 export {
   getAnimals,
   getAnimalById,
   getReproductiveEvents,
   getReproductiveEventsByAnimalId,
   getReproductiveEventById,
+  getReproductiveCycleId,
 };
