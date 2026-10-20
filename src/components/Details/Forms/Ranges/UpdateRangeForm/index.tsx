@@ -2,7 +2,6 @@ import FormContainer from "@/components/shared/FormContainer";
 import { FormSwitchController } from "@/components/shared/Controllers";
 import { useForm } from "react-hook-form";
 import { IAnimal, IReproductiveEvent } from "@/types/mock-types";
-import { StyleSheet } from "react-native";
 import useGenericUpdate from "@/hooks/useGenericUpdate";
 import { updateAnimalRange } from "@/utils/mock-functions";
 import { useQueryClient } from "@tanstack/react-query";
@@ -93,13 +92,3 @@ export default function UpdateRangeForm({ defaultData, animalId }: IFormProps) {
     </FormContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  formContainer: {
-    flex: 1,
-  },
-  wrapper: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-});

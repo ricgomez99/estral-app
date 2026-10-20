@@ -1,3 +1,5 @@
+import { SignInError } from "@/helpers/customErrorClasses/sign-in-error";
+import { mapAuthError } from "@/helpers/mappers/map-auth-error";
 import { supabase } from "@/lib";
 
 import {
@@ -7,6 +9,7 @@ import {
   UserRole,
   IAppleSignInParams,
 } from "@/types/auth-types";
+import { SIGNIN_ERROR_MESSAGES } from "@/utils/consts";
 
 import {
   ADMIN_MOCK_RANCH_DETAILS,
@@ -151,7 +154,8 @@ export const AuthService = {
     });
 
     if (error) {
-      throw error;
+      const kind = mapAuthError(error);
+      throw new SignInError(kind, SIGNIN_ERROR_MESSAGES[kind]);
     }
 
     return data;

@@ -1,13 +1,13 @@
-import { FieldGroup } from "@expo/ui";
+import { FieldGroup, Text } from "@expo/ui";
 import { FormController } from "../shared/Controllers";
 import FormContainer from "../shared/FormContainer";
 import { GoogleSignInButton } from "../shared/Buttons";
 import { useForm } from "react-hook-form";
 import { AuthService } from "@/services";
-import { AuthError } from "@supabase/supabase-js";
-import Toast from "react-native-toast-message";
 import { LoginFormValues, authSchema } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SignInError } from "@/helpers/customErrorClasses/sign-in-error";
+import { SIGNIN_ERROR_MESSAGES } from "@/utils/consts";
 
 interface ILoginProps {
   email: string;
@@ -18,31 +18,30 @@ export default function LoginForm() {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    formState: { errors, isSubmitting, isValid },
+    setError,
+    clearErrors,
   } = useForm<LoginFormValues>({
     defaultValues: {
-      email: "",
-      password: "",
+      email: undefined,
+      password: undefined,
     },
     resolver: zodResolver(authSchema),
-    mode: "all",
+    mode: "onChange",
   });
   const submit = async (data: ILoginProps) => {
     if (!data.email || !data.password) return;
+    clearErrors("root");
     try {
       await AuthService.signInWithEmail(data.email, data.password);
     } catch (error) {
       console.error("Error signing in with Email:", error);
+      const message =
+        error instanceof SignInError
+          ? error.message
+          : SIGNIN_ERROR_MESSAGES.unknown;
 
-      const isAuthError = error instanceof AuthError;
-      const errorMessage =
-        error instanceof Error ? error.message : "Unable to sign in with email";
-
-      Toast.show({
-        type: "error",
-        text1: isAuthError ? "Authentication Error" : "Unexpected Error",
-        text2: errorMessage,
-      });
+      setError("root", { message });
     }
   };
   return (
@@ -66,6 +65,11 @@ export default function LoginForm() {
           secureText={true}
         />
       </FieldGroup.Section>
+      {errors.root && (
+        <FieldGroup.Section>
+          <Text textStyle={{ color: "red" }}>{errors.root.message}</Text>
+        </FieldGroup.Section>
+      )}
       <FieldGroup.Section>
         <GoogleSignInButton />
       </FieldGroup.Section>
