@@ -53,7 +53,7 @@ export default function GoogleSignInButton() {
           <Image source={images.googleLogo} style={{ width: 32, height: 32 }} />
         </View>
         <View>
-          <Text style={{ fontSize: 14, fontWeight: "600" }}>
+          <Text style={{ fontSize: 16, fontWeight: "600" }}>
             Sign in with google
           </Text>
         </View>
