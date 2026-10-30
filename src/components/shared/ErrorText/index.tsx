@@ -16,7 +16,7 @@ export default function ErrorText({ message }: IErrorTextProps) {
 const styles = StyleSheet.create({
   textMessage: {
     color: "red",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "500",
   },
 });
