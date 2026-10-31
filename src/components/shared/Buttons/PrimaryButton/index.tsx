@@ -1,4 +1,5 @@
 import { Button, Text } from "@expo/ui";
+import { Dimensions } from "react-native";
 interface IPrimaryButtonProps {
   title: string;
   handleClick: () => void;
@@ -9,11 +10,15 @@ interface IPrimaryButtonProps {
 export default function PrimaryButton({
   title,
   handleClick,
-  type,
   disable = false,
 }: IPrimaryButtonProps) {
+  const { width } = Dimensions.get("screen");
   return (
-    <Button disabled={disable} onPress={handleClick} variant="filled">
+    <Button
+      style={{ width: width }}
+      disabled={disable}
+      onPress={handleClick}
+      variant="filled">
       <Text>{title}</Text>
     </Button>
   );

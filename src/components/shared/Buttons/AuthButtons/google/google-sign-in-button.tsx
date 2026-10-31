@@ -1,6 +1,5 @@
 import * as WebBrowser from "expo-web-browser";
 import { AuthService } from "@/services";
-import { Button, Text, Row, RNHostView } from "@expo/ui";
 import { useRef } from "react";
 import { AuthError } from "@supabase/supabase-js";
 import Toast from "react-native-toast-message";
@@ -8,6 +7,7 @@ import { images } from "@/utils/consts";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { statusCodes } from "@react-native-google-signin/google-signin";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -47,16 +47,36 @@ export default function GoogleSignInButton() {
   };
 
   return (
-    <Button variant="filled" onPress={onButtonPress}>
-      <Row spacing={12} alignment="center">
-        <RNHostView matchContents>
+    <Pressable style={buttonStyles.button} onPress={onButtonPress}>
+      <View style={buttonStyles.content}>
+        <View>
           <Image source={images.googleLogo} style={{ width: 32, height: 32 }} />
-        </RNHostView>
-
-        <Text textStyle={{ fontSize: 16, fontWeight: "700" }}>
-          Sign in with google
-        </Text>
-      </Row>
-    </Button>
+        </View>
+        <View>
+          <Text style={{ fontSize: 16, fontWeight: "600" }}>
+            Sign in with google
+          </Text>
+        </View>
+      </View>
+    </Pressable>
   );
 }
+
+const buttonStyles = StyleSheet.create({
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderColor: "#eeee",
+    borderWidth: 1,
+  },
+  content: {
+    flexDirection: "row",
+    gap: 20,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+});

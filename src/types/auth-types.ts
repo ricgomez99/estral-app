@@ -48,3 +48,10 @@ export interface IAppleSignInParams {
   authorizationCode: string;
   nonce: string;
 }
+
+export type SignInErrorKind =
+  | "invalid_credentials"
+  | "email_not_confirmed"
+  | "rate_limited"
+  | "banned"
+  | "unknown";

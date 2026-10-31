@@ -1,13 +1,16 @@
-import { FieldGroup } from "@expo/ui";
-import { FormController } from "../shared/Controllers";
-import FormContainer from "../shared/FormContainer";
-import { GoogleSignInButton } from "../shared/Buttons";
 import { useForm } from "react-hook-form";
 import { AuthService } from "@/services";
-import { AuthError } from "@supabase/supabase-js";
-import Toast from "react-native-toast-message";
 import { LoginFormValues, authSchema } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SignInError } from "@/helpers/customErrorClasses/sign-in-error";
+import { SIGNIN_ERROR_MESSAGES } from "@/utils/consts";
+import { View, StyleSheet } from "react-native";
+import FormHeader from "../Auth/LoginPage/FormHeader";
+import ErrorText from "../Auth/ErrorText";
+import HeadToLink from "../Auth/HeadToLink";
+import FormFooter from "../Auth/LoginPage/FormFooter";
+import EmailInput from "../Auth/Inputs/Email";
+import PasswordInput from "../Auth/Inputs/Password";
 
 interface ILoginProps {
   email: string;
@@ -18,57 +21,74 @@ export default function LoginForm() {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    formState: { errors, isSubmitting, isValid },
+    setError,
+    clearErrors,
   } = useForm<LoginFormValues>({
     defaultValues: {
-      email: "",
-      password: "",
+      email: undefined,
+      password: undefined,
     },
     resolver: zodResolver(authSchema),
-    mode: "all",
+    mode: "onChange",
   });
+
   const submit = async (data: ILoginProps) => {
     if (!data.email || !data.password) return;
+    clearErrors("root");
     try {
       await AuthService.signInWithEmail(data.email, data.password);
     } catch (error) {
       console.error("Error signing in with Email:", error);
+      const message =
+        error instanceof SignInError
+          ? error.message
+          : SIGNIN_ERROR_MESSAGES.unknown;
 
-      const isAuthError = error instanceof AuthError;
-      const errorMessage =
-        error instanceof Error ? error.message : "Unable to sign in with email";
-
-      Toast.show({
-        type: "error",
-        text1: isAuthError ? "Authentication Error" : "Unexpected Error",
-        text2: errorMessage,
-      });
+      setError("root", { message });
     }
   };
-  return (
-    <FormContainer
-      onSubmit={handleSubmit(submit)}
-      disableButton={isSubmitting || !isValid}>
-      <FieldGroup.Section>
-        <FormController
-          control={control}
-          controllerName="email"
-          inputType="input"
-          inputPlaceHolder="Email"
-          mode="email"
-        />
 
-        <FormController
+  return (
+    <View style={loginStyles.formContainer}>
+      <FormHeader />
+      <View style={loginStyles.formInputsContainer}>
+        <EmailInput control={control} controllerName="email" errors={errors} />
+        <PasswordInput
           control={control}
           controllerName="password"
-          inputType="input"
-          inputPlaceHolder="Password"
-          secureText={true}
+          errors={errors}
         />
-      </FieldGroup.Section>
-      <FieldGroup.Section>
-        <GoogleSignInButton />
-      </FieldGroup.Section>
-    </FormContainer>
+      </View>
+      <HeadToLink
+        mainText="Forgot Password ?"
+        linkText="Click here"
+        linkUrl=""
+        alignment="start"
+      />
+      {errors.root && <ErrorText errorMessage={errors.root.message} />}
+
+      <FormFooter
+        shouldDisable={isSubmitting || !isValid}
+        onSubmit={handleSubmit(submit)}
+      />
+
+      <HeadToLink
+        mainText="Don't have any account ?"
+        linkText="Signup"
+        linkUrl="signup"
+        alignment="center"
+      />
+    </View>
   );
 }
+
+const loginStyles = StyleSheet.create({
+  formContainer: {
+    flex: 1,
+    gap: 20,
+  },
+  formInputsContainer: {
+    gap: 20,
+  },
+});

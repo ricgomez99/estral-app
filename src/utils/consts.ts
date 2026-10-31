@@ -1,6 +1,7 @@
 import { OptionType } from "@/types/picker-types";
 import { TabProps, DrawerScreenProps } from "@/types/tabs-types";
 import { ReproductiveMilestone } from "@/types/reproductive-calculation-types";
+import { SignInErrorKind } from "@/types/auth-types";
 
 const VIEW_TABS: TabProps[] = [
   {
@@ -201,6 +202,14 @@ const REPRODUCTIVE_MILESTONES_NEXT_OESTRUS: ReproductiveMilestone = {
   },
 };
 
+const SIGNIN_ERROR_MESSAGES: Record<SignInErrorKind, string> = {
+  invalid_credentials: "Incorrect Email or Password",
+  email_not_confirmed: "Your email address must be confirmed",
+  rate_limited: "Sign In rate limit attempts exeeded, try again later",
+  banned: "This account is not allowed to sign in",
+  unknown: "Unable to sign in, please try again",
+};
+
 export {
   VIEW_TABS,
   DRAWER_SCREENS,
@@ -211,6 +220,7 @@ export {
   REPRODUCTION_TYPES,
   BREEDS,
   MIXES,
+  SIGNIN_ERROR_MESSAGES,
   sexOptions,
   typeOptions,
   medicationOptions,

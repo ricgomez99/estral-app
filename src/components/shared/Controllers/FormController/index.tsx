@@ -32,7 +32,7 @@ export default function FormController<T extends FieldValues = FieldValues>({
         inputType === "input" ? (
           <Column>
             <TextInput
-              value={value}
+              defaultValue={value}
               placeholder={inputPlaceHolder}
               onChangeText={onChange}
               onBlur={onBlur}
