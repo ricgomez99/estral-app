@@ -9,7 +9,7 @@ import FormHeader from "../Auth/LoginPage/FormHeader";
 import ErrorText from "../Auth/ErrorText";
 import HeadToLink from "../Auth/HeadToLink";
 import FormFooter from "../Auth/LoginPage/FormFooter";
-import EmailInput from "../Auth/Inputs/Email";
+import RegularInput from "../Auth/Inputs/RegularInput";
 import PasswordInput from "../Auth/Inputs/Password";
 
 interface ILoginProps {
@@ -53,12 +53,14 @@ export default function LoginForm() {
     <View style={loginStyles.formContainer}>
       <FormHeader />
       <View style={loginStyles.formInputsContainer}>
-        <EmailInput control={control} controllerName="email" errors={errors} />
-        <PasswordInput
+        <RegularInput
           control={control}
-          controllerName="password"
-          errors={errors}
+          controllerName="email"
+          label="Email"
+          type="email"
+          placeHolder="example@gmail.com"
         />
+        <PasswordInput control={control} controllerName="password" />
       </View>
       <HeadToLink
         mainText="Forgot Password ?"

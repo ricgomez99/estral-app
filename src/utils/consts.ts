@@ -202,6 +202,8 @@ const REPRODUCTIVE_MILESTONES_NEXT_OESTRUS: ReproductiveMilestone = {
   },
 };
 
+const SIGN_UP_ROLES = ["vet"] as const;
+
 const SIGNIN_ERROR_MESSAGES: Record<SignInErrorKind, string> = {
   invalid_credentials: "Incorrect Email or Password",
   email_not_confirmed: "Your email address must be confirmed",
@@ -209,6 +211,32 @@ const SIGNIN_ERROR_MESSAGES: Record<SignInErrorKind, string> = {
   banned: "This account is not allowed to sign in",
   unknown: "Unable to sign in, please try again",
 };
+
+const VET_SPECIALTIES = [
+  "general_practice",
+  "internal_medicine",
+  "surgery",
+  "reproduction",
+  "neonatology",
+  "integrative_medicine",
+  "other",
+] as const;
+
+const VET_SPECIALTIES_LABELS: Record<(typeof VET_SPECIALTIES)[number], string> =
+  {
+    general_practice: "General Medicine",
+    internal_medicine: "Internal Medicine",
+    surgery: "Surgery",
+    reproduction: "Reproduction",
+    neonatology: "Neonatology",
+    integrative_medicine: "Integrative Medicine",
+    other: "Other",
+  };
+
+const VET_SPECIALTIES_OPTIONS = VET_SPECIALTIES.map((speciality) => ({
+  label: VET_SPECIALTIES_LABELS[speciality],
+  value: speciality,
+}));
 
 export {
   VIEW_TABS,
@@ -221,6 +249,10 @@ export {
   BREEDS,
   MIXES,
   SIGNIN_ERROR_MESSAGES,
+  SIGN_UP_ROLES,
+  VET_SPECIALTIES,
+  VET_SPECIALTIES_LABELS,
+  VET_SPECIALTIES_OPTIONS,
   sexOptions,
   typeOptions,
   medicationOptions,
