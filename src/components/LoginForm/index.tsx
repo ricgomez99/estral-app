@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInError } from "@/helpers/customErrorClasses/sign-in-error";
 import { SIGNIN_ERROR_MESSAGES } from "@/utils/consts";
 import { View, StyleSheet } from "react-native";
-import FormHeader from "../Auth/LoginPage/FormHeader";
+import FormHeader from "../Auth/FormHeader";
 import ErrorText from "../Auth/ErrorText";
 import HeadToLink from "../Auth/HeadToLink";
 import FormFooter from "../Auth/LoginPage/FormFooter";
@@ -49,9 +49,16 @@ export default function LoginForm() {
     }
   };
 
+  const HEADER_TITLE = "Welcome back";
+  const HEADER_SUBTITTLE =
+    "Let's get you signed in! Please enter your \nemail & password bellow.";
+
   return (
     <View style={loginStyles.formContainer}>
-      <FormHeader />
+      <FormHeader
+        headerTitle={HEADER_TITLE}
+        headerSubtitle={HEADER_SUBTITTLE}
+      />
       <View style={loginStyles.formInputsContainer}>
         <RegularInput
           control={control}
