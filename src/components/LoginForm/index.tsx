@@ -78,7 +78,7 @@ export default function LoginForm() {
       {errors.root && <ErrorText errorMessage={errors.root.message} />}
 
       <FormFooter
-        shouldDisable={isSubmitting || !isValid}
+        shouldDisable={isSubmitting}
         onSubmit={handleSubmit(submit)}
       />
 

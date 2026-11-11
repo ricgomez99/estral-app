@@ -69,3 +69,18 @@ export type SignInErrorKind =
   | "rate_limited"
   | "banned"
   | "unknown";
+
+export type SignUpErrorKind =
+  | "user_already_exists"
+  | "phone_already_exists"
+  | "weak_password"
+  | "invalid_email"
+  | "email_not_authorized"
+  | "signup_disabled"
+  | "provider_disabled"
+  | "rate_limited"
+  | "captcha_failed"
+  | "validation_failed"
+  | "server_error"
+  | "network"
+  | "unknown";

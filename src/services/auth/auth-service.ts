@@ -1,6 +1,7 @@
 import { OnboardingError } from "@/helpers/customErrorClasses/onboarding-error";
 import { SignInError } from "@/helpers/customErrorClasses/sign-in-error";
-import { mapAuthError } from "@/helpers/mappers/map-auth-error";
+import { SignUpError } from "@/helpers/customErrorClasses/signup-error";
+import { mapAuthError, mapSignUpError } from "@/helpers/mappers/map-auth-error";
 import { mapVetDetails } from "@/helpers/mappers/map-vet-details";
 import { supabase } from "@/lib";
 import {
@@ -18,6 +19,7 @@ import {
 } from "@/types/auth-types";
 import {
   ONBOARDING_ERROR_MESSAGES,
+  SIGN_UP_ERROR_MESSAGES,
   SIGNIN_ERROR_MESSAGES,
 } from "@/utils/consts";
 
@@ -191,13 +193,23 @@ export const AuthService = {
   },
 
   async signUp(email: string, password: string, fullName: string) {
-    const { data, error: signUpError } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
       options: { data: { full_name: fullName } },
     });
 
-    if (signUpError) throw signUpError;
+    if (error) {
+      const kind = mapSignUpError(error);
+      throw new SignUpError(kind, SIGN_UP_ERROR_MESSAGES[kind]);
+    }
+
+    if (data.user && data.user.identities?.length === 0) {
+      throw new SignUpError(
+        "user_already_exists",
+        SIGN_UP_ERROR_MESSAGES.user_already_exists,
+      );
+    }
 
     return data;
   },

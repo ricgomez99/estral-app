@@ -9,6 +9,7 @@ export default function FormFooter({ shouldDisable, onSubmit }: IProps) {
   return (
     <View style={styles.container}>
       <Pressable
+        testID="submit-btn"
         style={styles.signUpButton}
         disabled={shouldDisable}
         onPress={onSubmit}>
