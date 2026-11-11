@@ -1,6 +1,9 @@
+import { VET_SPECIALTIES } from "@/utils/consts";
 import { Session, User } from "@supabase/supabase-js";
 
 export type UserRole = "vet" | "ranch_owner" | "admin";
+export type LicenseStatus = "unverified" | "pending" | "verified" | "rejected";
+export type VetSpecialty = (typeof VET_SPECIALTIES)[number];
 
 export interface IProfile {
   id: string;
@@ -13,12 +16,23 @@ export interface IProfile {
   is_onboarded: boolean;
 }
 
-export interface IVetDetails {
+export interface IVetDetailsRaw {
   id: string;
   profile_id: string;
   license_number: string;
-  specialty: string | null;
+  license_status: LicenseStatus;
+  license_verified_at: string | null;
+  vet_specialties: { specialty_code: string }[];
   created_at: string;
+}
+
+export interface IVetDetails {
+  id: string;
+  profile_id: string;
+  license_number: string | null;
+  license_status: LicenseStatus;
+  created_at: string | null;
+  specialties: VetSpecialty[];
 }
 
 export interface IRanchDetails {
@@ -34,7 +48,7 @@ export interface IAuthState {
   session: Session | null;
   user: User | null;
   profile: IProfile | null;
-  vetDetails: IVetDetails | null;
+  vetDetails: IVetDetailsRaw | null;
   ranchDetails: IRanchDetails | null;
   role: UserRole | null;
   isLoading: boolean;

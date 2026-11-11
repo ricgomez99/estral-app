@@ -238,6 +238,16 @@ const VET_SPECIALTIES_OPTIONS = VET_SPECIALTIES.map((speciality) => ({
   value: speciality,
 }));
 
+const ONBOARDING_ERROR_MESSAGES: Record<string, string> = {
+  phone_taken: "This number is already registered.",
+  invalid_phone: "Invalid phone number.",
+  invalid_role: "Invalid role.",
+  invalid_specialties: "Select between 1 and 3 specialties.",
+  invalid_specialty: "There's an invalid specialty.",
+  invalid_license: "Invalid license format",
+  already_onboarded: "Your profile has been completed already.",
+};
+
 export {
   VIEW_TABS,
   DRAWER_SCREENS,
@@ -253,6 +263,7 @@ export {
   VET_SPECIALTIES,
   VET_SPECIALTIES_LABELS,
   VET_SPECIALTIES_OPTIONS,
+  ONBOARDING_ERROR_MESSAGES,
   sexOptions,
   typeOptions,
   medicationOptions,
