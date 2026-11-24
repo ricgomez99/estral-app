@@ -1,26 +1,19 @@
 import { View, TextInput, Text, StyleSheet } from "react-native";
 import ErrorText from "../../ErrorText";
-import {
-  Control,
-  Controller,
-  FieldValues,
-  FieldErrors,
-  Path,
-} from "react-hook-form";
-import { LoginFormValues } from "@/lib/zod-schemas";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 
 interface IProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
-  errors: FieldErrors<LoginFormValues>;
+  label?: string;
 }
 
 export default function PasswordInput<T extends FieldValues = FieldValues>({
   control,
   controllerName,
-  errors,
+  label = "Password",
 }: IProps<T>) {
   const [hidePassword, setHidePassword] = useState(true);
 
@@ -31,10 +24,13 @@ export default function PasswordInput<T extends FieldValues = FieldValues>({
     <Controller
       control={control}
       name={controllerName}
-      render={({ field: { onChange, onBlur, value } }) => {
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) => {
         return (
           <View style={styles.inputWrapper}>
-            <Text style={styles.inputLabelText}>Password</Text>
+            <Text style={styles.inputLabelText}>{label}</Text>
             <View style={styles.passwordInputWrapper}>
               <TextInput
                 style={styles.passwordInput}
@@ -54,9 +50,7 @@ export default function PasswordInput<T extends FieldValues = FieldValues>({
                 style={styles.icon}
               />
             </View>
-            {errors.password && (
-              <ErrorText errorMessage={errors.password.message} />
-            )}
+            {error && <ErrorText errorMessage={error.message} />}
           </View>
         );
       }}

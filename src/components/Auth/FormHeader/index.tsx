@@ -1,17 +1,18 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function FormHeader() {
-  const HEADER_TITLE = "Welcome back";
-  const HEADER_SUBTITTLE =
-    "Let's get you signed in! Please enter your \nemail & password bellow.";
+interface IProps {
+  headerTitle: string;
+  headerSubtitle: string;
+}
 
+export default function FormHeader({ headerTitle, headerSubtitle }: IProps) {
   return (
     <View style={styles.formHeader}>
       <View>
-        <Text style={styles.formHeaderTitle}>{HEADER_TITLE}</Text>
+        <Text style={styles.formHeaderTitle}>{headerTitle}</Text>
       </View>
       <View>
-        <Text style={styles.formHeaderSubTitle}>{HEADER_SUBTITTLE}</Text>
+        <Text style={styles.formHeaderSubTitle}>{headerSubtitle}</Text>
       </View>
     </View>
   );

@@ -1,44 +1,50 @@
-import { View, TextInput, Text, StyleSheet } from "react-native";
-import ErrorText from "../../ErrorText";
 import {
-  Control,
-  Controller,
-  FieldValues,
-  FieldErrors,
-  Path,
-} from "react-hook-form";
-import { LoginFormValues } from "@/lib/zod-schemas";
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  InputModeOptions,
+} from "react-native";
+import ErrorText from "../../ErrorText";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
 interface IProps<T extends FieldValues> {
   control: Control<T>;
   controllerName: Path<T>;
-  errors: FieldErrors<LoginFormValues>;
+  label: string;
+  type: InputModeOptions;
+  placeHolder: string;
 }
 
-export default function EmailInput<T extends FieldValues = FieldValues>({
+export default function RegularInput<T extends FieldValues = FieldValues>({
   control,
   controllerName,
-  errors,
+  label,
+  type,
+  placeHolder,
 }: IProps<T>) {
   return (
     <Controller
       control={control}
       name={controllerName}
-      render={({ field: { onChange, onBlur, value } }) => {
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) => {
         return (
           <View style={styles.inputWrapper}>
-            <Text style={styles.inputLabelText}>Email</Text>
+            <Text style={styles.inputLabelText}>{label}</Text>
             <TextInput
               style={styles.formInput}
-              inputMode="email"
+              inputMode={type}
               value={value}
-              placeholder="example@gmail.com"
+              placeholder={placeHolder}
               placeholderTextColor="#e1e1e1"
               onBlur={onBlur}
               onChangeText={onChange}
             />
 
-            {errors.email && <ErrorText errorMessage={errors.email.message} />}
+            {error && <ErrorText errorMessage={error.message} />}
           </View>
         );
       }}

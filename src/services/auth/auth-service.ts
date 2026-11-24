@@ -1,15 +1,27 @@
+import { OnboardingError } from "@/helpers/customErrorClasses/onboarding-error";
 import { SignInError } from "@/helpers/customErrorClasses/sign-in-error";
-import { mapAuthError } from "@/helpers/mappers/map-auth-error";
+import { SignUpError } from "@/helpers/customErrorClasses/signup-error";
+import { mapAuthError, mapSignUpError } from "@/helpers/mappers/map-auth-error";
+import { mapVetDetails } from "@/helpers/mappers/map-vet-details";
 import { supabase } from "@/lib";
+import {
+  ProfileStepOutput,
+  VetStepOutput,
+} from "@/lib/zod-schemas/onboardingSchema";
 
 import {
   IProfile,
-  IVetDetails,
+  IVetDetailsRaw,
   IRanchDetails,
   UserRole,
   IAppleSignInParams,
+  IVetDetails,
 } from "@/types/auth-types";
-import { SIGNIN_ERROR_MESSAGES } from "@/utils/consts";
+import {
+  ONBOARDING_ERROR_MESSAGES,
+  SIGN_UP_ERROR_MESSAGES,
+  SIGNIN_ERROR_MESSAGES,
+} from "@/utils/consts";
 
 import {
   ADMIN_MOCK_RANCH_DETAILS,
@@ -33,50 +45,31 @@ const profilesLookup: Record<
   (userId: string) => Promise<RoleDetailsResult>
 > = {
   vet: async (userId) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("vet_details")
-      .select("*")
+      .select("*, vet_specialties(specialty_code)")
       .eq("profile_id", userId)
-      .maybeSingle();
+      .maybeSingle<IVetDetailsRaw>();
 
-    return { vetDetails: data as IVetDetails };
+    if (error) throw error;
+
+    return { vetDetails: data ? mapVetDetails(data) : null };
   },
   ranch_owner: async (userId) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("ranch_details")
       .select("*")
       .eq("profile_id", userId)
-      .maybeSingle();
+      .maybeSingle<IRanchDetails>();
 
-    return { ranchDetails: data as IRanchDetails };
+    if (error) throw error;
+
+    return { ranchDetails: data };
   },
   admin: async (userId) => ({
     vetDetails: { ...ADMIN_MOCK_VET_DETAILS, profile_id: userId },
     ranchDetails: { ...ADMIN_MOCK_RANCH_DETAILS, profile_id: userId },
   }),
-};
-
-const onboardingsLookup: Record<
-  string,
-  (
-    userId: string,
-    details: Partial<IVetDetails> | Partial<IRanchDetails>,
-  ) => Promise<void>
-> = {
-  vet: async (userId, details) => {
-    const { error } = await supabase
-      .from("vet_details")
-      .insert({ profile_id: userId, ...details });
-
-    if (error) throw error;
-  },
-  ranch_owner: async (userId, details) => {
-    const { error } = await supabase
-      .from("ranch_details")
-      .insert({ profile_id: userId, ...details });
-
-    if (error) throw error;
-  },
 };
 
 export const AuthService = {
@@ -91,23 +84,22 @@ export const AuthService = {
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .single();
+        .single<IProfile>();
 
       if (profileError) {
         console.error("Error fetching profile: ", profileError);
         throw profileError;
       }
 
-      if (!profile) {
-        return { profile: null, vetDetails: null, ranchDetails: null };
-      }
-      const typedProfile = profile as IProfile;
-
-      const fetchedResults = profilesLookup[typedProfile.role];
-      const roleDetails = fetchedResults ? await fetchedResults(userId) : {};
+      const fetchRoleDetails = profile.role
+        ? profilesLookup[profile.role]
+        : undefined;
+      const roleDetails = fetchRoleDetails
+        ? await fetchRoleDetails(userId)
+        : {};
 
       return {
-        profile: typedProfile,
+        profile: profile,
         vetDetails: null,
         ranchDetails: null,
         ...roleDetails,
@@ -118,31 +110,33 @@ export const AuthService = {
     }
   },
 
-  async completeOnboarding(
-    userId: string,
-    role: UserRole,
-    details: Partial<IVetDetails | IRanchDetails>,
-  ) {
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({ role, is_onboarded: true })
-      .eq("id", userId);
+  async completeOnboarding(profile: ProfileStepOutput, vet?: VetStepOutput) {
+    const { error } = await supabase.rpc("complete_onboarding", {
+      p_role: profile.role,
+      p_phone_number: profile.phone_number,
+      p_specialties: vet?.specialties,
+      p_license_number: vet?.license_number,
+    });
 
-    if (profileError) throw profileError;
-
-    const saveRoleDetails = onboardingsLookup[role];
-
-    if (saveRoleDetails) {
-      await saveRoleDetails(userId, details);
+    if (error) {
+      throw new OnboardingError(
+        error.message,
+        ONBOARDING_ERROR_MESSAGES[error.message] ??
+          "Unable to complete onboarding process.",
+      );
     }
   },
 
   async signOut() {
     const { error } = await supabase.auth.signOut();
-    const currentUser = GoogleSignin.getCurrentUser();
+    try {
+      const currentUser = GoogleSignin.getCurrentUser();
 
-    if (currentUser) {
-      await GoogleSignin.signOut();
+      if (currentUser) {
+        await GoogleSignin.signOut();
+      }
+    } catch (googleError) {
+      console.error("Google sign out failed: ", googleError);
     }
     if (error) throw error;
   },
@@ -198,13 +192,37 @@ export const AuthService = {
     return data;
   },
 
+  async signUp(email: string, password: string, fullName: string) {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: { data: { full_name: fullName } },
+    });
+
+    if (error) {
+      const kind = mapSignUpError(error);
+      throw new SignUpError(kind, SIGN_UP_ERROR_MESSAGES[kind]);
+    }
+
+    if (data.user && data.user.identities?.length === 0) {
+      throw new SignUpError(
+        "user_already_exists",
+        SIGN_UP_ERROR_MESSAGES.user_already_exists,
+      );
+    }
+
+    return data;
+  },
+
   async setAuthSession(accessToken: string, refreshToken: string) {
     if (!accessToken || !refreshToken) {
       throw new Error("Unable to process tokens");
     }
-    await supabase.auth.setSession({
+    const { error } = await supabase.auth.setSession({
       access_token: accessToken,
       refresh_token: refreshToken,
     });
+
+    if (error) throw error;
   },
 };

@@ -1,7 +1,7 @@
 import { OptionType } from "@/types/picker-types";
 import { TabProps, DrawerScreenProps } from "@/types/tabs-types";
 import { ReproductiveMilestone } from "@/types/reproductive-calculation-types";
-import { SignInErrorKind } from "@/types/auth-types";
+import { SignInErrorKind, SignUpErrorKind } from "@/types/auth-types";
 
 const VIEW_TABS: TabProps[] = [
   {
@@ -202,12 +202,66 @@ const REPRODUCTIVE_MILESTONES_NEXT_OESTRUS: ReproductiveMilestone = {
   },
 };
 
+const SIGN_UP_ROLES = ["vet"] as const;
+
 const SIGNIN_ERROR_MESSAGES: Record<SignInErrorKind, string> = {
   invalid_credentials: "Incorrect Email or Password",
   email_not_confirmed: "Your email address must be confirmed",
-  rate_limited: "Sign In rate limit attempts exeeded, try again later",
+  rate_limited: "Sign In rate limit attempts exceeded, try again later",
   banned: "This account is not allowed to sign in",
   unknown: "Unable to sign in, please try again",
+};
+
+const SIGN_UP_ERROR_MESSAGES: Record<SignUpErrorKind, string> = {
+  user_already_exists: "The user has been already registered",
+  phone_already_exists: "The phone number has been already registered",
+  weak_password: "The password does not meet the requirements",
+  invalid_email: "Enter a valid email address",
+  email_not_authorized: "This email is not authorized",
+  signup_disabled: "Unable to signup with these credentials",
+  provider_disabled: "Provider not available",
+  rate_limited: "Sign Up rate limit attempts exceeded, try again later",
+  captcha_failed: "Captcha has failed",
+  validation_failed: "The credentials validation has failed",
+  server_error: "Unexpected server error, try again later",
+  network: "Poor connection, please try again",
+  unknown: "Unable to process the signup, try again later",
+};
+
+const VET_SPECIALTIES = [
+  "general_practice",
+  "internal_medicine",
+  "surgery",
+  "reproduction",
+  "neonatology",
+  "integrative_medicine",
+  "other",
+] as const;
+
+const VET_SPECIALTIES_LABELS: Record<(typeof VET_SPECIALTIES)[number], string> =
+  {
+    general_practice: "General Medicine",
+    internal_medicine: "Internal Medicine",
+    surgery: "Surgery",
+    reproduction: "Reproduction",
+    neonatology: "Neonatology",
+    integrative_medicine: "Integrative Medicine",
+    other: "Other",
+  };
+
+const VET_SPECIALTIES_OPTIONS = VET_SPECIALTIES.map((speciality) => ({
+  label: VET_SPECIALTIES_LABELS[speciality],
+  value: speciality,
+}));
+
+const ONBOARDING_ERROR_MESSAGES: Record<string, string> = {
+  phone_taken: "This number is already registered.",
+  invalid_phone: "Invalid phone number.",
+  invalid_role: "Invalid role.",
+  invalid_specialties: "Select between 1 and 3 specialties.",
+  invalid_specialty: "There's an invalid specialty.",
+  invalid_license: "Invalid license format",
+  already_onboarded: "Your profile has been completed already.",
 };
 
 export {
@@ -221,6 +275,12 @@ export {
   BREEDS,
   MIXES,
   SIGNIN_ERROR_MESSAGES,
+  SIGN_UP_ERROR_MESSAGES,
+  SIGN_UP_ROLES,
+  VET_SPECIALTIES,
+  VET_SPECIALTIES_LABELS,
+  VET_SPECIALTIES_OPTIONS,
+  ONBOARDING_ERROR_MESSAGES,
   sexOptions,
   typeOptions,
   medicationOptions,
