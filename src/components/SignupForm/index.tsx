@@ -23,7 +23,7 @@ export default function SignupForm() {
     handleSubmit,
     clearErrors,
     setError,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterInput, unknown, RegisterOutput>({
     resolver: zodResolver(registerSchema),
     defaultValues: undefined,

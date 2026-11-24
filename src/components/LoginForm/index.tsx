@@ -21,7 +21,7 @@ export default function LoginForm() {
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
     setError,
     clearErrors,
   } = useForm<LoginFormValues>({
